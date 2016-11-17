@@ -1,0 +1,2 @@
+LOW_BOUND = -1e15
+HIGH_BOUND = 1e15
