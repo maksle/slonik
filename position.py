@@ -211,6 +211,10 @@ because they are being blocked, or will no longer be blocked, by the move."""
             pawns = self.pieces[PieceType.W_PAWN.value]
             queens = self.pieces[PieceType.W_QUEEN.value]
             king = self.pieces[PieceType.W_KING.value]
+            for from_sq, to_sq in pawn_moves(pawns, own, other,
+                                             side, last_move.piece_type,
+                                             last_move.from_sq, last_move.to_sq):
+                yield Move(PieceType.W_PAWN.value, from_sq, to_sq)
             for from_sq, to_sq in knight_moves(knights, own):
                 yield Move(PieceType.W_KNIGHT.value, from_sq, to_sq)
             for from_sq, to_sq in bishop_moves(bishops, own, other):
@@ -219,10 +223,6 @@ because they are being blocked, or will no longer be blocked, by the move."""
                 yield Move(PieceType.W_ROOK.value, from_sq, to_sq)
             for from_sq, to_sq in queen_moves(queens, own, other):
                 yield Move(PieceType.W_QUEEN.value, from_sq, to_sq)
-            for from_sq, to_sq in pawn_moves(pawns, own, other,
-                                             side, last_move.piece_type,
-                                             last_move.from_sq, last_move.to_sq):
-                yield Move(PieceType.W_PAWN.value, from_sq, to_sq)
             for from_sq, to_sq in king_castle_moves(own, other, attacked, self.position_flags):
                 yield Move(PieceType.W_KING.value, from_sq, to_sq)
             for from_sq, to_sq in king_moves(king, own, attacked):
@@ -237,6 +237,10 @@ because they are being blocked, or will no longer be blocked, by the move."""
             pawns = self.pieces[PieceType.B_PAWN.value]
             queens = self.pieces[PieceType.B_QUEEN.value]
             king = self.pieces[PieceType.B_KING.value]
+            for from_sq, to_sq in pawn_moves(pawns, own, other,
+                                             side, last_move.piece_type,
+                                             last_move.from_sq, last_move.to_sq):
+                yield Move(PieceType.B_PAWN.value, from_sq, to_sq)
             for from_sq, to_sq in knight_moves(knights, own):
                 yield Move(PieceType.B_KNIGHT.value, from_sq, to_sq)
             for from_sq, to_sq in bishop_moves(bishops, own, other):
@@ -245,10 +249,6 @@ because they are being blocked, or will no longer be blocked, by the move."""
                 yield Move(PieceType.B_ROOK.value, from_sq, to_sq)
             for from_sq, to_sq in queen_moves(queens, own, other):
                 yield Move(PieceType.B_QUEEN.value, from_sq, to_sq)
-            for from_sq, to_sq in pawn_moves(pawns, own, other,
-                                             side, last_move.piece_type,
-                                             last_move.from_sq, last_move.to_sq):
-                yield Move(PieceType.B_PAWN.value, from_sq, to_sq)
             for from_sq, to_sq in king_castle_moves(own, other, attacked, self.position_flags):
                 yield Move(PieceType.B_KING.value, from_sq, to_sq)
             for from_sq, to_sq in king_moves(king, own, attacked):
@@ -266,8 +266,9 @@ because they are being blocked, or will no longer be blocked, by the move."""
     def black_to_move(self):
         return black_to_move(self.position_flags)
 
-    def in_check(self):
-        side = self.side_to_move()
+    def in_check(self, side=None):
+        if side is None:
+            side = self.side_to_move()
         stm_king = PieceType.piece(PieceType.K.value, side)
         return am_in_check(self.attacks[side ^ 1], self.pieces[stm_king])
     
@@ -360,7 +361,9 @@ because they are being blocked, or will no longer be blocked, by the move."""
             return True
 
     def toggle_side_to_move(self):
-        self.position_flags = self.position_flags ^ (1 << 6)
+        self.position_flags ^= 1 << 6
+        self.zobrist_hash ^= tt.ZOBRIST_SIDE[0]
+        self.zobrist_hash ^= tt.ZOBRIST_SIDE[1]
     
     def make_move(self, move):
         piece_type = move.piece_type

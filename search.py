@@ -14,6 +14,7 @@ class SearchInfo():
         self.ply = 0
         self.current_variation = []
         self.pv = []
+        self.null_move_prune_search = False
 
 class SearchPos():
     def __init__(self, position):
@@ -22,14 +23,10 @@ class SearchPos():
         return self.position.is_mate()
     def value(self):
         return evaluate(self.position)
-    def children(self, si=None, depth=0, captures_only=False):
+    def children(self, si=None, depth=0, quiescence=False):
         pv = [] if si is None else si.pv[:]
         moves = self.position.generate_moves()
-        if captures_only:
-            side = self.position.side_to_move()
-            moves = [move for move in moves
-                     if move.to_sq & self.position.occupied[side ^ 1]]
-        smoves = sort_moves(moves, self.position, pv, depth-1)
+        smoves = sort_moves(moves, self.position, pv, depth, quiescence)
         yield from smoves
     def last_move(self):
         return self.position.last_move()
@@ -52,21 +49,21 @@ def update_history(side, move, depth, value):
     entry = move_history[side][move.piece_type][bit_position(move.to_sq)]
     adjusted_val = value
     if entry:
-        adjusted_val = .8 * entry.value + .2 * (value - entry.value)
+        adjusted_val = entry.value + .2 * (value - entry.value)
     move_history[side][move.piece_type][bit_position(move.to_sq)] = History(move, depth, adjusted_val)
 def lookup_history(side, move):
     if move and move.piece_type is not PieceType.NULL.value:
-        return counter_history[side][move.piece_type][bit_position(move.to_sq)]
+        return move_history[side][move.piece_type][bit_position(move.to_sq)]
     
 # counter moves
-Counter = namedtuple('Counter', ['move', 'depth', 'value'])
+Counter = namedtuple('Counter', ['move', 'depth'])
 counter_history = [[[None for i in range(64)] for i in range(13)] for i in range(2)]
-def update_counter(side, move, counter, depth, value):
+def update_counter(side, move, counter, depth):
     entry = counter_history[side][move.piece_type][bit_position(move.to_sq)]
-    adjusted_val = int(value * 100)
-    if entry:
-        adjusted_val = int(entry.value * .7 + value * 100 * .3)
-    counter_history[side][move.piece_type][bit_position(move.to_sq)] = Counter(counter, depth, adjusted_val)
+    # adjusted_val = int(value * 100)
+    # if entry:
+    #     adjusted_val = int(entry.value * .7 + value * 100 * .3)
+    counter_history[side][move.piece_type][bit_position(move.to_sq)] = Counter(counter, depth)
 def lookup_counter(side, move):
     if move and move.piece_type is not PieceType.NULL.value:
         return counter_history[side][move.piece_type][bit_position(move.to_sq)]
@@ -106,28 +103,40 @@ def search(node, si, a, b, depth, pv_node):
         if pv_node:
             si.current_variation = node.position.moves[-si.ply:]
         if is_leaf:
-            print("mate:", end="")
-            print_moves(node.position.moves)
             return node.value(), None
         else:
             score = qsearch(node, si, a, b, depth, pv_node)
             return score, None
 
+    # null move pruning.. if pass move and we're still failing high, dont bother searching
+    if not pv_node and not si.null_move_prune_search and node.value() >= b:
+        if depth <= 2: nmp_depth = depth
+        else: nmp_depth = max(depth-2, 2)
+
+        si.null_move_prune_search = True
+        si.ply += 1
+        node.position.toggle_side_to_move()
+        val, chosen_move = search(node, si, -b, -b+1, nmp_depth, False)
+        val = -val
+        node.position.toggle_side_to_move()
+        si.ply -=1
+        si.null_move_prune_search = False
+
+        if val >= b:
+            return val, None
+        
     best_move = None
     best_move_is_capture = False
     best_val = LOW_BOUND
     move_count = 0
     
     for move in node.children(si=si, depth=depth):
-        # if str(node.position.last_move()) == 'Bd2-c1' and move_count == 0:
-        #     print("BC1 respnose order", end=" ")
-        #     print_moves(node.children(si=si, depth=depth))
-        #     counter = lookup_counter(node.position.side_to_move()^1, node.position.last_move())
-        #     if counter:
-        #         print("counter to bc1:", counter.move)
+        # print(move)
+        # if str(move) == "Qg4-d4":
+        #     print("debug")
         child = SearchPos(node.position)
         child.position.make_move(move)
-
+        
         move_count += 1
         extensions = 0
         
@@ -140,21 +149,33 @@ def search(node, si, a, b, depth, pv_node):
             extensions = 1
         
         new_depth = depth - 1 + extensions
-        lmr_depth = max(new_depth - 2, 0)
+        r = 0
+        if depth > 4: r += 1
+        if move_count > 5: r += 1
+        if r > 1:
+            if is_capture:
+                r -= 1 # possible tactics
+            elif eval_see(node.position, None, move.from_sq) < 0: 
+                r -= 1 # capture evasion
             
+        lmr_depth = max(new_depth - r, 0)
+        
         # prune moves with too-negative SEE; more lenient with moves closer to root
-        if see_score < -40 * lmr_depth * lmr_depth:
+        if see_score + 250 < -50 * lmr_depth * lmr_depth:
+            # print("pruning", see_score, lmr_depth, list(map(str,node.position.moves)), move)
             continue
         
         # TODO?: if non rootNode and we're losing, only look at checks/big captures >= alpha 
-
-        # add counter moves and if counter move is too good prune the move at shallow depths
-        # if lmr_depth < 3:
-        #     counter = lookup_counter(node.position.side_to_move(), move)
-        #     if counter and counter.value > 100:
-        #         print("cutoff at depth", depth)
-        #         continue
-
+        
+        if lmr_depth < 3 and not is_capture:
+            counter = lookup_counter(node.position.side_to_move(), move)
+            history = lookup_history(node.position.side_to_move(), move)
+            # TODO: check that counter is legal?
+            if counter and history and history.value < -10:
+                print("hist val", history.value, "cnter", counter.move, "pruning", move)
+                continue
+                # lmr_depth = max(lmr_depth - 1, 0)
+                
         # Principal Variation Search with Late Move Reductions
         do_full_depth = False
         # LMR null window search
@@ -200,13 +221,25 @@ def search(node, si, a, b, depth, pv_node):
                 add_killer(depth-1, best_move)
             break
 
-    if best_move and not best_move_is_capture:
+    prior_move = node.position.last_move()
+    if best_move:
+        if not best_move_is_capture:
+            bonus = (depth * depth) + (2 * depth) - 2
+            update_history(node.position.side_to_move(), best_move, depth, bonus)
+            if prior_move and prior_move.piece_type != PieceType.NULL.value:
+                update_counter(node.position.side_to_move() ^ 1, prior_move, best_move, depth)
+                # penalize prior move that allowed this good move
+                # TODO: make sure that move was a quiet move?
+                if len(node.position.moves) > 1 and node.position.moves[-2] != PieceType.NULL.value:
+                    update_history(node.position.side_to_move(), node.position.moves[-2], depth, -(bonus + 4))
+    else:
+        # reward the move that caused this node to fail low
+        # TODO: make sure node.moves[-2] was a quiet move?
+        # TODO: maybe don't reward at too shallow depth (less confident of it)
         bonus = (depth * depth) + (2 * depth) - 2
-        update_history(node.position.side_to_move(), best_move, depth, bonus)
-        prior_move = node.position.last_move()
-        if prior_move and prior_move.piece_type != PieceType.NULL.value:
-            update_counter(node.position.side_to_move() ^ 1, prior_move, best_move, depth, bonus)
-            
+        if len(node.position.moves) > 1 and node.position.moves[-2] != PieceType.NULL.value:
+            update_history(node.position.side_to_move(), node.position.moves[-2], depth, bonus)
+        
     if not found:
         tt_entry = tt.TTEntry()
         tt_entry.key = node.position.zobrist_hash
@@ -227,6 +260,101 @@ def search(node, si, a, b, depth, pv_node):
     tt.save_tt_entry(tt_entry)
     
     return best_val, best_move
+
+def qsearch(node, si, alpha, beta, depth, pv_node):
+    global node_count
+    assert(pv_node or alpha == beta-1)
+    assert(depth <= 0)
+    node_count += 1
+
+    tt_hit = False
+    a_orig = alpha
+    
+    if not pv_node:
+        tt_hit, tt_ind, tt_entry = tt.get_tt_index(node.position.zobrist_hash)
+        if tt_hit and tt_entry.depth <= 0:
+            if tt_entry.bound_type == tt.BoundType.EXACT.value:
+                return tt_entry.value
+            
+            if tt_entry.bound_type == tt.BoundType.LO_BOUND.value and tt_entry.value >= beta:
+                alpha = max(alpha, tt_entry.value)
+            elif tt_entry.bound_type == tt.BoundType.HI_BOUND.value and tt_entry.value < alpha:
+                beta = min(beta, tt_entry.value)
+
+            if alpha >= beta:
+                return tt_entry.value
+
+    in_check = node.position.in_check()
+            
+    # if in_check:
+    #     best_value = start_val = LOW_BOUND
+    # else:
+    #     best_value = start_val = node.value()
+    best_value = start_val = node.value()
+    if best_value >= beta:
+        # "stand pat"
+        if not tt_hit:
+            tt.save_tt_entry(tt.TTEntry(node.position.zobrist_hash,
+                                        Move(PieceType.NULL.value, None, None).compact(),
+                                        tt.BoundType.LO_BOUND.value, best_value, depth))
+            return best_value
+    
+    if pv_node and best_value > alpha:
+        alpha = best_value
+
+    best_move = Move(PieceType.NULL.value, None, None)
+    score = None
+        
+    for move in node.children(si=si, quiescence=True):
+        # print_moves(node.children(si=si, quiescence=True))
+        if ' '.join(map(str,node.position.moves)) == "Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5":
+        # if ' '.join(map(str,node.position.moves)) == "Nc6-d4 Nf3-d4":
+            print("debug")
+        # only evaluate captures with SEE >= 0, assumes there is always a better move
+        # TODO?: only prune this if node is not in check
+        # TODO?: only prune this if move is not a promotion, or take promo in account in eval_see
+
+        child = SearchPos(node.position)
+        child.position.make_move(move)
+            
+        gives_check = child.position.in_check()
+        
+        # is_capture = move.to_sq & node.position.occupied[child.position.side_to_move()]
+        if not in_check and not gives_check:
+            static_eval = eval_see(node.position, move)
+            if static_eval < 0:
+                continue
+            # Futility pruning: losing and move doesn't overtake alpha my a large margin
+            if start_val + static_eval + MG_PIECES[PieceType.P.value] <= alpha:
+                continue
+
+        score = -qsearch(child, si, -beta, -alpha, depth-1, pv_node)
+        
+        # if str(move) == "Qd1-d4":
+        #     print("debug")
+        
+        if score > best_value:
+            best_value = score
+            if score > alpha:
+                if pv_node and score < beta:
+                    alpha = score
+                    best_move = move
+                else:
+                    assert score >= beta
+                    tt.save_tt_entry(tt.TTEntry(node.position.zobrist_hash, move.compact(),
+                                                tt.BoundType.LO_BOUND.value, best_value, depth))
+                    return score
+        
+    # TODO: check if we're mated
+    if pv_node and best_value > a_orig:
+        bound_type = tt.BoundType.EXACT.value
+    else:
+        bound_type = tt.BoundType.HI_BOUND.value
+        # if best_move.piece_type == PieceType.NULL.value and score is not None and node.position.in_check():
+        #     best_value = score
+    tt.save_tt_entry(tt.TTEntry(node.position.zobrist_hash, best_move.compact(),
+                                bound_type, best_value, depth))
+    return best_value
 
 def find_pv(root_pos):
     moves = []
@@ -266,7 +394,7 @@ def iterative_deepening(target_depth, node):
 
         alpha, beta = val - fail_factor, val + fail_factor
         
-        print ("DEPTH", depth, "-----------------------------------------------------")
+        print (">> depth", depth)
         
         while not finished:
             val, chosen = search(node, si, alpha, beta, depth, True)
@@ -297,42 +425,58 @@ def iterative_deepening(target_depth, node):
     print("node count", node_count)
     return val, chosen
 
-def sort_moves(moves, position, pv, depth):
+def sort_moves(moves, position, pv, depth, quiescence):
     from_pv = []
     captures = []
     killers = []
     counters = []
     history = []
     other_moves = []
-    other = position.occupied[side_to_move(position.position_flags)^1]
+    checks = []
 
-    def get_counter(move):
-        counter = lookup_counter(position.side_to_move() ^ 1, position.last_move())
-        if counter and counter.value > 0 and counter.move == move:
-            return counter
-        
-    for move in moves:
-        counter = get_counter(move)
-        if move in pv:
-            from_pv.append(move)
-        elif is_capture(move.to_sq, other):
-            captures.append(move)
-        elif counter and counter.value > 0:
-            counters.append(counter)
-        elif move in killer_moves[depth]:
-            killers.append(move)
-        else:
-            other_moves.append(move)
+    side = position.side_to_move()
+    other = position.occupied[side ^ 1]
+    counter = lookup_counter(side ^ 1, position.last_move())
 
     def hist_val(move):
-        entry = lookup_history(position.side_to_move(), move)
+        entry = lookup_history(side, move)
         if entry:
             return entry.value
         return 0
     
+    for move in moves:
+        if quiescence:
+            if is_capture(move.to_sq, other):
+                captures.append(move)
+            else:
+                in_check = position.in_check()
+                try_move = SearchPos(position)
+                try_move.position.make_move(move)
+                if in_check and not try_move.position.in_check(side):
+                    # evade check
+                    other_moves.append(move)
+                elif not in_check and try_move.position.in_check():
+                    # give check
+                    checks.append(move)
+        else:
+            if move in pv:
+                from_pv.append(move)
+            elif is_capture(move.to_sq, other):
+                captures.append(move)
+            elif counter and counter.move == move:
+                counters.append(move)
+            elif move in killer_moves[depth]:
+                killers.append(move)
+            else:
+                other_moves.append(move)
+
     captures = sorted(captures, key=lambda c: eval_see(position, c), reverse=True)
     captures_see = map(lambda c: (eval_see(position, c), c), captures)
     sorted_cap_see = sorted(captures_see, key=lambda cs: cs[0], reverse=True)
+
+    if quiescence:
+        return itertools.chain(map(lambda c: c[1], sorted_cap_see), checks, other_moves)
+
     cap_see_gt0 = []
     cap_see_lte0 = []
     for cs in sorted_cap_see:
@@ -341,12 +485,12 @@ def sort_moves(moves, position, pv, depth):
         else:
             cap_see_lte0.append(cs[1])
     
-    counters = [c.move for c in sorted(counters, key=lambda c: c.value, reverse=True)]
+    # counters = [c.move for c in sorted(counters, key=lambda c: c.value, reverse=True)]
     other_moves = [m for m in sorted(other_moves, key=hist_val, reverse=True)]
     
     return itertools.chain(from_pv, cap_see_gt0, counters, killers, cap_see_lte0, other_moves)
 
-def evaluate(position):
+def evaluate(position, debug=False):
     # Check for mate
     if position.is_mate():
         if position.side_to_move() == Side.WHITE.value:
@@ -370,12 +514,22 @@ def evaluate(position):
             black += counts[piece_type_b] * material_eval(counts, piece_type.value,
                                                           Side.BLACK.value)
 
-        # positional bonuses
+        # positional bonuses and penalties
         if piece_type == PieceType.R:
             for rook in iterate_pieces(position.pieces[piece_type_w]):
                 white += rook_position_bonus(rook, position, Side.WHITE.value)
             for rook in iterate_pieces(position.pieces[piece_type_b]):
                 black += rook_position_bonus(rook, position, Side.BLACK.value)
+
+        if piece_type in [PieceType.B, PieceType.N]:
+            for minor in iterate_pieces(position.pieces[piece_type_w]):
+                white += minor_outpost_bonus(piece_type.value, position, Side.WHITE.value)
+            for minor in iterate_pieces(position.pieces[piece_type_b]):
+                black += minor_outpost_bonus(piece_type.value, position, Side.BLACK.value)
+
+        if piece_type == PieceType.P:
+            white += pawn_structure(position, Side.WHITE.value)
+            black += pawn_structure(position, Side.BLACK.value)
         
         # piece-square table adjustments
         if piece_type in [PieceType.P, PieceType.N, PieceType.B, PieceType.K]:
@@ -393,10 +547,10 @@ def evaluate(position):
     # king safety
     if not preserved_castle_rights(position.position_flags, Side.WHITE.value) \
        and position.w_king_castle_ply == -1:
-        white -= -75
+        white += -75
     if not preserved_castle_rights(position.position_flags, Side.BLACK.value) \
        and position.b_king_castle_ply == -1:
-        black -= -75
+        black += -75
 
     king_zone_w = king_safety_squares(position, Side.WHITE.value)
     king_zone_b = king_safety_squares(position, Side.BLACK.value)
@@ -406,89 +560,14 @@ def evaluate(position):
     black += pawn_cover_bonus(king_zone_b, position, Side.BLACK.value)
     
     # .. king attack bonuses
-    white += king_zone_attack_bonus(king_zone_w, position, Side.WHITE.value)
-    black += king_zone_attack_bonus(king_zone_b, position, Side.BLACK.value)
+    white += king_zone_attack_bonus(king_zone_b, position, Side.WHITE.value)
+    black += king_zone_attack_bonus(king_zone_w, position, Side.BLACK.value)
     
     res_value = int(white - black)
     if position.white_to_move():
         return res_value
     else:
         return -res_value
-
-def qsearch(node, si, alpha, beta, depth, pv_node):
-    global node_count
-    assert(pv_node or alpha == beta-1)
-    assert(depth <= 0)
-    node_count += 1
-
-    tt_hit = False
-    a_orig = alpha
-    
-    if not pv_node:
-        tt_hit, tt_ind, tt_entry = tt.get_tt_index(node.position.zobrist_hash)
-        if tt_hit and tt_entry.depth <= 0:
-            if tt_entry.bound_type == tt.BoundType.EXACT.value:
-                return tt_entry.value
-            
-            if tt_entry.bound_type == tt.BoundType.LO_BOUND.value and tt_entry.value >= beta:
-                alpha = max(alpha, tt_entry.value)
-            elif tt_entry.bound_type == tt.BoundType.HI_BOUND.value and tt_entry.value < alpha:
-                beta = min(beta, tt_entry.value)
-
-            if alpha >= beta:
-                return tt_entry.value
-    
-    best_value = start_val = node.value()
-    if best_value >= beta:
-        # "stand pat"
-        if not tt_hit:
-            tt.save_tt_entry(tt.TTEntry(node.position.zobrist_hash,
-                                        Move(PieceType.NULL.value, None, None).compact(),
-                                        tt.BoundType.LO_BOUND.value, best_value, depth))
-            return best_value
-    
-    if pv_node and best_value > alpha:
-        alpha = best_value
-
-    best_move = Move(PieceType.NULL.value, None, None)
-        
-    for move in node.children(si=si, captures_only=True):
-        # only evaluate captures with SEE >= 0, assumes there is always a better move
-        # TODO?: only prune this if node is not in check
-        # TODO?: only prune this if move is not a promotion, or take promo in account in eval_see
-        static_eval = eval_see(node.position, move)
-        if static_eval < 0:
-            continue
-
-        # Futility pruning: losing and move doesn't overtake alpha my a large margin
-        if start_val + static_eval + MG_PIECES[PieceType.P.value] <= alpha:
-            continue
-        
-        child = SearchPos(node.position)
-        child.position.make_move(move)
-
-        score = -qsearch(child, si, -beta, -alpha, depth-1, pv_node)
-        
-        if score > best_value:
-            best_value = score
-            if score > alpha:
-                if pv_node and score < beta:
-                    alpha = score
-                    best_move = move
-                else:
-                    assert score >= beta
-                    tt.save_tt_entry(tt.TTEntry(node.position.zobrist_hash, move.compact(),
-                                                tt.BoundType.LO_BOUND.value, best_value, depth))
-                    return score
-        
-    # TODO: check if we're mated
-    if pv_node and best_value > a_orig:
-        bound_type = tt.BoundType.EXACT.value
-    else:
-        bound_type = tt.BoundType.HI_BOUND.value
-    tt.save_tt_entry(tt.TTEntry(node.position.zobrist_hash, best_move.compact(),
-                                bound_type, best_value, depth))
-    return best_value
 
 def print_moves(moves):
     print(' '.join(map(str,moves)))

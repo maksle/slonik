@@ -46,22 +46,21 @@ def lowest_attacker(position, square):
     if attackers:
         return piece_type, attackers
 
-def eval_see(pos, move):
+def eval_see(pos, move, square=None):
     position = Position(pos)
     balance = 0
     gains = []
-
-    if move is not None:
-        side = position.side_to_move()
+    
+    side = position.side_to_move()
+    if move:
         square = move.to_sq
-        captured_piece_type = position.squares[len(bin(square))-3]
-        if captured_piece_type:
-            balance += MG_PIECES[PieceType.base_type(captured_piece_type)]
-        position.make_move(move)
     else:
-        side = position.side_to_move() ^ 1
-        square = pos.last_move().to_sq
-
+        square = square
+    captured_piece_type = position.squares[len(bin(square))-3]
+    if captured_piece_type:
+        balance += MG_PIECES[PieceType.base_type(captured_piece_type)]
+    position.make_move(move)
+    
     gains.append(balance)
 
     while True:
@@ -101,7 +100,32 @@ def king_safety_squares(position, side):
 def king_zone_attack_bonus(king_zone, position, side):
     """Attackers of enemy king zone, each weighted by piece weight, including
 xray attacks."""
-    return 0
+    # TODO: finish implementing this
+    bonus = 0
+    types = 0
+    for pt in PieceType.piece_types(side=side):
+        num = count_bits(position.piece_attacks[pt] & king_zone)
+        if num:
+            types += 1
+            bonus += num * 5 * types
+    return bonus
+
+def pawn_structure(position, side):
+    pt = PieceType.piece(PieceType.P.value, side)
+    pawns = position.pieces[pt]
+    penalty = 0
+    # doubled
+    if side == Side.WHITE.value:
+        penalty += count_bits(pawns & pawns << 8)
+        penalty += count_bits(pawns & pawns << 16)
+        penalty += count_bits(pawns & pawns << 24)
+        penalty *= -10
+    else:
+        penalty += count_bits(pawns & pawns >> 8)
+        penalty += count_bits(pawns & pawns >> 16)
+        penalty += count_bits(pawns & pawns >> 24)
+        penalty *= -10
+    return penalty
     
 def pawn_cover_bonus(king_zone, position, side):
     pawn_type = PieceType.piece(PieceType.P.value, side)
@@ -116,7 +140,7 @@ def rook_position_bonus(rook, position, side):
     fill = south_attack(rook, FULL_BOARD) | north_attack(rook, FULL_BOARD)
     if pawns_us & fill and not pawns_them & fill:
         # rook supporting passed pawn bonus
-        bonus += 65
+        bonus += 5
     if not pawns_us & fill:
         if pawns_them & fill:
             # semi-open file
@@ -124,8 +148,24 @@ def rook_position_bonus(rook, position, side):
         else:
             # open file
             bonus += 45
+
+    rank_fill = east_attack(rook, FULL_BOARD) | west_attack(rook, FULL_BOARD)
+    bonus += count_bits(rank_fill & pawns_them) * 70
+    
     return bonus
 
+def minor_outpost_bonus(minor, position, side):
+    base_type = PieceType.base_type(minor)
+    pawns_us = position.pieces[PieceType.piece(PieceType.P.value, side)]
+    bonus = 25
+    if base_type == PieceType.N.value:
+        bonus += 10
+    if side == Side.WHITE.value and (south_west(minor) | south_east(minor)) & pawns_us:
+        return bonus
+    if side == Side.BLACK.value and (north_west(minor) | north_east(minor)) & pawns_us:
+        return bonus
+    return bonus
+    
 def mobility(position, side):
     mobility = 0
     piece_types = [PT.P, PT.N, PT.B, PT.R, PT.Q]
