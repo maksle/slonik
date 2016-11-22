@@ -210,7 +210,6 @@ def search(node, si, ply, a, b, curr_p, thres_p, pv_node):
         #         continue
         #         # lmr_depth = max(lmr_depth - 1, 0)
 
-        
         # Probabilistic version of LMR
         # .. zero window search reduced 
         if curr_p > .2 and not is_capture:
@@ -429,7 +428,6 @@ def sort_moves(moves, position, si, ply, quiescence):
     captures = []
     killers = []
     counters = []
-    history = []
     other_moves = []
     checks = []
 
@@ -437,9 +435,19 @@ def sort_moves(moves, position, si, ply, quiescence):
     other = position.occupied[side ^ 1]
     counter = lookup_counter(side ^ 1, position.last_move())
 
-    def sort_crit(move):
+    ep_default_value = (0, 0, 0, 0)
+    ep_before = next(next_en_prise(position, position.side_to_move()), ep_default_value)
+    
+    def sort_crit(move, en_prise_sort=False):
         entry = lookup_history(side, move)
         see_val = eval_see(position, move)
+        if en_prise_sort:
+            ep_after_gen = next_en_prise(position, position.side_to_move(), move)
+            pt, *rest = ep_before
+            pt2, *rest2 = next(ep_after_gen, ep_default_value)
+            loss = pt - pt2
+            see_val += loss
+            
         hist_val = entry.value if entry else 0
         psqt_val = psqt_value_sq(move.piece_type, move.to_sq, position.side_to_move())
         return (see_val, hist_val, psqt_val)
@@ -494,7 +502,7 @@ def sort_moves(moves, position, si, ply, quiescence):
                 cap_see_lt0.append(cs[1])
 
         # counters = [c.move for c in sorted(counters, key=lambda c: c.value, reverse=True)]
-        other_moves = [m for m in sorted(other_moves, key=sort_crit, reverse=True)]
+        other_moves = [m for m in sorted(other_moves, key=lambda m: sort_crit(m, en_prise_sort=True), reverse=True)]
 
         result = list(itertools.chain(from_pv, cap_see_gt0, cap_see_eq0, checks, counters, killers, other_moves, cap_see_lt0))
 

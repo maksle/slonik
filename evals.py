@@ -3,9 +3,9 @@ from piece_type import PieceType as PT
 from position import Position
 from bb import *
 
-def lowest_attacker(position, square):
+def lowest_attacker(position, square, side=None):
     """Finds lowest-value piece attacking a square"""
-    side = position.side_to_move()
+    side = side or position.side_to_move()
 
     # pawn
     if position.white_to_move():
@@ -45,6 +45,28 @@ def lowest_attacker(position, square):
     attackers = position.pieces[piece_type] & possible_from_squares
     if attackers:
         return piece_type, attackers
+
+def next_en_prise(position, side, move=None):
+    """finds next en-prise piece for `side` optionally after `move` is done"""
+    # update the position
+    if move:
+        if move.position:
+            pos = move.position
+        else:
+            pos = Position(position)
+            pos.make_move(move)
+    else:
+        pos = position
+
+    for pt in sorted(PieceType.piece_types(side=side), reverse=True):
+        for square in iterate_pieces(pos.pieces[pt]):
+            lowest = lowest_attacker(pos, square, side ^ 1)
+            if not lowest: continue
+            attacker_pt, attacker_sq = lowest
+            # equal val but undefended more readily handled by eval_see
+            if MG_PIECES[PieceType.base_type(attacker_pt)] < MG_PIECES[PieceType.base_type(pt)]:
+                yield pt, square, attacker_pt, attacker_sq
+                break
 
 def eval_see(pos, move):
     position = Position(pos)
