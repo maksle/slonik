@@ -94,10 +94,28 @@ pos = Position()
 pos = Position.from_fen("r1b1kb1r/1pp1pppp/p1n2n2/8/3P2q1/2NB1N2/PPP2PPP/R1BQR1K1 b kq - 1 8")
 
 # play(pos)
+# pos.make_move(Move(PieceType.B_BISHOP.value, C8, E6))
+# pos.make_move(Move(PieceType.B_KING.value, E8, D7))
+
+# print(eval_see(pos, Move(1,D4,D5)))
+
+# def do_test():
+#     pos = Position.from_fen("r1b1kb1r/1pp1pppp/p1n2n2/8/3P2q1/2NB1N2/PPP2PPP/R1BQR1K1 b kq - 1 8")
+#     pos.make_move(Move(PieceType.B_KNIGHT.value, C6, D4))
+#     return pos
+
+# from IPython import embed
+# embed()
+
+# import timeit
+# print("evaluate(pos)")
+# timeit.timeit("evaluate(pos)", setup="from search import evaluate; from __main__ import do_test; pos=do_test()", number=1000)
+# print("eval_see(pos, Move(2,F3,D4))")
+# timeit.timeit("eval_see(pos, Move(2,F3,D4))", setup="from evals import eval_see; from move import Move; from bb import F3, D4; from __main__ import do_test; pos=do_test()", number=1000)
 
 import time
 now = time.time()
-val,c = iterative_deepening(3, SearchPos(pos))
+val,c = iterative_deepening(.995, SearchPos(pos))
 # val = -val
 print(val / 200, c)
 then = time.time()

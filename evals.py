@@ -46,16 +46,13 @@ def lowest_attacker(position, square):
     if attackers:
         return piece_type, attackers
 
-def eval_see(pos, move, square=None):
+def eval_see(pos, move):
     position = Position(pos)
     balance = 0
     gains = []
     
     side = position.side_to_move()
-    if move:
-        square = move.to_sq
-    else:
-        square = square
+    square = move.to_sq
     captured_piece_type = position.squares[len(bin(square))-3]
     if captured_piece_type:
         balance += MG_PIECES[PieceType.base_type(captured_piece_type)]
@@ -84,7 +81,8 @@ def eval_see(pos, move, square=None):
 
     for i in reversed(range(1, len(gains))):
         gains[i-1] = -max(gains[i], -gains[i-1])
-        
+
+    move.see_score = gains[0]
     return gains[0]
     
 def king_safety_squares(position, side):

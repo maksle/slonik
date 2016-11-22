@@ -9,7 +9,7 @@ pawn = [
     -16, -10,  15,  20,  20,   0,   0, -16,
     -20, -12,  20,  30,  30,  20, -12, -20,
     -20,   0,  10,  20,  20,  10,   0, -20,
-    -12, -14,   5,  10,  10,   5, -14, -12,
+    -12, -14,   3,  10,  10,   3, -14, -12,
     -10,  15,  -5,  -5,  -5,  -5,  15, -10,
       0,   0,   0,   0,   0,   0,   0,   0,
 ]
@@ -44,7 +44,7 @@ king = [
     -45, -45, -95, -95, -95, -95, -45, -45,
     -30, -35, -40, -45, -45, -40, -35, -30,
     -15, -15, -25,  -5,  -5, -25, -15, -15,
-     20,  45,  10,  -5,  -5,  10,  45,  20,
+     20,  50,  10,  -5,  -5,  10,  50,  20,
 ]
 
 def ind_for_square(square, side):
@@ -71,5 +71,5 @@ def psqt_value_sq(piece, square, side):
 def psqt_value(piece, position, side):
     val = 0
     for sq in iterate_pieces(position.pieces[piece]):
-        val += psqt_value_sq(PieceType.base_type(piece), sq, side) / 10
+        val += psqt_value_sq(PieceType.base_type(piece), sq, side)
     return int(val)

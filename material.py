@@ -1,6 +1,7 @@
 from bb import *
 
 MG_PIECES = [None for i in range(0, 7)]
+MG_PIECES[PieceType.NULL.value] = 0
 MG_PIECES[PieceType.P.value] = 200
 MG_PIECES[PieceType.N.value] = 650
 MG_PIECES[PieceType.B.value] = 650

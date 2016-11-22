@@ -4,6 +4,7 @@ from bb import *
 from move import *
 import tt
 import math
+import itertools
 
 class Position():
     def __init__(self, pos = None):
@@ -199,61 +200,32 @@ because they are being blocked, or will no longer be blocked, by the move."""
         return occupied
 
     def get_move_candidates(self):
-        side = side_to_move(self.position_flags)
+        side = self.side_to_move()
         last_move = self.last_move()
-        if white_to_move(self.position_flags):
-            own = self.occupied[Side.WHITE.value]
-            other = self.occupied[Side.BLACK.value]
-            attacked = self.attacks[Side.BLACK.value]
-            knights = self.pieces[PieceType.W_KNIGHT.value]
-            bishops = self.pieces[PieceType.W_BISHOP.value]
-            rooks = self.pieces[PieceType.W_ROOK.value]
-            pawns = self.pieces[PieceType.W_PAWN.value]
-            queens = self.pieces[PieceType.W_QUEEN.value]
-            king = self.pieces[PieceType.W_KING.value]
-            for from_sq, to_sq in pawn_moves(pawns, own, other,
-                                             side, last_move.piece_type,
-                                             last_move.from_sq, last_move.to_sq):
-                yield Move(PieceType.W_PAWN.value, from_sq, to_sq)
-            for from_sq, to_sq in knight_moves(knights, own):
-                yield Move(PieceType.W_KNIGHT.value, from_sq, to_sq)
-            for from_sq, to_sq in bishop_moves(bishops, own, other):
-                yield Move(PieceType.W_BISHOP.value, from_sq, to_sq)
-            for from_sq, to_sq in rook_moves(rooks, own, other):
-                yield Move(PieceType.W_ROOK.value, from_sq, to_sq)
-            for from_sq, to_sq in queen_moves(queens, own, other):
-                yield Move(PieceType.W_QUEEN.value, from_sq, to_sq)
-            for from_sq, to_sq in king_castle_moves(own, other, attacked, self.position_flags):
-                yield Move(PieceType.W_KING.value, from_sq, to_sq)
-            for from_sq, to_sq in king_moves(king, own, attacked):
-                yield Move(PieceType.W_KING.value, from_sq, to_sq)
-        else:
-            own = self.occupied[Side.BLACK.value]
-            other = self.occupied[Side.WHITE.value]
-            attacked = self.attacks[Side.WHITE.value]
-            knights = self.pieces[PieceType.B_KNIGHT.value]
-            bishops = self.pieces[PieceType.B_BISHOP.value]
-            rooks = self.pieces[PieceType.B_ROOK.value]
-            pawns = self.pieces[PieceType.B_PAWN.value]
-            queens = self.pieces[PieceType.B_QUEEN.value]
-            king = self.pieces[PieceType.B_KING.value]
-            for from_sq, to_sq in pawn_moves(pawns, own, other,
-                                             side, last_move.piece_type,
-                                             last_move.from_sq, last_move.to_sq):
-                yield Move(PieceType.B_PAWN.value, from_sq, to_sq)
-            for from_sq, to_sq in knight_moves(knights, own):
-                yield Move(PieceType.B_KNIGHT.value, from_sq, to_sq)
-            for from_sq, to_sq in bishop_moves(bishops, own, other):
-                yield Move(PieceType.B_BISHOP.value, from_sq, to_sq)
-            for from_sq, to_sq in rook_moves(rooks, own, other):
-                yield Move(PieceType.B_ROOK.value, from_sq, to_sq)
-            for from_sq, to_sq in queen_moves(queens, own, other):
-                yield Move(PieceType.B_QUEEN.value, from_sq, to_sq)
-            for from_sq, to_sq in king_castle_moves(own, other, attacked, self.position_flags):
-                yield Move(PieceType.B_KING.value, from_sq, to_sq)
-            for from_sq, to_sq in king_moves(king, own, attacked):
-                yield Move(PieceType.B_KING.value, from_sq, to_sq)
 
+        own = self.occupied[side]
+        other = self.occupied[side ^ 1]
+        attacked = self.attacks[side ^ 1]
+        
+        for bt in PieceType.piece_types(base_only=True):
+            pt = PieceType.piece(bt, side)
+            pieces = self.pieces[pt]
+            if bt == PieceType.P.value:
+                moves = pawn_moves(pieces, own, other, side, last_move.piece_type, last_move.from_sq, last_move.to_sq)
+            elif bt == PieceType.N.value:
+                moves = knight_moves(pieces, own)
+            elif bt == PieceType.B.value:
+                moves = bishop_moves(pieces, own, other)
+            elif bt == PieceType.R.value:
+                moves = rook_moves(pieces, own, other)
+            elif bt == PieceType.Q.value:
+                moves = rook_moves(pieces, own, other)
+            elif bt == PieceType.K.value:
+                moves = itertools.chain(king_castle_moves(own, other, attacked, self.position_flags),
+                                        king_moves(pieces, own, attacked))
+            for from_sq, to_sq in moves:
+                yield Move(pt, from_sq, to_sq, MoveType.regular.value)
+        
     def last_move(self):
         return self.moves[-1] if len(self.moves) else Move(PieceType.NULL.value, None, None)
 
@@ -276,17 +248,13 @@ because they are being blocked, or will no longer be blocked, by the move."""
         for move in self.get_move_candidates():
             try_move = Position(self)
             try_move.make_move(move)
-            if white_to_move(try_move.position_flags):
-                # black just made a move, make sure we didn't put our king in check
-                if not am_in_check(try_move.attacks[Side.WHITE.value],
-                                   try_move.pieces[PieceType.B_KING.value]):
-                    yield move
-            else:
-                # white just made a move, make sure we didn't put our king in check
-                if not am_in_check(try_move.attacks[Side.BLACK.value],
-                                   try_move.pieces[PieceType.W_KING.value]):
-                    yield move
-
+            # make sure we didn't put our king in check
+            if not try_move.in_check(self.side_to_move()):
+                if try_move.in_check():
+                    move.move_type = MoveType.check.value
+                move.position = try_move
+                yield move
+            
     def get_piece_attacks(self, piece_type, side):
         if side is None:
             side = self.side_to_move()
@@ -337,29 +305,14 @@ because they are being blocked, or will no longer be blocked, by the move."""
                 | b_rooks_attacks
 
     def is_mate(self):
-        if white_to_move(self.position_flags):
-            if not am_in_check(self.attacks[Side.BLACK.value],
-                               self.pieces[PieceType.W_KING.value]):
+        if not self.in_check():
+            return False
+        for move in self.generate_moves():
+            try_move = move.position
+            if not try_move.in_check(side=self.side_to_move()):
                 return False
-            for move in self.generate_moves():
-                try_move = Position(self)
-                try_move.make_move(move)
-                if not am_in_check(try_move.attacks[Side.BLACK.value],
-                                   try_move.pieces[PieceType.W_KING.value]):
-                    return False
-            return True
-        else:
-            if not am_in_check(self.attacks[Side.WHITE.value],
-                               self.pieces[PieceType.B_KING.value]):
-                return False
-            for move in self.generate_moves():
-                try_move = Position(self)
-                try_move.make_move(move)
-                if not am_in_check(try_move.attacks[Side.WHITE.value],
-                                   try_move.pieces[PieceType.B_KING.value]):
-                    return False
-            return True
-
+        return True
+        
     def toggle_side_to_move(self):
         self.position_flags ^= 1 << 6
         self.zobrist_hash ^= tt.ZOBRIST_SIDE[0]
@@ -582,7 +535,7 @@ because they are being blocked, or will no longer be blocked, by the move."""
         self.squares[bit_position(from_sq)] = PieceType.NULL.value
         self.squares[bit_position(to_sq)] = piece_type
 
-        self.moves.append(Move(piece_type, from_sq, to_sq))
+        self.moves.append(move)
 
 def zobrist_pieces(pieces, piece_type):
     zobrist_hash = 0
