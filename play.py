@@ -67,56 +67,37 @@ def get_user_move(side):
 
 pos = Position()
 
-# pos.make_move(Move(PieceType.W_PAWN.value, E2, E4))
-# pos.make_move(Move(PieceType.B_PAWN.value, D7, D5))
-# pos.make_move(Move(PieceType.W_KING.value, E1, E2))
-# pos.make_move(Move(PieceType.W_PAWN.value, D2, D3))
-# pos.make_move(Move(PieceType.B_KNIGHT.value, G8, H6))
-
-# evaluate(pos)
-# print(evaluate_moves(pos))
-
-# pos.make_move(Move(PieceType.B_PAWN.value, C7, C5))
-# pos.make_move(Move(PieceType.W_KNIGHT.value, B1, C3))
-# print_moves(list(pos.generate_moves()))
-
-# print_moves(list(pos.generate_moves()))
-# print_moves(pos.moves)
-
 # alina's game with bxg4 wins piece
-# pos = Position.from_fen("r2qk2r/1pp2p2/p1n1b2p/2b3p1/3pP1n1/N2P4/PPPNBPPP/R1BQ1RK1 w kq - 0 0")
+pos = Position.from_fen("r2qk2r/1pp2p2/p1n1b2p/2b3p1/3pP1n1/N2P4/PPPNBPPP/R1BQ1RK1 w kq - 0 0")
 # pos = Position.from_fen("r2qkb1r/1pp2p2/p1n1b2p/6p1/3pP1n1/3P4/PPPNBPPP/R1BQ1RK1 b kq - 0 1")
 # pos = Position.from_fen("2r1k1nr/2p2p2/2n1bq1p/ppb1p3/2NpP3/2PP4/PP1BBPPN/R2Q1RK1 w k - 0 17")
 # pos = Position.from_fen("2r1k1nr/2p2p2/4b2p/npq1p3/3PP3/3P4/P2BBPPN/R2Q1RK1 b k - 0 20")
 # pos.make_move(Move(PieceType.B_QUEEN.value, C5, A3))
 # pos.make_move(Move(PieceType.W_QUEEN.value, D1, B1))
 # pos = Position.from_fen("r2qkbnr/pp2pppp/n1p5/3pP3/3P2b1/N1PB1N2/PP3PPP/R1BQ1RK1 b kq - 0 0")
-pos = Position.from_fen("r1b1kb1r/1pp1pppp/p1n2n2/8/3P2q1/2NB1N2/PPP2PPP/R1BQR1K1 b kq - 1 8")
+# pos = Position.from_fen("r1b1kb1r/1pp1pppp/p1n2n2/8/3P2q1/2NB1N2/PPP2PPP/R1BQR1K1 b kq - 1 8")
 
 # play(pos)
-# pos.make_move(Move(PieceType.B_BISHOP.value, C8, E6))
-# pos.make_move(Move(PieceType.B_KING.value, E8, D7))
+# pos.make_move(Move(PieceType.W_BISHOP.value, E2, G4))
+# pos.make_move(Move(PieceType.B_BISHOP.value, E6, G4))
+# p = SearchPos(pos)
+# print_moves(p.children([SearchInfo()], 0))
 
-# print(eval_see(pos, Move(1,D4,D5)))
+import time
+now = time.time()
+val,c = iterative_deepening(.95, SearchPos(pos))
+# val = -val
+print(val / 200, c)
+then = time.time()
+print(then-now, 's')
 
 # def do_test():
 #     pos = Position.from_fen("r1b1kb1r/1pp1pppp/p1n2n2/8/3P2q1/2NB1N2/PPP2PPP/R1BQR1K1 b kq - 1 8")
 #     pos.make_move(Move(PieceType.B_KNIGHT.value, C6, D4))
 #     return pos
 
-# from IPython import embed
-# embed()
-
 # import timeit
 # print("evaluate(pos)")
 # timeit.timeit("evaluate(pos)", setup="from search import evaluate; from __main__ import do_test; pos=do_test()", number=1000)
 # print("eval_see(pos, Move(2,F3,D4))")
 # timeit.timeit("eval_see(pos, Move(2,F3,D4))", setup="from evals import eval_see; from move import Move; from bb import F3, D4; from __main__ import do_test; pos=do_test()", number=1000)
-
-import time
-now = time.time()
-val,c = iterative_deepening(.995, SearchPos(pos))
-# val = -val
-print(val / 200, c)
-then = time.time()
-print(then-now, 's')

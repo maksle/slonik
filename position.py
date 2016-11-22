@@ -219,7 +219,7 @@ because they are being blocked, or will no longer be blocked, by the move."""
             elif bt == PieceType.R.value:
                 moves = rook_moves(pieces, own, other)
             elif bt == PieceType.Q.value:
-                moves = rook_moves(pieces, own, other)
+                moves = queen_moves(pieces, own, other)
             elif bt == PieceType.K.value:
                 moves = itertools.chain(king_castle_moves(own, other, attacked, self.position_flags),
                                         king_moves(pieces, own, attacked))

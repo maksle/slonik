@@ -1,1177 +1,648 @@
 >> curr_thres_p 0.5 target_thres_p 0.050000000000000044
-Nc6-d4
-qsearch Nc6-d4 Nf3-d4
-qsearch Nc6-d4 Nf3-d4 Qg4-d4
-Nc6-d4
-failhigh a -18 b 18 val 390 factor 18
-Nc6-d4
-qsearch Nc6-d4 Nf3-d4
-qsearch Nc6-d4 Nf3-d4 Qg4-d4
-Nc6-d4
-Qg4-d4
-qsearch Qg4-d4 Nf3-d4
-Qg4-g2+
-qsearch Qg4-g2+ Kg1-g2
+qsearch Be2-g4 Bc5-a3
+qsearch Be2-g4 Bc5-a3 b2-a3
+qsearch Be2-g4 Bc5-a3 b2-a3 Be6-g4
+qsearch Be2-g4 Bc5-a3 Bg4-e6
+qsearch Be2-g4 Bc5-a3 Bg4-e6 f7-e6
+qsearch Be2-g4 Bc5-a3 Bg4-e6 f7-e6 b2-a3
+qsearch Be2-g4 Be6-g4
+faillow a -18 b 18 val -68 factor 18
+qsearch Be2-g4 Bc5-a3
+qsearch Be2-g4 Bc5-a3 b2-a3
+qsearch Be2-g4 Bc5-a3 b2-a3 Be6-g4
+qsearch Be2-g4 Bc5-a3 Bg4-e6
+qsearch Be2-g4 Be6-g4
+qsearch Kg1-h1 Bc5-a3
+qsearch Kg1-h1 Bc5-a3 Be2-g4
+qsearch Kg1-h1 Bc5-a3 Be2-g4 Be6-g4
+qsearch Kg1-h1 Bc5-a3 Be2-g4 Be6-g4 b2-a3
+qsearch Kg1-h1 Bc5-a3 Be2-g4 Be6-g4 b2-a3 Bg4-d1
+qsearch Kg1-h1 Bc5-a3 b2-a3
+qsearch Kg1-h1 Bc5-a3
+qsearch Kg1-h1 Bc5-a3 Be2-g4
+qsearch Kg1-h1 Bc5-a3 Be2-g4 Be6-g4
+qsearch Kg1-h1 Bc5-a3 Be2-g4 Be6-g4 b2-a3
+qsearch Kg1-h1 Bc5-a3 Be2-g4 Be6-g4 b2-a3 Bg4-d1
+qsearch Kg1-h1 Bc5-a3 b2-a3
+qsearch Kg1-h1 Bc5-a3
+qsearch Kg1-h1 Bc5-a3 Be2-g4
+qsearch Kg1-h1 Bc5-a3 Be2-g4 Be6-g4
+qsearch Kg1-h1 Bc5-a3 Be2-g4 Be6-g4 b2-a3
+qsearch Kg1-h1 Bc5-a3 Be2-g4 Be6-g4 b2-a3 Bg4-d1
+qsearch Kg1-h1 Bc5-a3 b2-a3
+Kg1-h1
 >> curr_thres_p 0.25 target_thres_p 0.050000000000000044
-Nc6-d4 Nf3-d4
-qsearch Nc6-d4 Nf3-d4 Qg4-d4
-Nc6-d4 Nf3-d4
-qsearch Nc6-d4 Nf3-d4 Qg4-d4
-qsearch Nc6-d4 Bd3-b5+ Nd4-b5
-qsearch Nc6-d4 Bd3-b5+ Nd4-b5 Nc3-b5
-Nc6-d4 Nf3-e5
-Nc6-d4 Nf3-e5
-qsearch Nc6-d4 Bd3-g6 h7-g6
-qsearch Nc6-d4 Bd3-f5 Nd4-f5
-qsearch Nc6-d4 Re1-e6 f7-e6
-Nc6-d4 Bd3-a6
-qsearch Nc6-d4 Bd3-a6 b7-a6
-qsearch Nc6-d4 Bd3-a6 b7-a6 Nf3-d4
-qsearch Nc6-d4 Bd3-a6 Ra8-a6
-qsearch Nc6-d4 Bd3-a6 Ra8-a6 Nf3-d4
-qsearch Nc6-d4 Bd3-a6 Nd4-f3+
-qsearch Nc6-d4 Bd3-a6 Nd4-f3+ Kg1-h1
-qsearch Nc6-d4 Bd3-a6 Nd4-f3+ Kg1-f1
-Nc6-d4 Bd3-h7
-qsearch Nc6-d4 Bd3-h7 Nf6-h7
-qsearch Nc6-d4 Bd3-h7 Nf6-h7 Nf3-d4
-qsearch Nc6-d4 Bd3-h7 Rh8-h7
-qsearch Nc6-d4 Bd3-h7 Rh8-h7 Nf3-d4
-qsearch Nc6-d4 Bd3-h7 Nd4-f3+
-qsearch Nc6-d4 Bd3-h7 Nd4-f3+ Kg1-h1
-qsearch Nc6-d4 Bd3-h7 Nd4-f3+ Kg1-f1
-Nc6-d4 Re1-e7+
-qsearch Nc6-d4 Re1-e7+ Bf8-e7
-Nc6-d4 Re1-e7+
-Qg4-d4
-qsearch Qg4-d4 Nf3-d4
-Qg4-g2+
-qsearch Qg4-g2+ Kg1-g2
+qsearch Be2-g4 Bc5-a3 b2-a3
+qsearch Be2-g4 Bc5-a3 b2-a3 Be6-g4
+qsearch Be2-g4 Bc5-a3 Bg4-e6
+qsearch Kg1-h1 Bc5-a3 Be2-g4
+qsearch Kg1-h1 Bc5-a3 Be2-g4 Be6-g4
+qsearch Kg1-h1 Bc5-a3 Be2-g4 Be6-g4 b2-a3
+qsearch Kg1-h1 Bc5-a3 Be2-g4 Be6-g4 b2-a3 Bg4-d1
+qsearch Kg1-h1 Bc5-a3 b2-a3
+qsearch Kg1-h1 Bc5-a3 Be2-g4
+qsearch Kg1-h1 Bc5-a3 Be2-g4 Be6-g4
+qsearch Kg1-h1 Bc5-a3 b2-a3
+faillow a -86 b -50 val -116 factor 18
+qsearch Kg1-h1 Bc5-a3
+qsearch Kg1-h1 Bc5-a3 Be2-g4
+qsearch Kg1-h1 Bc5-a3 Be2-g4 Be6-g4
+qsearch Kg1-h1 Bc5-a3 Be2-g4 Be6-g4 b2-a3
+qsearch Kg1-h1 Bc5-a3 Be2-g4 Be6-g4 b2-a3 Bg4-d1
+qsearch Kg1-h1 Bc5-a3 b2-a3
+qsearch Kg1-h1 Bc5-a3 Be2-g4
+qsearch Kg1-h1 Bc5-a3 Be2-g4 Be6-g4
+qsearch Kg1-h1 Bc5-a3 Be2-g4 Be6-g4 b2-a3
+qsearch Kg1-h1 Bc5-a3 Be2-g4 Be6-g4 b2-a3 Bg4-d1
+qsearch Kg1-h1 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3 b2-a3 Qd8-d6+
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3 b2-a3 Qd8-d6+ g2-g3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+ g2-g3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+ g2-g3 Bd6-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+ g2-g3 Bd6-a3 b2-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+ g2-g3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+ g2-g3 Bc5-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+ g2-g3 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-f2+ Rf1-f2
+qsearch Kg1-h1 Ng4-f2+ Rf1-f2 Bc5-a3
+qsearch Kg1-h1 Ng4-f2+ Rf1-f2 Bc5-a3 b2-a3
+qsearch Kg1-h1 Be6-a2 Be2-g4
+qsearch Kg1-h1 Be6-a2 Be2-g4 Bc5-a3
+qsearch Kg1-h1 Bc5-a3 Be2-g4
+qsearch Kg1-h1 Bc5-a3 Be2-g4 Be6-g4
+qsearch Kg1-h1 Bc5-a3 Be2-g4 Be6-g4 b2-a3
+qsearch Kg1-h1 Bc5-a3 Be2-g4 Be6-g4 b2-a3 Bg4-d1
+qsearch Kg1-h1 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3 b2-a3 Qd8-d6+
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3 b2-a3 Qd8-d6+ g2-g3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+ g2-g3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+ g2-g3 Bd6-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+ g2-g3 Bd6-a3 b2-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+ g2-g3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+ g2-g3 Bc5-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+ g2-g3 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-f2+ Rf1-f2
+qsearch Kg1-h1 Ng4-f2+ Rf1-f2 Bc5-a3
+qsearch Kg1-h1 Ng4-f2+ Rf1-f2 Bc5-a3 b2-a3
+qsearch Kg1-h1 Be6-a2 Be2-g4
+qsearch Kg1-h1 Be6-a2 Be2-g4 Bc5-a3
+qsearch Kg1-h1 Be6-a2 Be2-g4 Bc5-a3 Ra1-a2
+Kg1-h1 Ng4-e5
 >> curr_thres_p 0.125 target_thres_p 0.050000000000000044
-Nc6-d4 Re1-e7+ Bf8-e7
-Nc6-d4 Nf3-d4 Qg4-d4
-Nc6-d4 Nf3-d4 a6-a5
-Nc6-d4 Nf3-d4 h7-h5
-Nc6-d4 Nf3-d4 h7-h6
-Nc6-d4 Nf3-d4 g7-g5
-Nc6-d4 Nf3-d4 g7-g6
-Nc6-d4 Nf3-d4 e7-e6
-Nc6-d4 Nf3-d4 c7-c5
-Nc6-d4 Nf3-d4 c7-c6
-Nc6-d4 Nf3-d4 b7-b5
-Nc6-d4 Nf3-d4 b7-b6
-Nc6-d4 Nf3-d4 Nf6-h5
-Nc6-d4 Nf3-d4 Nf6-d7
-Nc6-d4 Nf3-d4 Nf6-g8
-Nc6-d4 Nf3-d4 Bc8-e6
-Nc6-d4 Nf3-d4 Bc8-d7
-Nc6-d4 Nf3-d4 Rh8-g8
-Nc6-d4 Nf3-d4 Ra8-a7
-Nc6-d4 Nf3-d4 Ra8-b8
-Nc6-d4 Nf3-d4 Qg4-h4
-Nc6-d4 Nf3-d4 Ke8-d7
-Nc6-d4 Nf3-d4 Ke8-d8
-Nc6-d4 Nf3-d4 e7-e5
-Nc6-d4 Nf3-d4 Nf6-e4
-Nc6-d4 Nf3-d4 Nf6-d5
-Nc6-d4 Nf3-d4 Bc8-f5
-Nc6-d4 Nf3-d4 Qg4-e4
-Nc6-d4 Nf3-d4 Qg4-g6
-Nc6-d4 Nf3-d4 Qg4-g3
-Nc6-d4 Nf3-d4 Qg4-f4
-Nc6-d4 Nf3-d4 Qg4-g5
-Nc6-d4 Nf3-d4 Qg4-g2+
-qsearch Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2
-Nc6-d4 Nf3-d4 Qg4-d4
-Nc6-d4 Nf3-d4 a6-a5
-Nc6-d4 Nf3-d4 h7-h5
-Nc6-d4 Nf3-d4 h7-h6
-Nc6-d4 Nf3-d4 g7-g5
-Nc6-d4 Nf3-d4 g7-g6
-Nc6-d4 Nf3-d4 e7-e6
-Nc6-d4 Nf3-d4 c7-c5
-Nc6-d4 Nf3-d4 c7-c6
-Nc6-d4 Nf3-d4 b7-b5
-Nc6-d4 Nf3-d4 b7-b6
-Nc6-d4 Nf3-d4 Nf6-h5
-Nc6-d4 Nf3-d4 Nf6-d7
-Nc6-d4 Nf3-d4 Nf6-g8
-Nc6-d4 Nf3-d4 Bc8-e6
-Nc6-d4 Nf3-d4 Bc8-d7
-Nc6-d4 Nf3-d4 Rh8-g8
-Nc6-d4 Nf3-d4 Ra8-a7
-Nc6-d4 Nf3-d4 Ra8-b8
-Nc6-d4 Nf3-d4 Qg4-h4
-Nc6-d4 Nf3-d4 Ke8-d7
-Nc6-d4 Nf3-d4 Ke8-d8
-Nc6-d4 Nf3-d4 e7-e5
-Nc6-d4 Nf3-d4 Nf6-e4
-Nc6-d4 Nf3-d4 Nf6-d5
-Nc6-d4 Nf3-d4 Bc8-f5
-Nc6-d4 Nf3-d4 Qg4-e4
-Nc6-d4 Nf3-d4 Qg4-g6
-Nc6-d4 Nf3-d4 Qg4-g3
-Nc6-d4 Nf3-d4 Qg4-f4
-Nc6-d4 Nf3-d4 Qg4-g5
-Nc6-d4 Nf3-d4 Qg4-g2+
-qsearch Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2
-Nc6-d4 Nf3-e5 Qg4-g2+
-qsearch Nc6-d4 Nf3-e5 Qg4-g2+ Kg1-g2
-Nc6-d4 Nf3-e5 Nd4-f3+
-qsearch Nc6-d4 Nf3-e5 Nd4-f3+ Ne5-f3
-Nc6-d4 Nf3-e5 Nd4-e2+
-qsearch Nc6-d4 Nf3-e5 Nd4-e2+ Nc3-e2
-Nc6-d4 Nf3-e5 a6-a5
-Nc6-d4 Nf3-e5 h7-h5
-Nc6-d4 Nf3-e5 h7-h6
-Nc6-d4 Nf3-e5 g7-g5
-Nc6-d4 Nf3-e5 g7-g6
-Nc6-d4 Nf3-e5 e7-e6
-Nc6-d4 Nf3-e5 c7-c5
-qsearch Nc6-d4 Nf3-e5 c7-c5 Ne5-g4
-Nc6-d4 Nf3-e5 c7-c6
-Nc6-d4 Nf3-e5 b7-b5
-Nc6-d4 Nf3-e5 b7-b6
-Nc6-d4 Nf3-e5 Nd4-f5
-Nc6-d4 Nf3-e5 Nd4-e6
-Nc6-d4 Nf3-e5 Nd4-c6
-Nc6-d4 Nf3-e5 Nf6-h5
-Nc6-d4 Nf3-e5 Nf6-d7
-Nc6-d4 Nf3-e5 Nf6-g8
-Nc6-d4 Nf3-e5 Bc8-f5
-qsearch Nc6-d4 Nf3-e5 Bc8-f5 Ne5-g4
-Nc6-d4 Nf3-e5 Bc8-e6
-Nc6-d4 Nf3-e5 Bc8-d7
-qsearch Nc6-d4 Nf3-e5 Bc8-d7 Ne5-g4
-Nc6-d4 Nf3-e5 Rh8-g8
-Nc6-d4 Nf3-e5 Ra8-a7
-Nc6-d4 Nf3-e5 Ra8-b8
-Nc6-d4 Nf3-e5 Qg4-h4
-Nc6-d4 Nf3-e5 Ke8-d8
-Nc6-d4 Nf3-e5 Nd4-b5
-Nc6-d4 Nf3-e5 Nd4-b3
-Nc6-d4 Nf3-e5 Nf6-e4
-qsearch Nc6-d4 Nf3-e5 Nf6-e4 Ne5-g4
-Nc6-d4 Nf3-e5 Nf6-d5
-Nc6-d4 Nf3-e5 Qg4-e4
-Nc6-d4 Nf3-e5 Qg4-g6
-Nc6-d4 Nf3-e5 Qg4-g3
-Nc6-d4 Nf3-e5 Qg4-f4
-Nc6-d4 Nf3-e5 Qg4-g5
-Nc6-d4 Nf3-e5 Nd4-c2
-qsearch Nc6-d4 Nf3-e5 Nd4-c2 Ne5-g4
-Nc6-d4 Nf3-e5 Qg4-g2+
-qsearch Nc6-d4 Nf3-e5 Qg4-g2+ Kg1-g2
-Nc6-d4 Nf3-e5 Nd4-f3+
-qsearch Nc6-d4 Nf3-e5 Nd4-f3+ Ne5-f3
-Nc6-d4 Nf3-e5 Nd4-e2+
-qsearch Nc6-d4 Nf3-e5 Nd4-e2+ Nc3-e2
-Nc6-d4 Nf3-e5 Nf6-d5
-qsearch Nc6-d4 Nf3-e5 Nf6-d5 Ne5-g4
-Nc6-d4 Nf3-e5 a6-a5
-qsearch Nc6-d4 Nf3-e5 a6-a5 Ne5-g4
-Nc6-d4 Nf3-e5 h7-h5
-qsearch Nc6-d4 Nf3-e5 h7-h5 Ne5-g4
-Nc6-d4 Nf3-e5 h7-h6
-qsearch Nc6-d4 Nf3-e5 h7-h6 Ne5-g4
-Nc6-d4 Nf3-e5 g7-g5
-qsearch Nc6-d4 Nf3-e5 g7-g5 Ne5-g4
-Nc6-d4 Nf3-e5 g7-g6
-Nc6-d4 Nf3-e5 e7-e6
-qsearch Nc6-d4 Nf3-e5 e7-e6 Ne5-g4
-Nc6-d4 Nf3-e5 c7-c5
-qsearch Nc6-d4 Nf3-e5 c7-c5 Ne5-g4
-Nc6-d4 Nf3-e5 c7-c6
-qsearch Nc6-d4 Nf3-e5 c7-c6 Ne5-g4
-Nc6-d4 Nf3-e5 b7-b5
-qsearch Nc6-d4 Nf3-e5 b7-b5 Ne5-g4
-Nc6-d4 Nf3-e5 b7-b6
-Nc6-d4 Nf3-e5 Nd4-f5
-Nc6-d4 Nf3-e5 Nd4-e6
-qsearch Nc6-d4 Nf3-e5 Nd4-e6 Ne5-g4
-Nc6-d4 Nf3-e5 Nd4-c6
-Nc6-d4 Nf3-e5 Nf6-h5
-Nc6-d4 Nf3-e5 Nf6-d7
-Nc6-d4 Nf3-e5 Nf6-g8
-Nc6-d4 Nf3-e5 Bc8-f5
-qsearch Nc6-d4 Nf3-e5 Bc8-f5 Ne5-g4
-Nc6-d4 Nf3-e5 Bc8-e6
-qsearch Nc6-d4 Nf3-e5 Bc8-e6 Ne5-g4
-Nc6-d4 Nf3-e5 Bc8-d7
-qsearch Nc6-d4 Nf3-e5 Bc8-d7 Ne5-g4
-Nc6-d4 Nf3-e5 Rh8-g8
-qsearch Nc6-d4 Nf3-e5 Rh8-g8 Ne5-g4
-Nc6-d4 Nf3-e5 Ra8-a7
-qsearch Nc6-d4 Nf3-e5 Ra8-a7 Ne5-g4
-Nc6-d4 Nf3-e5 Ra8-b8
-qsearch Nc6-d4 Nf3-e5 Ra8-b8 Ne5-g4
-Nc6-d4 Nf3-e5 Qg4-h4
-Nc6-d4 Nf3-e5 Qg4-h4
-Nc6-d4 Nf3-e5 Ke8-d8
-Nc6-d4 Nf3-e5 Nd4-b5
-Nc6-d4 Nf3-e5 Nd4-b3
-Nc6-d4 Nf3-e5 Nf6-e4
-qsearch Nc6-d4 Nf3-e5 Nf6-e4 Ne5-g4
-Nc6-d4 Nf3-e5 Qg4-e4
-Nc6-d4 Nf3-e5 Qg4-g6
-Nc6-d4 Nf3-e5 Qg4-g3
-qsearch Nc6-d4 Nf3-e5 Qg4-g3 h2-g3
-Nc6-d4 Nf3-e5 Qg4-f4
-qsearch Nc6-d4 Nf3-e5 Qg4-f4 Bc1-f4
-Nc6-d4 Nf3-e5 Qg4-g5
-qsearch Nc6-d4 Nf3-e5 Qg4-g5 Bc1-g5
-Nc6-d4 Nf3-e5 Nd4-c2
-qsearch Nc6-d4 Nf3-e5 Nd4-c2 Ne5-g4
-Nc6-d4 Bd3-a6
-qsearch Nc6-d4 Bd3-a6 b7-a6
-qsearch Nc6-d4 Bd3-a6 b7-a6 Nf3-d4
-qsearch Nc6-d4 Bd3-a6 Ra8-a6
-qsearch Nc6-d4 Bd3-a6 Ra8-a6 Nf3-d4
-qsearch Nc6-d4 Bd3-a6 Nd4-f3+
-qsearch Nc6-d4 Bd3-a6 Nd4-f3+ Kg1-h1
-qsearch Nc6-d4 Bd3-a6 Nd4-f3+ Kg1-f1
-Nc6-d4 Bd3-h7
-qsearch Nc6-d4 Bd3-h7 Nf6-h7
-qsearch Nc6-d4 Bd3-h7 Nf6-h7 Nf3-d4
-qsearch Nc6-d4 Bd3-h7 Rh8-h7
-qsearch Nc6-d4 Bd3-h7 Rh8-h7 Nf3-d4
-qsearch Nc6-d4 Bd3-h7 Nd4-f3+
-qsearch Nc6-d4 Bd3-h7 Nd4-f3+ Kg1-h1
-qsearch Nc6-d4 Bd3-h7 Nd4-f3+ Kg1-f1
-Nc6-d4 Bd3-h7
-Qg4-d4
-qsearch Qg4-d4 Nf3-d4
-Qg4-g2+
-qsearch Qg4-g2+ Kg1-g2
+qsearch Kg1-h1 Ng4-h2 Kh1-h2
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3 b2-a3 Qd8-d6+
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3 b2-a3 Qd8-d6+ g2-g3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+ g2-g3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+ g2-g3 Bd6-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+ g2-g3 Bd6-a3 b2-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+ g2-g3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+ g2-g3 Bc5-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+ g2-g3 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-f2+ Rf1-f2
+qsearch Kg1-h1 Ng4-f2+ Rf1-f2 Bc5-a3
+qsearch Kg1-h1 Ng4-f2+ Rf1-f2 Bc5-a3 b2-a3
+qsearch Kg1-h1 Be6-a2 Ra1-a2
+qsearch Kg1-h1 Be6-a2 Ra1-a2 Bc5-a3
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Ne5-c4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Ne5-c4 Nd2-c4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Ne5-c4 Nd2-c4 Be6-c4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Ne5-c4 Nd2-c4 Be6-c4 d3-c4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Be6-c4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Be6-c4 Nd2-c4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Be6-c4 Nd2-c4 Ne5-c4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Be6-c4 Nd2-c4 Ne5-c4 d3-c4
+qsearch Kg1-h1 Ng4-h2 Kh1-h2
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3 b2-a3 Qd8-d6+
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3 b2-a3 Qd8-d6+ g2-g3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+ g2-g3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+ g2-g3 Bd6-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+ g2-g3 Bd6-a3 b2-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+ g2-g3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+ g2-g3 Bc5-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+ g2-g3 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-f2+ Rf1-f2
+qsearch Kg1-h1 Ng4-f2+ Rf1-f2 Bc5-a3
+qsearch Kg1-h1 Ng4-f2+ Rf1-f2 Bc5-a3 b2-a3
+qsearch Kg1-h1 Be6-a2 Ra1-a2
+qsearch Kg1-h1 Be6-a2 Ra1-a2 Bc5-a3
+Kg1-h1 Ng4-f6
 >> curr_thres_p 0.0625 target_thres_p 0.050000000000000044
-Nc6-d4 Bd3-h7 Nf6-h7 Nf3-d4
-Nc6-d4 Bd3-h7 Rh8-h7
-qsearch Nc6-d4 Bd3-h7 Rh8-h7 Nf3-d4
-Nc6-d4 Bd3-h7 Nd4-f3+
-qsearch Nc6-d4 Bd3-h7 Nd4-f3+ Kg1-h1
-qsearch Nc6-d4 Bd3-h7 Nd4-f3+ Kg1-f1
-Nc6-d4 Nf3-d4 Qg4-d4 Bd3-h7
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-h7 Nf6-h7
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-h7 Nf6-h7 Qd1-d4
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-h7 Rh8-h7
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-h7 Rh8-h7 Qd1-d4
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-h7 Qd4-d1
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-h7 Qd4-d1 Re1-d1
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-h7 Qd4-d1 Re1-d1 Nf6-h7
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-h7 Qd4-d1 Nc3-d1
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-h7 Qd4-d1 Nc3-d1 Nf6-h7
-Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ a6-b5
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ a6-b5 Qd1-d4
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ c7-c6
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ Nf6-d7
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ Bc8-d7
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ Ke8-d8
-Nc6-d4 Nf3-d4 Qg4-h4 Bd3-b5+
-qsearch Nc6-d4 Nf3-d4 Qg4-h4 Bd3-b5+ a6-b5
-qsearch Nc6-d4 Nf3-d4 Qg4-h4 Bd3-b5+ a6-b5 Nc3-b5
-qsearch Nc6-d4 Nf3-d4 Qg4-h4 Bd3-b5+ c7-c6
-qsearch Nc6-d4 Nf3-d4 Qg4-h4 Bd3-b5+ Nf6-d7
-qsearch Nc6-d4 Nf3-d4 Qg4-h4 Bd3-b5+ Bc8-d7
-qsearch Nc6-d4 Nf3-d4 Qg4-h4 Bd3-b5+ Ke8-d8
-Nc6-d4 Nf3-d4 a6-a5
-Nc6-d4 Nf3-d4 h7-h5
-Nc6-d4 Nf3-d4 h7-h6
-Nc6-d4 Nf3-d4 g7-g5
-Nc6-d4 Nf3-d4 g7-g6
-Nc6-d4 Nf3-d4 e7-e6
-Nc6-d4 Nf3-d4 c7-c5
-Nc6-d4 Nf3-d4 c7-c6
-Nc6-d4 Nf3-d4 b7-b5
-Nc6-d4 Nf3-d4 b7-b6
-Nc6-d4 Nf3-d4 Nf6-h5
-Nc6-d4 Nf3-d4 Nf6-d7
-Nc6-d4 Nf3-d4 Nf6-g8
-Nc6-d4 Nf3-d4 Bc8-e6
-Nc6-d4 Nf3-d4 Bc8-d7
-Nc6-d4 Nf3-d4 Rh8-g8
-Nc6-d4 Nf3-d4 Ra8-a7
-Nc6-d4 Nf3-d4 Ra8-b8
-Nc6-d4 Nf3-d4 Ke8-d7
-Nc6-d4 Nf3-d4 Ke8-d8
-Nc6-d4 Nf3-d4 e7-e5
-Nc6-d4 Nf3-d4 Nf6-d5
-Nc6-d4 Nf3-d4 Nf6-e4
-Nc6-d4 Nf3-d4 Bc8-f5
-Nc6-d4 Nf3-d4 Qg4-e4
-Nc6-d4 Nf3-d4 Qg4-g6
-Nc6-d4 Nf3-d4 Qg4-g3
-Nc6-d4 Nf3-d4 Qg4-f4
-Nc6-d4 Nf3-d4 Qg4-g5
-Nc6-d4 Nf3-d4 Qg4-g2+
-qsearch Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2
-Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ a6-b5
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ a6-b5 Qd1-d4
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ c7-c6
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ c7-c6 Qd1-d4
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ Nf6-d7
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ Bc8-d7
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ Ke8-d8
-Nc6-d4 Nf3-d4 Qg4-h4 Bd3-b5+
-qsearch Nc6-d4 Nf3-d4 Qg4-h4 Bd3-b5+ a6-b5
-qsearch Nc6-d4 Nf3-d4 Qg4-h4 Bd3-b5+ a6-b5 Nc3-b5
-qsearch Nc6-d4 Nf3-d4 Qg4-h4 Bd3-b5+ c7-c6
-qsearch Nc6-d4 Nf3-d4 Qg4-h4 Bd3-b5+ Nf6-d7
-qsearch Nc6-d4 Nf3-d4 Qg4-h4 Bd3-b5+ Bc8-d7
-qsearch Nc6-d4 Nf3-d4 Qg4-h4 Bd3-b5+ Ke8-d8
-Nc6-d4 Nf3-d4 a6-a5
-Nc6-d4 Nf3-d4 h7-h5
-Nc6-d4 Nf3-d4 h7-h6
-Nc6-d4 Nf3-d4 g7-g5
-Nc6-d4 Nf3-d4 g7-g6
-Nc6-d4 Nf3-d4 e7-e6
-Nc6-d4 Nf3-d4 c7-c5
-Nc6-d4 Nf3-d4 c7-c6
-Nc6-d4 Nf3-d4 b7-b5
-Nc6-d4 Nf3-d4 b7-b6
-Nc6-d4 Nf3-d4 Nf6-h5
-Nc6-d4 Nf3-d4 Nf6-d7
-Nc6-d4 Nf3-d4 Nf6-g8
-Nc6-d4 Nf3-d4 Bc8-e6
-Nc6-d4 Nf3-d4 Bc8-d7
-Nc6-d4 Nf3-d4 Rh8-g8
-Nc6-d4 Nf3-d4 Ra8-a7
-Nc6-d4 Nf3-d4 Ra8-b8
-Nc6-d4 Nf3-d4 Ke8-d7
-Nc6-d4 Nf3-d4 Ke8-d8
-Nc6-d4 Nf3-d4 e7-e5
-Nc6-d4 Nf3-d4 Nf6-d5
-Nc6-d4 Nf3-d4 Nf6-e4
-Nc6-d4 Nf3-d4 Bc8-f5
-Nc6-d4 Nf3-d4 Qg4-e4
-Nc6-d4 Nf3-d4 Qg4-g6
-Nc6-d4 Nf3-d4 Qg4-g3
-Nc6-d4 Nf3-d4 Qg4-f4
-Nc6-d4 Nf3-d4 Qg4-g5
-Nc6-d4 Nf3-d4 Qg4-g2+
-qsearch Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2
-Qg4-d4
-qsearch Qg4-d4 Nf3-d4
-Qg4-g2+
-qsearch Qg4-g2+ Kg1-g2
-faillow a 361 b 397 val 355 factor 18
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Bc8-h3+
-qsearch Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Bc8-h3+ Kg2-h3
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 a6-a5
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 h7-h5
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 h7-h6
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 g7-g6
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 e7-e6
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 c7-c5
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 c7-c6
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 b7-b5
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 b7-b6
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Nf6-g4
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Nf6-d7
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Nf6-g8
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Bc8-g4
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Bc8-d7
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Rh8-g8
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Ra8-a7
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Ra8-b8
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Ke8-d7
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Ke8-d8
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 g7-g5
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 e7-e5
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Bc8-e6
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Nf6-d5
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Nf6-e4
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Nf6-h5
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Bc8-f5
-Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ a6-b5
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ a6-b5 Qd1-d4
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ c7-c6
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ Nf6-d7
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ Bc8-d7
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ Ke8-d8
-Nc6-d4 Nf3-d4 Qg4-h4
-Nc6-d4 Nf3-d4 a6-a5
-Nc6-d4 Nf3-d4 h7-h5
-Nc6-d4 Nf3-d4 h7-h6
-Nc6-d4 Nf3-d4 g7-g5
-Nc6-d4 Nf3-d4 g7-g6
-Nc6-d4 Nf3-d4 e7-e6
-Nc6-d4 Nf3-d4 c7-c5
-Nc6-d4 Nf3-d4 c7-c6
-Nc6-d4 Nf3-d4 b7-b5
-Nc6-d4 Nf3-d4 b7-b6
-Nc6-d4 Nf3-d4 Nf6-h5
-Nc6-d4 Nf3-d4 Nf6-d7
-Nc6-d4 Nf3-d4 Nf6-g8
-Nc6-d4 Nf3-d4 Bc8-e6
-Nc6-d4 Nf3-d4 Bc8-d7
-Nc6-d4 Nf3-d4 Rh8-g8
-Nc6-d4 Nf3-d4 Ra8-a7
-Nc6-d4 Nf3-d4 Ra8-b8
-Nc6-d4 Nf3-d4 Ke8-d7
-Nc6-d4 Nf3-d4 Ke8-d8
-Nc6-d4 Nf3-d4 e7-e5
-Nc6-d4 Nf3-d4 Nf6-d5
-Nc6-d4 Nf3-d4 Nf6-e4
-Nc6-d4 Nf3-d4 Bc8-f5
-Nc6-d4 Nf3-d4 Qg4-e4
-Nc6-d4 Nf3-d4 Qg4-g6
-Nc6-d4 Nf3-d4 Qg4-g3
-Nc6-d4 Nf3-d4 Qg4-f4
-Nc6-d4 Nf3-d4 Qg4-g5
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Bc8-h3+
-qsearch Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Bc8-h3+ Kg2-h3
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Bc8-g4
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 a6-a5
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 h7-h5
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 h7-h6
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 g7-g6
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 e7-e6
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 c7-c5
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 c7-c6
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 b7-b5
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 b7-b6
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Nf6-g4
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Nf6-d7
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Nf6-g8
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Bc8-d7
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Rh8-g8
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Ra8-a7
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Ra8-b8
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Ke8-d7
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Ke8-d8
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 g7-g5
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 e7-e5
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Bc8-e6
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Nf6-d5
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Nf6-e4
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Nf6-h5
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Bc8-f5
-Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ a6-b5
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ a6-b5 Qd1-d4
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ c7-c6
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ c7-c6 Qd1-d4
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ Nf6-d7
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ Bc8-d7
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ Bc8-d7 Qd1-d4
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ Ke8-d8
-Nc6-d4 Nf3-d4 Qg4-h4
-Nc6-d4 Nf3-d4 a6-a5
-Nc6-d4 Nf3-d4 h7-h5
-Nc6-d4 Nf3-d4 h7-h6
-Nc6-d4 Nf3-d4 g7-g5
-Nc6-d4 Nf3-d4 g7-g6
-Nc6-d4 Nf3-d4 e7-e6
-Nc6-d4 Nf3-d4 c7-c5
-Nc6-d4 Nf3-d4 c7-c6
-Nc6-d4 Nf3-d4 b7-b5
-Nc6-d4 Nf3-d4 b7-b6
-Nc6-d4 Nf3-d4 Nf6-h5
-Nc6-d4 Nf3-d4 Nf6-d7
-Nc6-d4 Nf3-d4 Nf6-g8
-Nc6-d4 Nf3-d4 Bc8-e6
-Nc6-d4 Nf3-d4 Bc8-d7
-Nc6-d4 Nf3-d4 Rh8-g8
-Nc6-d4 Nf3-d4 Ra8-a7
-Nc6-d4 Nf3-d4 Ra8-b8
-Nc6-d4 Nf3-d4 Ke8-d7
-Nc6-d4 Nf3-d4 Ke8-d8
-Nc6-d4 Nf3-d4 e7-e5
-Nc6-d4 Nf3-d4 Nf6-d5
-Nc6-d4 Nf3-d4 Nf6-e4
-Nc6-d4 Nf3-d4 Bc8-f5
-Nc6-d4 Nf3-d4 Qg4-e4
-Nc6-d4 Nf3-d4 Qg4-g6
-Nc6-d4 Nf3-d4 Qg4-g3
-Nc6-d4 Nf3-d4 Qg4-f4
-Nc6-d4 Nf3-d4 Qg4-g5
-Qg4-g2+ Kg1-g2 Nc6-d4 Nf3-d4 Bc8-h3+
-qsearch Qg4-g2+ Kg1-g2 Nc6-d4 Nf3-d4 Bc8-h3+ Kg2-h3
-Qg4-g2+ Kg1-g2 Nc6-d4 Nf3-d4 Bc8-g4
-Qg4-g2+ Kg1-g2 Nc6-d4 Nf3-d4 a6-a5
-Qg4-g2+ Kg1-g2 Nc6-d4 Nf3-d4 h7-h5
-Qg4-g2+ Kg1-g2 Nc6-d4 Nf3-d4 h7-h6
-Qg4-g2+ Kg1-g2 Nc6-d4 Nf3-d4 g7-g6
-Qg4-g2+ Kg1-g2 Nc6-d4 Nf3-d4 e7-e6
-Qg4-g2+ Kg1-g2 Nc6-d4 Nf3-d4 c7-c5
-Qg4-g2+ Kg1-g2 Nc6-d4 Nf3-d4 c7-c6
-Qg4-g2+ Kg1-g2 Nc6-d4 Nf3-d4 b7-b5
-Qg4-g2+ Kg1-g2 Nc6-d4 Nf3-d4 b7-b6
-Qg4-g2+ Kg1-g2 Nc6-d4 Nf3-d4 Nf6-g4
-Qg4-g2+ Kg1-g2 Nc6-d4 Nf3-d4 Nf6-d7
-Qg4-g2+ Kg1-g2 Nc6-d4 Nf3-d4 Nf6-g8
-Qg4-g2+ Kg1-g2 Nc6-d4 Nf3-d4 Bc8-d7
-Qg4-g2+ Kg1-g2 Nc6-d4 Nf3-d4 Rh8-g8
-Qg4-g2+ Kg1-g2 Nc6-d4 Nf3-d4 Ra8-a7
-Qg4-g2+ Kg1-g2 Nc6-d4 Nf3-d4 Ra8-b8
-Qg4-g2+ Kg1-g2 Nc6-d4 Nf3-d4 Ke8-d7
-Qg4-g2+ Kg1-g2 Nc6-d4 Nf3-d4 Ke8-d8
-Qg4-g2+ Kg1-g2 Nc6-d4 Nf3-d4 g7-g5
-Qg4-g2+ Kg1-g2 Nc6-d4 Nf3-d4 e7-e5
-Qg4-g2+ Kg1-g2 Nc6-d4 Nf3-d4 Bc8-e6
-Qg4-g2+ Kg1-g2 Nc6-d4 Nf3-d4 Nf6-d5
-Qg4-g2+ Kg1-g2 Nc6-d4 Nf3-d4 Nf6-e4
-Qg4-g2+ Kg1-g2 Nc6-d4 Nf3-d4 Nf6-h5
-Qg4-g2+ Kg1-g2 Nc6-d4 Nf3-d4 Bc8-f5
-Qg4-g2+ Kg1-g2 Bc8-h3+ Kg2-h3
-Qg4-g2+ Kg1-g2 Bc8-h3+ Kg2-h3 Nc6-d4
-Qg4-g2+ Kg1-g2 Bc8-h3+ Kg2-h3 a6-a5
-Qg4-g2+ Kg1-g2 Bc8-h3+ Kg2-h3 h7-h5
-Qg4-g2+ Kg1-g2 Bc8-h3+ Kg2-h3 h7-h6
-Qg4-g2+ Kg1-g2 Bc8-h3+ Kg2-h3 g7-g6
-Qg4-g2+ Kg1-g2 Bc8-h3+ Kg2-h3 e7-e6
-Qg4-g2+ Kg1-g2 Bc8-h3+ Kg2-h3 b7-b5
-Qg4-g2+ Kg1-g2 Bc8-h3+ Kg2-h3 b7-b6
-Qg4-g2+ Kg1-g2 Bc8-h3+ Kg2-h3 Nf6-h5
-Qg4-g2+ Kg1-g2 Bc8-h3+ Kg2-h3 Nf6-d7
-Qg4-g2+ Kg1-g2 Bc8-h3+ Kg2-h3 Nf6-g8
-Qg4-g2+ Kg1-g2 Bc8-h3+ Kg2-h3 Nc6-b4
-Qg4-g2+ Kg1-g2 Bc8-h3+ Kg2-h3 Nc6-a5
-Qg4-g2+ Kg1-g2 Bc8-h3+ Kg2-h3 Nc6-a7
-Qg4-g2+ Kg1-g2 Bc8-h3+ Kg2-h3 Nc6-d8
-Qg4-g2+ Kg1-g2 Bc8-h3+ Kg2-h3 Nc6-b8
-Qg4-g2+ Kg1-g2 Bc8-h3+ Kg2-h3 Rh8-g8
-Qg4-g2+ Kg1-g2 Bc8-h3+ Kg2-h3 Ra8-a7
-Qg4-g2+ Kg1-g2 Bc8-h3+ Kg2-h3 Ra8-d8
-Qg4-g2+ Kg1-g2 Bc8-h3+ Kg2-h3 Ra8-c8
-Qg4-g2+ Kg1-g2 Bc8-h3+ Kg2-h3 Ra8-b8
-Qg4-g2+ Kg1-g2 Bc8-h3+ Kg2-h3 Ke8-c8
-Qg4-g2+ Kg1-g2 Bc8-h3+ Kg2-h3 Ke8-d7
-Qg4-g2+ Kg1-g2 Bc8-h3+ Kg2-h3 Ke8-d8
-Qg4-g2+ Kg1-g2 Bc8-h3+ Kg2-h3 g7-g5
-Qg4-g2+ Kg1-g2 Bc8-h3+ Kg2-h3 e7-e5
-Qg4-g2+ Kg1-g2 Bc8-h3+ Kg2-h3 Nf6-d5
-Qg4-g2+ Kg1-g2 Bc8-h3+ Kg2-h3 Nf6-g4
-Qg4-g2+ Kg1-g2 Bc8-h3+ Kg2-h3 Nf6-e4
-Qg4-g2+ Kg1-g2 Bc8-h3+ Kg2-h3 Nc6-e5
-Qg4-g2+ Kg1-g2 Bc8-g4 Nf3-e5
-qsearch Qg4-g2+ Kg1-g2 Bc8-g4 Nf3-e5 Bg4-d1
-qsearch Qg4-g2+ Kg1-g2 Bc8-g4 Nf3-e5 Bg4-d1 Re1-d1
-qsearch Qg4-g2+ Kg1-g2 Bc8-g4 Nf3-e5 Bg4-d1 Re1-d1 Nc6-e5
-qsearch Qg4-g2+ Kg1-g2 Bc8-g4 Nf3-e5 Bg4-d1 Re1-d1 Nc6-e5 d4-e5
-Qg4-g2+ Kg1-g2 a6-a5 Nf3-e5
-Qg4-d4
-qsearch Qg4-d4 Nf3-d4
-faillow a 337 b 367 val 306 factor 30
-a6-a5 Nf3-e5 Nc6-d4
-qsearch a6-a5 Nf3-e5 Nc6-d4 Ne5-g4
-a6-a5 Nf3-e5 Qg4-d4
-qsearch a6-a5 Nf3-e5 Qg4-d4 Ne5-c6
-qsearch a6-a5 Nf3-e5 Qg4-d4 Ne5-c6 b7-c6
-a6-a5 Bd3-b5 h7-h5
-a6-a5 Bd3-b5 h7-h6
-a6-a5 Bd3-b5 g7-g6
-a6-a5 Bd3-b5 e7-e6
-a6-a5 Bd3-b5 b7-b6
-a6-a5 Bd3-b5 Nf6-h5
-a6-a5 Bd3-b5 Nf6-d7
-a6-a5 Bd3-b5 Nf6-g8
-a6-a5 Bd3-b5 Bc8-f5
-a6-a5 Bd3-b5 Bc8-e6
-a6-a5 Bd3-b5 Bc8-d7
-a6-a5 Bd3-b5 Rh8-g8
-a6-a5 Bd3-b5 Ra8-a7
-a6-a5 Bd3-b5 Ra8-b8
-a6-a5 Bd3-b5 Qg4-g6
-a6-a5 Bd3-b5 Ke8-d7
-a6-a5 Bd3-b5 Ke8-d8
-a6-a5 Bd3-b5 a5-a4
-a6-a5 Bd3-b5 g7-g5
-a6-a5 Bd3-b5 e7-e5
-a6-a5 Bd3-b5 Ra8-a6
-a6-a5 Bd3-b5 Nf6-d5
-a6-a5 Bd3-b5 Nf6-e4
-a6-a5 Bd3-b5 Qg4-e4
-a6-a5 Bd3-b5 Qg4-h4
-a6-a5 Bd3-b5 Qg4-g3
-a6-a5 Bd3-b5 Qg4-f4
-a6-a5 Bd3-b5 Qg4-g5
-a6-a5 Bd3-b5 Qg4-d4
-qsearch a6-a5 Bd3-b5 Qg4-d4 Nf3-d4
-a6-a5 Bd3-b5 Qg4-g2+
-qsearch a6-a5 Bd3-b5 Qg4-g2+ Kg1-g2
-a6-a5 Bd3-b5 Bc8-f5 Nf3-e5
-qsearch a6-a5 Bd3-b5 Bc8-f5 Nf3-e5 Qg4-d4
-qsearch a6-a5 Bd3-b5 Bc8-f5 Nf3-e5 Qg4-d4 Bb5-c6+
-qsearch a6-a5 Bd3-b5 Bc8-f5 Nf3-e5 Qg4-d4 Bb5-c6+ b7-c6
-qsearch a6-a5 Bd3-b5 Bc8-f5 Nf3-e5 Qg4-d4 Bb5-c6+ b7-c6 Qd1-d4
-qsearch a6-a5 Bd3-b5 Bc8-f5 Nf3-e5 Qg4-d4 Bb5-c6+ Nf6-d7
-qsearch a6-a5 Bd3-b5 Bc8-f5 Nf3-e5 Qg4-d4 Bb5-c6+ Bf5-d7
-qsearch a6-a5 Bd3-b5 Bc8-f5 Nf3-e5 Qg4-d4 Bb5-c6+ Ke8-d8
-a6-a5 Bd3-b5 h7-h5 Nf3-e5
-qsearch a6-a5 Bd3-b5 h7-h5 Nf3-e5 Qg4-d4
-qsearch a6-a5 Bd3-b5 h7-h5 Nf3-e5 Qg4-d4 Bb5-c6+
-qsearch a6-a5 Bd3-b5 h7-h5 Nf3-e5 Qg4-d4 Bb5-c6+ b7-c6
-qsearch a6-a5 Bd3-b5 h7-h5 Nf3-e5 Qg4-d4 Bb5-c6+ b7-c6 Qd1-d4
-qsearch a6-a5 Bd3-b5 h7-h5 Nf3-e5 Qg4-d4 Bb5-c6+ Nf6-d7
-qsearch a6-a5 Bd3-b5 h7-h5 Nf3-e5 Qg4-d4 Bb5-c6+ Bc8-d7
-qsearch a6-a5 Bd3-b5 h7-h5 Nf3-e5 Qg4-d4 Bb5-c6+ Ke8-d8
-a6-a5 Bd3-b5 h7-h6
-a6-a5 Bd3-b5 g7-g6
-a6-a5 Bd3-b5 e7-e6
-a6-a5 Bd3-b5 b7-b6
-a6-a5 Bd3-b5 Nf6-h5
-a6-a5 Bd3-b5 Nf6-d7
-a6-a5 Bd3-b5 Nf6-g8
-a6-a5 Bd3-b5 Bc8-e6
-a6-a5 Bd3-b5 Bc8-d7
-a6-a5 Bd3-b5 Rh8-g8
-a6-a5 Bd3-b5 Ra8-a7
-a6-a5 Bd3-b5 Ra8-b8
-a6-a5 Bd3-b5 Qg4-g6
-a6-a5 Bd3-b5 Ke8-d7
-a6-a5 Bd3-b5 Ke8-d8
-a6-a5 Bd3-b5 a5-a4
-a6-a5 Bd3-b5 g7-g5
-a6-a5 Bd3-b5 e7-e5
-a6-a5 Bd3-b5 Ra8-a6
-a6-a5 Bd3-b5 Nf6-d5
-a6-a5 Bd3-b5 Nf6-e4
-a6-a5 Bd3-b5 Qg4-e4
-a6-a5 Bd3-b5 Qg4-h4
-a6-a5 Bd3-b5 Qg4-g3
-a6-a5 Bd3-b5 Qg4-f4
-a6-a5 Bd3-b5 Qg4-g5
-a6-a5 Bd3-b5 Qg4-d4
-qsearch a6-a5 Bd3-b5 Qg4-d4 Nf3-d4
-a6-a5 Bd3-b5 Qg4-g2+
-qsearch a6-a5 Bd3-b5 Qg4-g2+ Kg1-g2
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Bc8-h3+
-qsearch Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Bc8-h3+ Kg2-h3
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Bc8-g4
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 h7-h5
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 h7-h6
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 g7-g6
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 e7-e6
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 c7-c5
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 c7-c6
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 b7-b5
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 b7-b6
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Nf6-g4
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Nf6-d7
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Nf6-g8
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Bc8-d7
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Rh8-g8
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Ra8-a7
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Ra8-b8
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Ke8-d7
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Ke8-d8
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 a6-a5
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 e7-e5
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 g7-g5
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Bc8-e6
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Nf6-d5
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Bc8-f5
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Nf6-e4
-Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2 Nf6-h5
-Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ a6-b5
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ a6-b5 Qd1-d4
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ c7-c6
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ c7-c6 Qd1-d4
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ Nf6-d7
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ Nf6-d7 Qd1-d4
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ Bc8-d7
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ Bc8-d7 Qd1-d4
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ Ke8-d8
-Nc6-d4 Nf3-d4 Qg4-h4
-Nc6-d4 Nf3-d4 h7-h5
-Nc6-d4 Nf3-d4 h7-h6
-Nc6-d4 Nf3-d4 g7-g5
-Nc6-d4 Nf3-d4 g7-g6
-Nc6-d4 Nf3-d4 e7-e6
-Nc6-d4 Nf3-d4 c7-c5
-Nc6-d4 Nf3-d4 c7-c6
-Nc6-d4 Nf3-d4 b7-b5
-Nc6-d4 Nf3-d4 b7-b6
-Nc6-d4 Nf3-d4 Nf6-h5
-Nc6-d4 Nf3-d4 Nf6-d7
-Nc6-d4 Nf3-d4 Nf6-g8
-Nc6-d4 Nf3-d4 Bc8-e6
-Nc6-d4 Nf3-d4 Bc8-d7
-Nc6-d4 Nf3-d4 Rh8-g8
-Nc6-d4 Nf3-d4 Ra8-a7
-Nc6-d4 Nf3-d4 Ra8-b8
-Nc6-d4 Nf3-d4 Ke8-d7
-Nc6-d4 Nf3-d4 Ke8-d8
-Nc6-d4 Nf3-d4 a6-a5
-Nc6-d4 Nf3-d4 e7-e5
-Nc6-d4 Nf3-d4 Nf6-d5
-Nc6-d4 Nf3-d4 Bc8-f5
-Nc6-d4 Nf3-d4 Nf6-e4
-Nc6-d4 Nf3-d4 Qg4-e4
-Nc6-d4 Nf3-d4 Qg4-g6
-Nc6-d4 Nf3-d4 Qg4-g3
-Nc6-d4 Nf3-d4 Qg4-f4
-Nc6-d4 Nf3-d4 Qg4-g5
-Qg4-d4
-qsearch Qg4-d4 Nf3-d4
-Qg4-g2+
-qsearch Qg4-g2+ Kg1-g2
-faillow a 276 b 321 val 236 factor 46
-Nc6-d4 Nf3-d4 Qg4-g5 Bc1-g5
-Nc6-d4 Nf3-d4 Qg4-d4 Bc1-g5
-Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ a6-b5
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ a6-b5 Qd1-d4
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ c7-c6
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ c7-c6 Qd1-d4
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ Nf6-d7
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ Nf6-d7 Qd1-d4
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ Bc8-d7
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ Bc8-d7 Qd1-d4
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ Ke8-d8
-Nc6-d4 Nf3-d4 Qg4-h4
-Nc6-d4 Nf3-d4 h7-h5
-Nc6-d4 Nf3-d4 h7-h6
-Nc6-d4 Nf3-d4 g7-g5
-Nc6-d4 Nf3-d4 g7-g6
-Nc6-d4 Nf3-d4 e7-e6
-Nc6-d4 Nf3-d4 c7-c5
-Nc6-d4 Nf3-d4 c7-c6
-Nc6-d4 Nf3-d4 b7-b5
-Nc6-d4 Nf3-d4 b7-b6
-Nc6-d4 Nf3-d4 Nf6-h5
-Nc6-d4 Nf3-d4 Nf6-d7
-Nc6-d4 Nf3-d4 Nf6-g8
-Nc6-d4 Nf3-d4 Bc8-e6
-Nc6-d4 Nf3-d4 Bc8-d7
-Nc6-d4 Nf3-d4 Rh8-g8
-Nc6-d4 Nf3-d4 Ra8-a7
-Nc6-d4 Nf3-d4 Ra8-b8
-Nc6-d4 Nf3-d4 Ke8-d7
-Nc6-d4 Nf3-d4 Ke8-d8
-Nc6-d4 Nf3-d4 a6-a5
-Nc6-d4 Nf3-d4 e7-e5
-Nc6-d4 Nf3-d4 Bc8-f5
-Nc6-d4 Nf3-d4 Nf6-d5
-Nc6-d4 Nf3-d4 Nf6-e4
-Nc6-d4 Nf3-d4 Qg4-e4
-Nc6-d4 Nf3-d4 Qg4-g6
-Nc6-d4 Nf3-d4 Qg4-g3
-Nc6-d4 Nf3-d4 Qg4-f4
-Nc6-d4 Nf3-d4 Qg4-g2+
-qsearch Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2
-Qg4-g5 Bc1-g5 Nc6-d4
-Qg4-g5 Bc1-g5 Bc8-g4
-Qg4-g5 Bc1-g5 h7-h5
-Qg4-g5 Bc1-g5 h7-h6
-Qg4-g5 Bc1-g5 g7-g6
-Qg4-g5 Bc1-g5 e7-e6
-Qg4-g5 Bc1-g5 b7-b5
-Qg4-g5 Bc1-g5 b7-b6
-Qg4-g5 Bc1-g5 Nf6-g4
-Qg4-g5 Bc1-g5 Nf6-h5
-Qg4-g5 Bc1-g5 Nf6-d7
-Qg4-g5 Bc1-g5 Nf6-g8
-Qg4-g5 Bc1-g5 Nc6-b4
-Qg4-g5 Bc1-g5 Nc6-a5
-Qg4-g5 Bc1-g5 Nc6-a7
-Qg4-g5 Bc1-g5 Nc6-d8
-Qg4-g5 Bc1-g5 Nc6-b8
-Qg4-g5 Bc1-g5 Bc8-e6
-Qg4-g5 Bc1-g5 Bc8-d7
-Qg4-g5 Bc1-g5 Rh8-g8
-Qg4-g5 Bc1-g5 Ra8-a7
-Qg4-g5 Bc1-g5 Ra8-b8
-Qg4-g5 Bc1-g5 Ke8-d7
-Qg4-g5 Bc1-g5 Ke8-d8
-Qg4-g5 Bc1-g5 a6-a5
-Qg4-g5 Bc1-g5 e7-e5
-Qg4-g5 Bc1-g5 Bc8-f5
-Qg4-g5 Bc1-g5 Nf6-d5
-Qg4-g5 Bc1-g5 Nf6-e4
-Qg4-g5 Bc1-g5 Nc6-e5
-Qg4-g5 Bc1-g5 Bc8-h3
-Bc8-f5 Bd3-f5 Nc6-d4
-Bc8-f5 Bd3-f5 Qg4-g2+
-qsearch Bc8-f5 Bd3-f5 Qg4-g2+ Kg1-g2
-Bc8-f5 Bd3-f5 h7-h5
-Bc8-f5 Bd3-f5 h7-h6
-Bc8-f5 Bd3-f5 g7-g6
-Bc8-f5 Bd3-f5 e7-e6
-Bc8-f5 Bd3-f5 b7-b5
-Bc8-f5 Bd3-f5 b7-b6
-Bc8-f5 Bd3-f5 Nf6-h5
-Bc8-f5 Bd3-f5 Nf6-d7
-Bc8-f5 Bd3-f5 Nf6-g8
-Bc8-f5 Bd3-f5 Nc6-b4
-Bc8-f5 Bd3-f5 Nc6-a5
-Bc8-f5 Bd3-f5 Nc6-a7
-Bc8-f5 Bd3-f5 Nc6-d8
-Bc8-f5 Bd3-f5 Nc6-b8
-Bc8-f5 Bd3-f5 Rh8-g8
-Bc8-f5 Bd3-f5 Ra8-a7
-Bc8-f5 Bd3-f5 Ra8-d8
-Bc8-f5 Bd3-f5 Ra8-b8
-Bc8-f5 Bd3-f5 Ke8-d8
-Bc8-f5 Bd3-f5 a6-a5
-Bc8-f5 Bd3-f5 e7-e5
-Bc8-f5 Bd3-f5 g7-g5
-Bc8-f5 Bd3-f5 Nf6-d5
-Bc8-f5 Bd3-f5 Nf6-e4
-Bc8-f5 Bd3-f5 Nc6-e5
-Bc8-f5 Bd3-f5 Ra8-c8
-Bc8-f5 Bd3-f5 Qg4-e4
-Bc8-f5 Bd3-f5 Qg4-g6
-Bc8-f5 Bd3-f5 Qg4-h4
-Bc8-f5 Bd3-f5 Qg4-g3
-Bc8-f5 Bd3-f5 Qg4-f4
-Bc8-f5 Bd3-f5 Qg4-g5
-Bc8-f5 Bd3-f5 Qg4-d4
-h7-h6 Bd3-f5
-qsearch h7-h6 Bd3-f5 Bc8-f5
-h7-h6 Nf3-e5
-qsearch h7-h6 Nf3-e5 Qg4-d4
-qsearch h7-h6 Nf3-e5 Qg4-d4 Ne5-c6
-qsearch h7-h6 Nf3-e5 Qg4-d4 Ne5-c6 b7-c6
-h7-h6 Nc3-e4
-h7-h6 d4-d5
-h7-h6 Nf3-d2
-h7-h6 Nc3-e2
-h7-h6 Bd3-c4
-e7-e6 Bd3-c4
-b7-b5 Bd3-c4
-qsearch b7-b5 Bd3-c4 b5-c4
-b7-b5 Nf3-e5
-qsearch b7-b5 Nf3-e5 Qg4-d4
-qsearch b7-b5 Nf3-e5 Qg4-d4 Ne5-c6
-qsearch b7-b5 Nf3-e5 Nc6-d4
-qsearch b7-b5 Nf3-e5 Nc6-d4 Ne5-g4
-qsearch b7-b5 Nf3-e5 Nc6-e5
-qsearch b7-b5 Nf3-e5 Nc6-e5 d4-e5
-Bc8-e6
-Bc8-e6
-Bc8-e6
-qsearch e7-e5 Nf3-e5
-qsearch e7-e5 Nf3-e5 Qg4-d4
-qsearch e7-e5 Nf3-e5 Nc6-d4
-qsearch e7-e5 Nf3-e5 Nc6-e5
-qsearch e7-e5 Nf3-e5 Nc6-e5 d4-e5
-qsearch Nf6-e4 Nc3-e4
-Qg4-d4
-qsearch Qg4-d4 Nf3-d4
-Qg4-g2+
-qsearch Qg4-g2+ Kg1-g2
+qsearch Kg1-h1 Bc5-a3 b2-a3 Ng4-f2+ Rf1-f2
+qsearch Kg1-h1 Ng4-h2 Kh1-h2
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3 b2-a3 Qd8-d6+
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3 b2-a3 Qd8-d6+ g2-g3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+ g2-g3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+ g2-g3 Bd6-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+ g2-g3 Bd6-a3 b2-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+ g2-g3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+ g2-g3 Bc5-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+ g2-g3 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-f2+ Rf1-f2
+qsearch Kg1-h1 Ng4-f2+ Rf1-f2 Bc5-a3
+qsearch Kg1-h1 Ng4-f2+ Rf1-f2 Bc5-a3 b2-a3
+qsearch Kg1-h1 Be6-a2 Ra1-a2
+qsearch Kg1-h1 Be6-a2 Ra1-a2 Bc5-a3
+qsearch Kg1-h1 Bc5-a3 b2-a3 Ng4-f2+ Rf1-f2
+qsearch Kg1-h1 Ng4-f6 Na3-c4 Be6-c4 Nd2-c4
+qsearch Kg1-h1 Ng4-f6 Na3-c4 Nf6-e4 Nd2-e4
+qsearch Kg1-h1 Ng4-f6 Na3-c4 Nf6-e4 Nd2-e4 Be6-c4
+qsearch Kg1-h1 Ng4-f6 Na3-c4 Nf6-e4 Nd2-e4 Be6-c4 Ne4-c5
+qsearch Kg1-h1 Ng4-h2 Kh1-h2
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3 b2-a3 Qd8-d6+
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3 b2-a3 Qd8-d6+ g2-g3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+ g2-g3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+ g2-g3 Bd6-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+ g2-g3 Bd6-a3 b2-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+ g2-g3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+ g2-g3 Bc5-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+ g2-g3 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-f2+ Rf1-f2
+qsearch Kg1-h1 Ng4-f2+ Rf1-f2 Bc5-a3
+qsearch Kg1-h1 Ng4-f2+ Rf1-f2 Bc5-a3 b2-a3
+qsearch Kg1-h1 Be6-a2 Ra1-a2
+qsearch Kg1-h1 Be6-a2 Ra1-a2 Bc5-a3
+Kg1-h1
+qsearch Kg1-h1 Bc5-a3 b2-a3 Ng4-f2+ Rf1-f2
+qsearch Kg1-h1 Ng4-h2 Kh1-h2
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3 b2-a3 Qd8-d6+
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3 b2-a3 Qd8-d6+ g2-g3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+ g2-g3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+ g2-g3 Bd6-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+ g2-g3 Bd6-a3 b2-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+ g2-g3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+ g2-g3 Bc5-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+ g2-g3 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-f2+ Rf1-f2
+qsearch Kg1-h1 Ng4-f2+ Rf1-f2 Bc5-a3
+qsearch Kg1-h1 Ng4-f2+ Rf1-f2 Bc5-a3 b2-a3
+qsearch Kg1-h1 Be6-a2 Ra1-a2
+qsearch Kg1-h1 Be6-a2 Ra1-a2 Bc5-a3
+qsearch Kg1-h1 Bc5-a3 b2-a3 Ng4-f2+ Rf1-f2
+qsearch Kg1-h1 Nc6-e5 Be2-g4 Be6-g4
+qsearch Kg1-h1 Nc6-e5 Na3-c4 Ne5-c4
+qsearch Kg1-h1 Nc6-e5 Na3-c4 Ne5-c4 Nd2-c4
+qsearch Kg1-h1 Nc6-e5 Na3-c4 Ne5-c4 Nd2-c4 Be6-c4
+qsearch Kg1-h1 Nc6-e5 Na3-c4 Ne5-c4 Nd2-c4 Be6-c4 d3-c4
+qsearch Kg1-h1 Nc6-e5 Na3-c4 Be6-c4
+qsearch Kg1-h1 Nc6-e5 Na3-c4 Be6-c4 Nd2-c4
+qsearch Kg1-h1 Nc6-e5 Na3-c4 Be6-c4 Nd2-c4 Ne5-c4
+qsearch Kg1-h1 Nc6-e5 Na3-c4 Be6-c4 Nd2-c4 Ne5-c4 d3-c4
+qsearch Kg1-h1 Ng4-f6 Na3-c4 Be6-c4
+qsearch Kg1-h1 Ng4-f6 Na3-c4 Be6-c4 Nd2-c4
+qsearch Kg1-h1 Ng4-e3 f2-e3
+qsearch Kg1-h1 Ng4-e3 f2-e3 Bc5-a3
+qsearch Kg1-h1 Be6-d5 Be2-g4
+qsearch Kg1-h1 Be6-d5 Be2-g4 Bc5-a3
+qsearch Kg1-h1 Be6-c4 Nd2-c4
+qsearch Kg1-h1 Be6-f5 e4-f5
+qsearch Kg1-h1 Ng4-h2 Kh1-h2
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3 b2-a3 Qd8-d6+
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3 b2-a3 Qd8-d6+ g2-g3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+ g2-g3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+ g2-g3 Bd6-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+ g2-g3 Bd6-a3 b2-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+ g2-g3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+ g2-g3 Bc5-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+ g2-g3 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-f2+ Rf1-f2
+qsearch Kg1-h1 Ng4-f2+ Rf1-f2 Bc5-a3
+qsearch Kg1-h1 Ng4-f2+ Rf1-f2 Bc5-a3 b2-a3
+qsearch Kg1-h1 Be6-a2 Ra1-a2
+qsearch Kg1-h1 Be6-a2 Ra1-a2 Bc5-a3
+Kg1-h1
+failhigh a -112.0 b -76 val -72 factor 30
+qsearch Kg1-h1 Bc5-a3 b2-a3 Ng4-f2+ Rf1-f2
+qsearch Kg1-h1 Ng4-h2 Kh1-h2
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3 b2-a3 Qd8-d6+
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3 b2-a3 Qd8-d6+ g2-g3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+ g2-g3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+ g2-g3 Bd6-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+ g2-g3 Bd6-a3 b2-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+ g2-g3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+ g2-g3 Bc5-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+ g2-g3 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-f2+ Rf1-f2
+qsearch Kg1-h1 Ng4-f2+ Rf1-f2 Bc5-a3
+qsearch Kg1-h1 Ng4-f2+ Rf1-f2 Bc5-a3 b2-a3
+qsearch Kg1-h1 Be6-a2 Ra1-a2
+qsearch Kg1-h1 Be6-a2 Ra1-a2 Bc5-a3
+qsearch Kg1-h1 Bc5-a3 b2-a3 Ng4-f2+ Rf1-f2
+qsearch Kg1-h1 Bc5-a3 b2-a3 Be6-a2 Ra1-a2
+qsearch Kg1-h1 f7-f5 Be2-g4 f5-g4
+qsearch Kg1-h1 f7-f5 e4-f5 Be6-f5
+qsearch Kg1-h1 f7-f5 e4-f5 Be6-f5 Be2-g4
+qsearch Kg1-h1 f7-f5 e4-f5 Be6-f5 Be2-g4 Bf5-g4
+qsearch Kg1-h1 f7-f5 e4-f5 Be6-f5 Be2-g4 Bf5-g4 Rf1-e1+
+qsearch Kg1-h1 f7-f5 e4-f5 Be6-f5 Be2-g4 Bf5-g4 Rf1-e1+ Nc6-e7
+qsearch Kg1-h1 f7-f5 e4-f5 Be6-f5 Be2-g4 Bf5-g4 Qd1-e1+
+qsearch Kg1-h1 f7-f5 e4-f5 Be6-f5 Be2-g4 Bf5-g4 Qd1-e1+ Nc6-e7
+qsearch Kg1-h1 f7-f5 Na3-c4 f5-e4
+qsearch Kg1-h1 f7-f5 Na3-c4 f5-e4 Be2-g4
+qsearch Kg1-h1 f7-f5 Na3-c4 f5-e4 Be2-g4 Be6-g4
+qsearch Kg1-h1 f7-f5 Na3-c4 f5-e4 Nd2-e4
+qsearch Kg1-h1 f7-f5 Na3-c4 f5-e4 Nd2-e4 Be6-c4
+qsearch Kg1-h1 f7-f5 Na3-c4 f5-e4 Nd2-e4 Be6-c4 Ne4-c5
+qsearch Kg1-h1 f7-f5 Na3-c4 Be6-c4
+qsearch Kg1-h1 f7-f5 Na3-c4 Be6-c4 Nd2-c4
+qsearch Kg1-h1 f7-f5 Na3-c4 Be6-c4 Nd2-c4 f5-e4
+qsearch Kg1-h1 f7-f5 Na3-c4 Be6-c4 Nd2-c4 f5-e4 Be2-g4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Ne5-c4 Nd2-c4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Ne5-c4 Nd2-c4 Be6-c4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Ne5-c4 Nd2-c4 Be6-c4 d3-c4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Be6-c4 Nd2-c4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Be6-c4 Nd2-c4 Ne5-c4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Be6-c4 Nd2-c4 Ne5-c4 d3-c4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Be6-g4 Be2-g4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 f7-f5 Nc4-e5
+qsearch Kg1-h1 Ng4-e5 Na3-c4 f7-f5 Nc4-e5 Nc6-e5
+qsearch Kg1-h1 Ng4-e5 Na3-c4 f7-f5 Nc4-e5 Nc6-e5 e4-f5
+qsearch Kg1-h1 Ng4-e5 Na3-c4 f7-f5 Nc4-e5 Nc6-e5 e4-f5 Be6-f5
+qsearch Kg1-h1 Ng4-e5 Na3-c4 f7-f5 Nc4-e5 Nc6-e5 e4-f5 Be6-f5 Be2-h5+
+qsearch Kg1-h1 Ng4-e5 Na3-c4 f7-f5 Nc4-e5 Nc6-e5 e4-f5 Be6-f5 Be2-h5+ Ne5-g6
+qsearch Kg1-h1 Ng4-e5 Na3-c4 f7-f5 Nc4-e5 Nc6-e5 e4-f5 Be6-f5 Be2-h5+ Ne5-f7
+qsearch Kg1-h1 Ng4-e5 Na3-c4 f7-f5 Nc4-e5 Nc6-e5 e4-f5 Be6-f5 Be2-h5+ Bf5-g6
+qsearch Kg1-h1 Ng4-e5 Na3-c4 f7-f5 Nc4-e5 Nc6-e5 e4-f5 Be6-f5 Be2-h5+ Bf5-g6 Bh5-g6+
+qsearch Kg1-h1 Ng4-e5 Na3-c4 f7-f5 Nc4-e5 Nc6-e5 e4-f5 Be6-f5 Be2-h5+ Ke8-e7
+qsearch Kg1-h1 Ng4-e5 Na3-c4 f7-f5 Nc4-e5 Nc6-e5 e4-f5 Be6-f5 Be2-h5+ Ke8-d7
+qsearch Kg1-h1 Ng4-e5 Na3-c4 f7-f5 Nc4-e5 Nc6-e5 e4-f5 Be6-f5 Be2-h5+ Ke8-f8
+qsearch Kg1-h1 Ng4-e5 Na3-c4 g5-g4 Nc4-e5
+qsearch Kg1-h1 Ng4-e5 Na3-c4 g5-g4 Nc4-e5 Nc6-e5
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Be6-b3 c2-b3
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Be6-b3 c2-b3 Bc5-a3
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Be6-b3 c2-b3 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Bc5-a3 b2-a3 Be6-b3
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Bc5-a3 b2-a3 Be6-b3 c2-b3
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 g5-g4 Nb3-c5
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Be6-g4 Nb3-c5
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Be6-g4 Nb3-c5 Bg4-e2
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Be6-g4 Nb3-c5 Bg4-e2 Nc5-b7
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Be6-g4 Nb3-c5 Bg4-e2 Nc5-b7 Be2-d1
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Be6-g4 Nb3-c5 Bg4-e2 Nc5-b7 Be2-d1 Nb7-d8
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Be6-g4 Nb3-c5 Bg4-e2 Nc5-b7 Be2-d1 Nb7-d8 Nc6-d8
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Be6-g4 Nb3-c5 Bg4-e2 Nc5-b7 Be2-d1 Nb7-d8 Nc6-d8 Rf1-d1
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Be6-g4 Nb3-c5 Bg4-e2 Nc5-b7 Be2-d1 Nb7-d8 Ra8-d8
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Be6-g4 Nb3-c5 Bg4-e2 Nc5-b7 Be2-d1 Nb7-d8 Ra8-d8 Rf1-d1
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Be6-g4 Nb3-c5 Bg4-e2 Nc5-b7 Be2-d1 Nb7-d8 Ke8-d8
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Be6-g4 Nb3-c5 Bg4-e2 Nc5-b7 Be2-d1 Nb7-d8 Ke8-d8 Rf1-d1
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Be6-g4 Nb3-c5 Bg4-e2 Nc5-b7 Be2-f1
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Be6-g4 Nb3-c5 Bg4-e2 Nc5-b7 Be2-f1 Nb7-d8
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 f7-f5 Nb3-c5
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 h6-h5 Nb3-c5
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 a6-a5 Nb3-c5
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 f7-f6 Nb3-c5
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 b7-b5 Nb3-c5
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 b7-b6 Nb3-c5
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Ne5-g4 Nb3-c5
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Ne5-g6 Nb3-c5
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Ne5-d7 Nb3-c5
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Nc6-b4 Nb3-c5
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Nc6-e7 Nb3-c5
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Ne5-c4 Nd2-c4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Ne5-c4 Nd2-c4 Be6-c4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Ne5-c4 Nd2-c4 Be6-c4 d3-c4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Be6-c4 Nd2-c4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Be6-c4 Nd2-c4 Ne5-c4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Be6-c4 Nd2-c4 Ne5-c4 d3-c4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 g5-g4 Nc4-e5
+qsearch Kg1-h1 Ng4-e5 Na3-c4 g5-g4 Nc4-e5 Nc6-e5
+qsearch Kg1-h1 Ng4-e5 Na3-c4 g5-g4 Nc4-e5
+qsearch Kg1-h1 Ng4-e5 Na3-c4 g5-g4 Nc4-e5 Nc6-e5
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Bc5-b4 Nc4-e5
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Bc5-b4 Nc4-e5 Nc6-e5
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Bc5-b4 Nc4-e5
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Bc5-b4 Nc4-e5 Nc6-e5
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Bc5-b4 Nc4-e5 Bb4-d2
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Be6-g4 Be2-g4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 f7-f5 Nc4-e5
+qsearch Kg1-h1 Ng4-e5 Na3-c4 f7-f5 Nc4-e5 Nc6-e5
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Rh8-g8 Nc4-e5
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Rh8-g8 Nc4-e5 Nc6-e5
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Be6-d5 e4-d5
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Be6-h3 g2-h3
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Be6-h3 g2-h3 Ne5-c4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Be6-f5 e4-f5
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Ne5-d3 c2-d3
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Ne5-d3 c2-d3 Be6-c4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Ne5-d3 c2-d3 Be6-c4 Nd2-c4
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Be6-b3 c2-b3
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Be6-b3 c2-b3 Bc5-a3
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Be6-b3 c2-b3 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Bc5-a3 b2-a3 Be6-b3
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Bc5-a3 b2-a3 Be6-b3 c2-b3
+qsearch Kg1-h1 h6-h5 Be2-g4
+qsearch Kg1-h1 h6-h5 Be2-g4 Be6-g4
+qsearch Kg1-h1 h6-h5 Be2-g4 Be6-g4
+qsearch Kg1-h1 h6-h5 Na3-c4 Be6-c4
+qsearch Kg1-h1 h6-h5 Na3-c4 Be6-c4 Nd2-c4
+qsearch Kg1-h1 a6-a5 Be2-g4
+qsearch Kg1-h1 a6-a5 Be2-g4 Be6-g4
+qsearch Kg1-h1 a6-a5 Be2-g4 Be6-g4
+qsearch Kg1-h1 a6-a5 Nd2-b3 Be6-b3
+qsearch Kg1-h1 a6-a5 Nd2-b3 Be6-b3 c2-b3
+qsearch Kg1-h1 a6-a5 Nd2-b3 Be6-b3 c2-b3 Bc5-a3
+qsearch Kg1-h1 a6-a5 Nd2-b3 Be6-b3 c2-b3 Bc5-a3 b2-a3
+qsearch Kg1-h1 a6-a5 Nd2-b3 Bc5-a3
+qsearch Kg1-h1 a6-a5 Nd2-b3 Bc5-a3 b2-a3
+qsearch Kg1-h1 a6-a5 Nd2-b3 Bc5-a3 b2-a3 Be6-b3
+qsearch Kg1-h1 a6-a5 Nd2-b3 Bc5-a3 b2-a3 Be6-b3 c2-b3
+qsearch Kg1-h1 b7-b5 Be2-g4
+qsearch Kg1-h1 b7-b5 Be2-g4 Be6-g4
+qsearch Kg1-h1 b7-b5 Be2-g4 Be6-g4
+qsearch Kg1-h1 b7-b5 Nd2-b3 Be6-b3
+qsearch Kg1-h1 b7-b5 Nd2-b3 Be6-b3 c2-b3
+qsearch Kg1-h1 b7-b5 Nd2-b3 Be6-b3 c2-b3 Bc5-a3
+qsearch Kg1-h1 b7-b5 Nd2-b3 Be6-b3 c2-b3 Bc5-a3 b2-a3
+qsearch Kg1-h1 b7-b5 Nd2-b3 Bc5-a3
+qsearch Kg1-h1 b7-b5 Nd2-b3 Bc5-a3 b2-a3
+qsearch Kg1-h1 b7-b5 Nd2-b3 Bc5-a3 b2-a3 Be6-b3
+qsearch Kg1-h1 b7-b5 Nd2-b3 Bc5-a3 b2-a3 Be6-b3 c2-b3
+qsearch Kg1-h1 Bc5-b4 Be2-g4
+qsearch Kg1-h1 Bc5-b4 Be2-g4 Be6-g4
+qsearch Kg1-h1 Bc5-b4 Be2-g4
+qsearch Kg1-h1 Bc5-b4 Be2-g4 Be6-g4
+qsearch Kg1-h1 Bc5-b4 Be2-g4
+qsearch Kg1-h1 Bc5-b4 Be2-g4 Be6-g4
+qsearch Kg1-h1 Ng4-h2 Kh1-h2
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3 b2-a3 Qd8-d6+
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3 b2-a3 Qd8-d6+ g2-g3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+ g2-g3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+ g2-g3 Bd6-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+ g2-g3 Bd6-a3 b2-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+ g2-g3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+ g2-g3 Bc5-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+ g2-g3 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-f2+ Rf1-f2
+qsearch Kg1-h1 Ng4-f2+ Rf1-f2 Bc5-a3
+qsearch Kg1-h1 Ng4-f2+ Rf1-f2 Bc5-a3 b2-a3
+qsearch Kg1-h1 Be6-a2 Ra1-a2
+qsearch Kg1-h1 Be6-a2 Ra1-a2 Bc5-a3
+Kg1-h1 Bc5-b4
 >> curr_thres_p 0.03125 target_thres_p 0.050000000000000044
-Bc8-e6 Nf3-e5 Qg4-d4 Ne5-c6
-qsearch Bc8-e6 Nf3-e5 Qg4-d4 Ne5-c6 b7-c6
-Bc8-e6 Nf3-e5 Qg4-d4 Bc1-g5
-Bc8-e6 Nf3-e5 Qg4-d4 Nc3-e4
-Bc8-e6 Nf3-e5 Qg4-d4 Ne5-f3
-Bc8-e6 Nf3-e5 Qg4-d4 Nc3-e2
-Bc8-e6 Nf3-e5 Qg4-d4 Bd3-e4
-Bc8-e6 Nf3-e5 Qg4-d4 Re1-f1
-Bc8-e6 Nf3-e5 Qg4-d4 Re1-e2
-Bc8-e6 Nf3-e5 Qg4-d4 Re1-e3
-Bc8-e6 Nf3-e5 Qg4-d4 Ra1-b1
-Bc8-e6 Nf3-e5 Qg4-d4 Qd1-d2
-Bc8-e6 Nf3-e5 Qg4-d4 Kg1-h1
-Bc8-e6 Nf3-e5 Qg4-d4 Kg1-f1
-Bc8-e6 Nf3-e5 Qg4-d4 Bc1-e3
-Bc8-e6 Nf3-e5 Qg4-d4 Bc1-d2
-Bc8-e6 Nf3-e5 Qg4-d4 Bd3-e2
-Bc8-e6 Nf3-e5 Qg4-d4 h2-h3
-Bc8-e6 Nf3-e5 Qg4-d4 a2-a3
-Bc8-e6 Nf3-e5 Qg4-d4 g2-g3
-Bc8-e6 Nf3-e5 Qg4-d4 b2-b3
-Bc8-e6 Nf3-e5 Qg4-d4 a2-a4
-Bc8-e6 Nf3-e5 Qg4-d4 Bd3-f1
-Bc8-e6 Nf3-e5 Qg4-d4 Nc3-b1
-Bc8-e6 Nf3-e5 Qg4-d4 g2-g4
-Bc8-e6 Nf3-e5 Qg4-d4 b2-b4
-Bc8-e6 Nf3-e5 Qg4-d4 h2-h4
-Bc8-e6 Nf3-e5 Qg4-d4 Re1-e4
-Bc8-e6 Nf3-e5 Qg4-d4 Bd3-b5
-Bc8-e6 Nf3-e5 Qg4-d4 Bd3-g6
-Bc8-e6 Nf3-e5 Qg4-d4 Ne5-g6
-Bc8-e6 Nf3-e5 Qg4-d4 Nc3-b5
-Bc8-e6 Nf3-e5 Qg4-d4 Bd3-c4
-Bc8-e6 Nf3-e5 Qg4-d4 Nc3-d5
-Bc8-e6 Nf3-e5 Qg4-d4 Ne5-c4
-Bc8-e6 Nf3-e5 Qg4-d4 Bd3-f5
-Bc8-e6 Nf3-e5 Qg4-d4 Bc1-f4
-Bc8-e6 Nf3-e5 Qg4-d4 Ne5-g4
-Bc8-e6 Nf3-e5 Qg4-d4 Ne5-d7
-Bc8-e6 Nf3-e5 Qg4-d4 Bc1-h6
-Bc8-e6 Nf3-e5 Qg4-d4 Nc3-a4
-Bc8-e6 Nf3-e5 Qg4-d4 Bd3-a6
-qsearch Bc8-e6 Nf3-e5 Qg4-d4 Bd3-a6 b7-a6
-qsearch Bc8-e6 Nf3-e5 Qg4-d4 Bd3-a6 b7-a6 Ne5-c6
-qsearch Bc8-e6 Nf3-e5 Qg4-d4 Bd3-a6 b7-a6 Qd1-d4
-qsearch Bc8-e6 Nf3-e5 Qg4-d4 Bd3-a6 b7-a6 Qd1-d4 Nc6-d4
-Bc8-e6 Nf3-e5 Qg4-d4 Bd3-h7
-qsearch Bc8-e6 Nf3-e5 Qg4-d4 Bd3-h7 Nf6-h7
-qsearch Bc8-e6 Nf3-e5 Qg4-d4 Bd3-h7 Nf6-h7 Ne5-c6
-qsearch Bc8-e6 Nf3-e5 Qg4-d4 Bd3-h7 Nf6-h7 Qd1-d4
-qsearch Bc8-e6 Nf3-e5 Qg4-d4 Bd3-h7 Nf6-h7 Qd1-d4 Nc6-d4
-Bc8-e6 Nf3-e5 Qg4-d4 Ne5-f7
-Bc8-e6 Nc3-e4 Nf6-e4
-qsearch Bc8-e6 Nc3-e4 Nf6-e4 Bd3-e4
-Bc8-e6 Nc3-e4 Be6-f5
-qsearch Bc8-e6 Nc3-e4 Be6-f5 Ne4-f6+
-qsearch Bc8-e6 Nc3-e4 Be6-f5 Ne4-f6+ g7-f6
-qsearch Bc8-e6 Nc3-e4 Be6-f5 Ne4-f6+ g7-f6 Bd3-f5
-qsearch Bc8-e6 Nc3-e4 Be6-f5 Ne4-f6+ Ke8-d8
-Bc8-e6 Nc3-e4 Nf6-d5
-Bc8-e6 Nf3-d2 Qg4-d4
-Bc8-e6 Nc3-e2 Be6-f5
-qsearch Bc8-e6 Nc3-e2 Be6-f5 Bd3-f5
-Bc8-e6 Nc3-e2 Nf6-d5
-Bc8-e6 Bc1-g5 Nc6-d4
-qsearch Bc8-e6 Bc1-g5 Nc6-d4 Bg5-f6
-qsearch Bc8-e6 Bc1-g5 Nc6-d4 Bg5-f6 g7-f6
-qsearch Bc8-e6 Bc1-g5 Nc6-d4 Bg5-f6 g7-f6 Nf3-d4
-qsearch Bc8-e6 Bc1-g5 Nc6-d4 Bg5-f6 g7-f6 Nf3-d4 Qg4-d4
-qsearch Bc8-e6 Bc1-g5 Nc6-d4 Nf3-d4
-qsearch Bc8-e6 Bc1-g5 Nc6-d4 Nf3-d4 Qg4-d4
-qsearch Bc8-e6 Bc1-g5 Nc6-d4 Nf3-d4 Qg4-d4 Bg5-f6
-qsearch Bc8-e6 Bc1-g5 Nc6-d4 Nf3-d4 Qg4-d4 Bg5-f6 g7-f6
-Bc8-e6 Bd3-e4 Nf6-e4
-Bc8-e6 Nf3-g5 Qg4-d4
-qsearch Bc8-e6 Nf3-g5 Qg4-d4 Ng5-e6
-qsearch Bc8-e6 Nf3-g5 Qg4-d4 Ng5-e6 f7-e6
-qsearch Bc8-e6 Nf3-g5 Qg4-d4 Ng5-e6 f7-e6 Re1-e6
-Bc8-e6 Nf3-g5 Nc6-d4
-qsearch Bc8-e6 Nf3-g5 Nc6-d4 Ng5-e6
-qsearch Bc8-e6 Nf3-g5 Nc6-d4 Ng5-e6 Nd4-e6
-Bc8-e6 Re1-f1 Nc6-d4
-qsearch Bc8-e6 Re1-f1 Nc6-d4 Nf3-d4
-qsearch Bc8-e6 Re1-f1 Nc6-d4 Nf3-d4 Qg4-d4
-qsearch Bc8-e6 Kg1-h1 Nc6-d4
-qsearch Bc8-e6 Kg1-h1 Nc6-d4 Nf3-d4
-qsearch Bc8-e6 Kg1-h1 Nc6-d4 Nf3-d4 Qg4-d4
-debug
-qsearch Bc8-e6 Bd3-b5 a6-b5
-qsearch Bc8-e6 Bd3-c4 Be6-c4
-qsearch Bc8-e6 Nc3-d5 Nf6-d5
-qsearch Bc8-e6 Bd3-g6 h7-g6
-qsearch Bc8-e6 Bd3-f5 Be6-f5
-qsearch Bc8-e6 Bc1-f4 Qg4-f4
-qsearch Bc8-e6 Bc1-h6 g7-h6
-Bc8-e6 Re1-e6
-qsearch Bc8-e6 Re1-e6 f7-e6
-Bc8-e6 Bd3-a6
-qsearch Bc8-e6 Bd3-a6 b7-a6
-Bc8-e6 Bd3-h7
-qsearch Bc8-e6 Bd3-h7 Nf6-h7
-Bc8-e6 Nf3-e5 Qg4-d4 Ne5-c6
-qsearch Bc8-e6 Nf3-e5 Qg4-d4 Ne5-c6 b7-c6
-Bc8-e6 Nf3-e5 Qg4-d4 Bc1-g5
-Bc8-e6 Nf3-e5 Qg4-d4 Nc3-e4
-Bc8-e6 Nf3-e5 Qg4-d4 Ne5-f3
-Bc8-e6 Nf3-e5 Qg4-d4 Nc3-e2
-Bc8-e6 Nf3-e5 Qg4-d4 Bd3-e4
-Bc8-e6 Nf3-e5 Qg4-d4 Re1-f1
-Bc8-e6 Nf3-e5 Qg4-d4 Re1-e2
-Bc8-e6 Nf3-e5 Qg4-d4 Re1-e3
-Bc8-e6 Nf3-e5 Qg4-d4 Ra1-b1
-Bc8-e6 Nf3-e5 Qg4-d4 Qd1-d2
-Bc8-e6 Nf3-e5 Qg4-d4 Kg1-h1
-Bc8-e6 Nf3-e5 Qg4-d4 Kg1-f1
-Bc8-e6 Nf3-e5 Qg4-d4 Bc1-e3
-Bc8-e6 Nf3-e5 Qg4-d4 Bc1-d2
-Bc8-e6 Nf3-e5 Qg4-d4 Bd3-e2
-Bc8-e6 Nf3-e5 Qg4-d4 h2-h3
-Bc8-e6 Nf3-e5 Qg4-d4 a2-a3
-Bc8-e6 Nf3-e5 Qg4-d4 g2-g3
-Bc8-e6 Nf3-e5 Qg4-d4 b2-b3
-Bc8-e6 Nf3-e5 Qg4-d4 a2-a4
-Bc8-e6 Nf3-e5 Qg4-d4 Bd3-f1
-Bc8-e6 Nf3-e5 Qg4-d4 Nc3-b1
-Bc8-e6 Nf3-e5 Qg4-d4 g2-g4
-Bc8-e6 Nf3-e5 Qg4-d4 b2-b4
-Bc8-e6 Nf3-e5 Qg4-d4 h2-h4
-Bc8-e6 Nf3-e5 Qg4-d4 Re1-e4
-Bc8-e6 Nf3-e5 Qg4-d4 Bd3-b5
-Bc8-e6 Nf3-e5 Qg4-d4 Bd3-g6
-Bc8-e6 Nf3-e5 Qg4-d4 Ne5-g6
-Bc8-e6 Nf3-e5 Qg4-d4 Nc3-b5
-Bc8-e6 Nf3-e5 Qg4-d4 Bd3-c4
-Bc8-e6 Nf3-e5 Qg4-d4 Nc3-d5
-Bc8-e6 Nf3-e5 Qg4-d4 Ne5-c4
-Bc8-e6 Nf3-e5 Qg4-d4 Bd3-f5
-Bc8-e6 Nf3-e5 Qg4-d4 Bc1-f4
-Bc8-e6 Nf3-e5 Qg4-d4 Ne5-g4
-Bc8-e6 Nf3-e5 Qg4-d4 Ne5-d7
-Bc8-e6 Nf3-e5 Qg4-d4 Bc1-h6
-Bc8-e6 Nf3-e5 Qg4-d4 Nc3-a4
-Bc8-e6 Nf3-e5 Qg4-d4 Bd3-a6
-qsearch Bc8-e6 Nf3-e5 Qg4-d4 Bd3-a6 b7-a6
-qsearch Bc8-e6 Nf3-e5 Qg4-d4 Bd3-a6 b7-a6 Ne5-c6
-qsearch Bc8-e6 Nf3-e5 Qg4-d4 Bd3-a6 b7-a6 Qd1-d4
-qsearch Bc8-e6 Nf3-e5 Qg4-d4 Bd3-a6 b7-a6 Qd1-d4 Nc6-d4
-Bc8-e6 Nf3-e5 Qg4-d4 Bd3-h7
-qsearch Bc8-e6 Nf3-e5 Qg4-d4 Bd3-h7 Nf6-h7
-qsearch Bc8-e6 Nf3-e5 Qg4-d4 Bd3-h7 Nf6-h7 Ne5-c6
-qsearch Bc8-e6 Nf3-e5 Qg4-d4 Bd3-h7 Nf6-h7 Ne5-c6 b7-c6
-qsearch Bc8-e6 Nf3-e5 Qg4-d4 Bd3-h7 Nf6-h7 Ne5-c6 b7-c6 Qd1-d4
-qsearch Bc8-e6 Nf3-e5 Qg4-d4 Bd3-h7 Nf6-h7 Ne5-c6 Qd4-d1
-qsearch Bc8-e6 Nf3-e5 Qg4-d4 Bd3-h7 Nf6-h7 Ne5-c6 Qd4-d1 Re1-d1
-qsearch Bc8-e6 Nf3-e5 Qg4-d4 Bd3-h7 Nf6-h7 Ne5-c6 Qd4-d1 Re1-d1 b7-c6
-qsearch Bc8-e6 Nf3-e5 Qg4-d4 Bd3-h7 Nf6-h7 Ne5-c6 Qd4-d1 Nc3-d1
-qsearch Bc8-e6 Nf3-e5 Qg4-d4 Bd3-h7 Nf6-h7 Qd1-d4
-qsearch Bc8-e6 Nf3-e5 Qg4-d4 Bd3-h7 Nf6-h7 Qd1-d4 Nc6-d4
-Bc8-e6 Nf3-e5 Qg4-d4 Ne5-f7
-Bc8-e6 Nc3-e2 Nf6-d5
-Bc8-e6 Nc3-e2 Be6-f5
-Bc8-e6 Nc3-e2 h7-h5
-Bc8-e6 Nc3-e2 h7-h6
-Bc8-e6 Nc3-e2 g7-g6
-Bc8-e6 Nc3-e2 b7-b5
-Bc8-e6 Nc3-e2 b7-b6
-Bc8-e6 Nc3-e2 Nf6-e4
-qsearch Bc8-e6 Nc3-e2 Nf6-e4 Bd3-e4
-qsearch Bc8-e6 Nc3-e2 Nf6-e4 Bd3-e4 Qg4-e4
-qsearch Bc8-e6 Re1-e2 Nc6-d4
-qsearch Bc8-e6 Re1-e2 Nc6-d4 Nf3-d4
-qsearch Bc8-e6 Re1-e2 Nc6-d4 Nf3-d4 Qg4-d4
-qsearch Bc8-e6 Re1-e3 Nc6-d4
-qsearch Bc8-e6 Re1-e3 Nc6-d4 Nf3-d4
-qsearch Bc8-e6 Re1-e3 Nc6-d4 Nf3-d4 Qg4-d4
-qsearch Bc8-e6 Ra1-b1 Nc6-d4
-qsearch Bc8-e6 Ra1-b1 Nc6-d4 Nf3-d4
-qsearch Bc8-e6 Ra1-b1 Nc6-d4 Nf3-d4 Qg4-d4
-Bc8-e6 Bc1-e3
-Bc8-e6 Bc1-e3
-qsearch Bc8-e6 Bc1-d2 Nc6-d4
-qsearch Bc8-e6 Bc1-d2 Nc6-d4 Nf3-d4
-qsearch Bc8-e6 Bc1-d2 Nc6-d4 Nf3-d4 Qg4-d4
-qsearch Bc8-e6 a2-a3 Nc6-d4
-qsearch Bc8-e6 a2-a3 Nc6-d4 Nf3-d4
-qsearch Bc8-e6 a2-a3 Nc6-d4 Nf3-d4 Qg4-d4
-debug
-qsearch Bc8-e6 d4-d5 Nf6-d5
-qsearch Bc8-e6 d4-d5 Nf6-d5 Nc3-d5
-qsearch Bc8-e6 d4-d5 Nf6-d5 Nc3-d5 Be6-d5
-qsearch Bc8-e6 Re1-e5 Nc6-e5
-Bc8-e6 Re1-e6
-qsearch Bc8-e6 Re1-e6 f7-e6
-Bc8-e6 Bd3-a6
-qsearch Bc8-e6 Bd3-a6 b7-a6
-Bc8-e6 Bd3-h7
-qsearch Bc8-e6 Bd3-h7 Nf6-h7
-Bc8-e6 Bd3-h7
-Nc6-d4 Bd3-h7 Bc8-e6 Qd1-d4
-qsearch Nc6-d4 Bd3-h7 Bc8-e6 Qd1-d4 Nf6-h7
-qsearch Nc6-d4 Bd3-h7 Bc8-e6 Qd1-d4 Nf6-h7 Qd4-g4
-qsearch Nc6-d4 Bd3-h7 Bc8-e6 Qd1-d4 Nf6-h7 Qd4-g4 Be6-g4
-qsearch Nc6-d4 Bd3-h7 Bc8-e6 Qd1-d4 Nf6-h7 Qd4-a4+
-qsearch Nc6-d4 Bd3-h7 Bc8-e6 Qd1-d4 Nf6-h7 Qd4-a4+ Qg4-a4
-qsearch Nc6-d4 Bd3-h7 Bc8-e6 Qd1-d4 Nf6-h7 Qd4-a4+ Qg4-a4 Nc3-a4
-Nc6-d4 Bd3-h7 Bc8-e6 Nf3-d4
-qsearch Nc6-d4 Bd3-h7 Bc8-e6 Nf3-d4 Nf6-h7
-qsearch Nc6-d4 Bd3-h7 Bc8-e6 Nf3-d4 Rh8-h7
-qsearch Nc6-d4 Bd3-h7 Bc8-e6 Nf3-d4 Rh8-h7 Nd4-e6
-qsearch Nc6-d4 Bd3-h7 Bc8-e6 Nf3-d4 Rh8-h7 Nd4-e6 f7-e6
-Nc6-d4 Bd3-h7 Nf6-h7 Nf3-d4
-Nc6-d4 Bd3-h7 Rh8-h7 Nf3-d4
-Nc6-d4 Bd3-h7 Rh8-h7 Qd1-d4
-Nc6-d4 Bd3-h7 Rh8-h7 Bc1-g5
-Nc6-d4 Bd3-h7 Rh8-h7 Bc1-e3
-Nc6-d4 Bd3-h7 Rh8-h7 Nf3-e5
-Nc6-d4 Bd3-h7 Rh8-h7 Nf3-d2
-Nc6-d4 Bd3-h7 Rh8-h7 Nc3-e2
-Nc6-d4 Bd3-h7 Rh8-h7 b2-b4
-Nc6-d4 Bd3-h7 Rh8-h7 Nf3-g5
-Nc6-d4 Bd3-h7 Rh8-h7 Re1-f1
-Nc6-d4 Bd3-h7 Rh8-h7 Re1-e3
-Nc6-d4 Bd3-h7 Rh8-h7 Re1-e5
-Nc6-d4 Bd3-h7 Rh8-h7 Ra1-b1
-Nc6-d4 Bd3-h7 Rh8-h7 Qd1-d2
-Nc6-d4 Bd3-h7 Rh8-h7 Qd1-d3
-Nc6-d4 Bd3-h7 Rh8-h7 Kg1-h1
-Nc6-d4 Bd3-h7 Rh8-h7 Kg1-f1
-Nc6-d4 Bd3-h7 Rh8-h7 Bc1-d2
-Nc6-d4 Bd3-h7 Rh8-h7 h2-h3
-Nc6-d4 Bd3-h7 Rh8-h7 a2-a3
-Nc6-d4 Bd3-h7 Rh8-h7 g2-g3
-Nc6-d4 Bd3-h7 Rh8-h7 b2-b3
-Nc6-d4 Bd3-h7 Rh8-h7 h2-h4
-Nc6-d4 Bd3-h7 Rh8-h7 a2-a4
-Nc6-d4 Bd3-h7 Rh8-h7 Nc3-a4
-Nc6-d4 Bd3-h7 Rh8-h7 Nc3-b1
-Nc6-d4 Bd3-h7 Rh8-h7 Re1-e2
-Nc6-d4 Bd3-h7 Rh8-h7 Re1-e4
-Nc6-d4 Bd3-h7 Rh8-h7 Nc3-e4
-Nc6-d4 Bd3-h7 Rh8-h7 Nc3-d5
-Nc6-d4 Bd3-h7 Rh8-h7 Bc1-f4
-Nc6-d4 Bd3-h7 Rh8-h7 Nc3-b5
-Nc6-d4 Bd3-h7 Rh8-h7 Bc1-h6
-Nc6-d4 Bd3-h7 Rh8-h7 Nf3-h4
-Nc6-d4 Bd3-h7 Rh8-h7 Re1-e6
-Nc6-d4 Bd3-h7 Rh8-h7 Re1-e7+
-qsearch Nc6-d4 Bd3-h7 Rh8-h7 Re1-e7+ Bf8-e7
-Nc6-d4 Nf3-d4 Bc8-e6 Bd3-h7
-qsearch Nc6-d4 Nf3-d4 Bc8-e6 Bd3-h7 Nf6-h7
-qsearch Nc6-d4 Nf3-d4 Bc8-e6 Bd3-h7 Rh8-h7
-qsearch Nc6-d4 Nf3-d4 Bc8-e6 Bd3-h7 Rh8-h7 Nd4-e6
-qsearch Nc6-d4 Nf3-d4 Bc8-e6 Bd3-h7 Rh8-h7 Nd4-e6 f7-e6
-Nc6-d4 Nf3-d4 Qg4-d4 Bd3-h7
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-h7 Nf6-h7
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-h7 Nf6-h7 Qd1-d4
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-h7 Rh8-h7
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-h7 Rh8-h7 Qd1-d4
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-h7 Qd4-d1
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-h7 Qd4-d1 Re1-d1
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-h7 Qd4-d1 Re1-d1 Nf6-h7
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-h7 Qd4-d1 Nc3-d1
-Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ a6-b5
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ a6-b5 Qd1-d4
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ c7-c6
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ c7-c6 Qd1-d4
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ Nf6-d7
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ Nf6-d7 Qd1-d4
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ Bc8-d7
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ Bc8-d7 Qd1-d4
-qsearch Nc6-d4 Nf3-d4 Qg4-d4 Bd3-b5+ Ke8-d8
-Nc6-d4 Nf3-d4 Qg4-h4 Bd3-b5+
-qsearch Nc6-d4 Nf3-d4 Qg4-h4 Bd3-b5+ a6-b5
-qsearch Nc6-d4 Nf3-d4 Qg4-h4 Bd3-b5+ a6-b5 Nc3-b5
-qsearch Nc6-d4 Nf3-d4 Qg4-h4 Bd3-b5+ a6-b5 Nd4-b5
-Nc6-d4 Nf3-d4 Qg4-h4 Bd3-h7
-qsearch Nc6-d4 Nf3-d4 Qg4-h4 Bd3-h7 Nf6-h7
-qsearch Nc6-d4 Nf3-d4 Qg4-h4 Bd3-h7 Rh8-h7
-Nc6-d4 Nf3-d4 Qg4-h4 Bc1-e3
-Nc6-d4 Nf3-d4 h7-h5 Bc1-e3
-Nc6-d4 Nf3-d4 h7-h6 Bc1-e3
-Nc6-d4 Nf3-d4 g7-g5 Bc1-e3
-Nc6-d4 Nf3-d4 g7-g6
-Nc6-d4 Nf3-d4 e7-e6
-Nc6-d4 Nf3-d4 c7-c5
-Nc6-d4 Nf3-d4 c7-c6
-Nc6-d4 Nf3-d4 b7-b5
-Nc6-d4 Nf3-d4 b7-b6
-Nc6-d4 Nf3-d4 Nf6-h5
-Nc6-d4 Nf3-d4 Nf6-d7
-Nc6-d4 Nf3-d4 Nf6-g8
-Nc6-d4 Nf3-d4 Bc8-d7
-Nc6-d4 Nf3-d4 Rh8-g8
-Nc6-d4 Nf3-d4 Ra8-a7
-Nc6-d4 Nf3-d4 Ra8-b8
-Nc6-d4 Nf3-d4 Ke8-d7
-Nc6-d4 Nf3-d4 Ke8-d8
-Nc6-d4 Nf3-d4 a6-a5
-Nc6-d4 Nf3-d4 e7-e5
-Nc6-d4 Nf3-d4 Bc8-f5
-Nc6-d4 Nf3-d4 Nf6-d5
-Nc6-d4 Nf3-d4 Nf6-e4
-Nc6-d4 Nf3-d4 Qg4-e4
-Nc6-d4 Nf3-d4 Qg4-g6
-Nc6-d4 Nf3-d4 Qg4-g3
-Nc6-d4 Nf3-d4 Qg4-f4
-Nc6-d4 Nf3-d4 Qg4-g5
-Nc6-d4 Nf3-d4 Qg4-g2+
-qsearch Nc6-d4 Nf3-d4 Qg4-g2+ Kg1-g2
-Qg4-d4
-qsearch Qg4-d4 Nf3-d4
-Qg4-g2+
-qsearch Qg4-g2+ Kg1-g2
-node count 2659
-pv: Bc8-e6 Nf3-d4 Qg4-g2+
-1.09 Bc8-e6
-7.643044710159302 s
+qsearch Kg1-h1 Bc5-a3 b2-a3 Ng4-f2+ Rf1-f2
+qsearch Kg1-h1 Ng4-h2 Kh1-h2
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3 b2-a3 Qd8-d6+
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3 b2-a3 Qd8-d6+ g2-g3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+ g2-g3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+ g2-g3 Bd6-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+ g2-g3 Bd6-a3 b2-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+ g2-g3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+ g2-g3 Bc5-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+ g2-g3 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-f2+ Rf1-f2
+qsearch Kg1-h1 Ng4-f2+ Rf1-f2 Bc5-a3
+qsearch Kg1-h1 Ng4-f2+ Rf1-f2 Bc5-a3 b2-a3
+qsearch Kg1-h1 Be6-a2 Ra1-a2
+qsearch Kg1-h1 Be6-a2 Ra1-a2 Bc5-a3
+qsearch Kg1-h1 Bc5-a3 b2-a3 Ng4-f2+ Rf1-f2
+qsearch Kg1-h1 Bc5-b4 Nd2-b3 Be6-b3 c2-b3
+qsearch Kg1-h1 Bc5-b4 Nd2-b3 Be6-b3 c2-b3 Bb4-a3
+qsearch Kg1-h1 Bc5-b4 Nd2-b3 Be6-b3 c2-b3 Bb4-a3 b2-a3
+qsearch Kg1-h1 Bc5-b4 Nd2-b3 Bb4-a3 b2-a3
+qsearch Kg1-h1 Bc5-b4 Nd2-b3 Bb4-a3 b2-a3 Be6-b3
+qsearch Kg1-h1 Bc5-b4 Nd2-b3 Bb4-a3 b2-a3 Be6-b3 c2-b3
+qsearch Kg1-h1 Bc5-b4 Nd2-b3 f7-f5 Be2-g4
+qsearch Kg1-h1 Bc5-b4 Nd2-b3 f7-f5 Be2-g4 f5-g4
+qsearch Kg1-h1 Bc5-b4 Nd2-b3 f7-f5 e4-f5
+qsearch Kg1-h1 Bc5-b4 Nd2-b3 f7-f5 e4-f5 Be6-f5
+qsearch Kg1-h1 Bc5-b4 Nd2-b3 f7-f5 e4-f5 Be6-f5 Be2-g4
+qsearch Kg1-h1 Bc5-b4 Nd2-b3 f7-f5 e4-f5 Be6-f5 Be2-g4 Bf5-g4
+qsearch Kg1-h1 Bc5-b4 Na3-c4 Bb4-d2 Nc4-d2
+qsearch Kg1-h1 Bc5-b4 Na3-c4 Be6-c4 Nd2-c4
+qsearch Kg1-h1 Bc5-b4 Nd2-c4 Bb4-a3 b2-a3
+qsearch Kg1-h1 Bc5-b4 Nd2-c4 Bb4-a3 b2-a3 Be6-c4
+qsearch Kg1-h1 Bc5-b4 Nd2-c4 Bb4-a3 b2-a3 Be6-c4 d3-c4
+qsearch Kg1-h1 Bc5-b4 Nd2-c4 Be6-c4 Na3-c4
+qsearch Kg1-h1 Bc5-b4 Nd2-f3 Bb4-a3 b2-a3
+qsearch Kg1-h1 Bc5-b4 f2-f4 g5-f4 Be2-g4
+qsearch Kg1-h1 Bc5-b4 f2-f4 g5-f4 Be2-g4 Be6-g4
+qsearch Kg1-h1 Bc5-b4 f2-f4 g5-f4 Be2-g4 Be6-g4 Rf1-f4
+qsearch Kg1-h1 Bc5-b4 f2-f4 g5-f4 Rf1-f4
+qsearch Kg1-h1 Bc5-b4 f2-f4 g5-f4 Rf1-f4 Bb4-d2
+qsearch Kg1-h1 Bc5-b4 f2-f4 g5-f4 Rf1-f4 Bb4-d2 Qd1-d2
+qsearch Kg1-h1 Bc5-b4 f2-f4 g5-f4 Rf1-f4 Bb4-a3
+qsearch Kg1-h1 Bc5-b4 f2-f4 g5-f4 Rf1-f4 Bb4-a3 b2-a3
+qsearch Kg1-h1 Bc5-b4 f2-f4 Bb4-d2 Qd1-d2
+qsearch Kg1-h1 Bc5-b4 f2-f4 Bb4-d2 Qd1-d2 g5-f4
+qsearch Kg1-h1 Bc5-b4 f2-f4 Bb4-d2 Qd1-d2 g5-f4 Rf1-f4
+qsearch Kg1-h1 Bc5-b4 f2-f4 Bb4-a3 b2-a3
+qsearch Kg1-h1 Bc5-b4 f2-f4 Bb4-a3 b2-a3 g5-f4
+qsearch Kg1-h1 Bc5-b4 f2-f4 Bb4-a3 b2-a3 g5-f4 Be2-g4
+qsearch Kg1-h1 Bc5-b4 f2-f4 Bb4-a3 b2-a3 g5-f4 Be2-g4 Be6-g4
+qsearch Kg1-h1 Bc5-b4 f2-f4 Bb4-a3 b2-a3 g5-f4 Be2-g4 Be6-g4 Rf1-f4
+qsearch Kg1-h1 Bc5-b4 f2-f4 Bb4-a3 b2-a3 g5-f4 Be2-g4 Be6-g4 Rf1-f4 Bg4-d1
+qsearch Kg1-h1 Bc5-b4 f2-f4 Bb4-a3 b2-a3 g5-f4 Rf1-f4
+qsearch Kg1-h1 Bc5-b4 f2-f4 Ng4-f2+ Rf1-f2
+qsearch Kg1-h1 Bc5-b4 f2-f4 Ng4-f2+ Rf1-f2 Bb4-d2
+qsearch Kg1-h1 Bc5-b4 f2-f4 Ng4-f2+ Rf1-f2 Bb4-d2 Qd1-d2
+qsearch Kg1-h1 Bc5-b4 f2-f4 Ng4-f2+ Rf1-f2 Bb4-a3
+qsearch Kg1-h1 Bc5-b4 f2-f4 Ng4-f6 f4-g5
+qsearch Kg1-h1 Bc5-b4 f2-f4 Ng4-f6 f4-g5 h6-g5
+qsearch Kg1-h1 Bc5-b4 c2-c4 Bb4-d2
+qsearch Kg1-h1 Bc5-b4 c2-c4 Bb4-d2 Qd1-d2
+qsearch Kg1-h1 Bc5-b4 c2-c4 Bb4-a3
+qsearch Kg1-h1 Bc5-b4 c2-c4 Bb4-a3 b2-a3
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Ne5-c4 Nd2-c4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Ne5-c4 Nd2-c4 Be6-c4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Ne5-c4 Nd2-c4 Be6-c4 d3-c4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Be6-c4 Nd2-c4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Be6-c4 Nd2-c4 Ne5-c4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Be6-c4 Nd2-c4 Ne5-c4 d3-c4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Be6-g4 Be2-g4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 f7-f5 Nc4-e5
+qsearch Kg1-h1 Ng4-e5 Na3-c4 f7-f5 Nc4-e5 Nc6-e5
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Bc5-b4 Nc4-e5
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Bc5-b4 Nc4-e5 Nc6-e5
+qsearch Kg1-h1 Ng4-e5 c2-c4 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-e5 Nd2-c4 Ne5-c4 Na3-c4
+qsearch Kg1-h1 Ng4-e5 Nd2-c4 Ne5-c4 Na3-c4 Be6-c4
+qsearch Kg1-h1 Ng4-e5 Nd2-c4 Ne5-c4 Na3-c4 Be6-c4 d3-c4
+qsearch Kg1-h1 Ng4-e5 Nd2-c4 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-e5 Nd2-c4 Bc5-a3 b2-a3 Ne5-c4
+qsearch Kg1-h1 Ng4-e5 Nd2-c4 Bc5-a3 b2-a3 Ne5-c4 d3-c4
+qsearch Kg1-h1 Ng4-e5 Nd2-c4 Bc5-a3 b2-a3 Be6-c4
+qsearch Kg1-h1 Ng4-e5 Nd2-c4 Bc5-a3 b2-a3 Be6-c4 d3-c4
+qsearch Kg1-h1 Ng4-e5 Nd2-c4 Be6-c4 Na3-c4
+qsearch Kg1-h1 Ng4-e5 Nd2-c4 Be6-c4 Na3-c4 Ne5-c4
+qsearch Kg1-h1 Ng4-e5 Nd2-c4 Be6-c4 Na3-c4 Ne5-c4 d3-c4
+qsearch Kg1-h1 Ng4-e5 Nd2-c4 Bc5-b4 Nc4-e5
+qsearch Kg1-h1 Ng4-e5 Nd2-c4 Bc5-b4 Nc4-e5 Nc6-e5
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Be6-b3 c2-b3
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Be6-b3 c2-b3 Bc5-a3
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Be6-b3 c2-b3 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Bc5-a3 b2-a3 Be6-b3
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Bc5-a3 b2-a3 Be6-b3 c2-b3
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 f7-f5 Nb3-c5
+qsearch Kg1-h1 Ng4-e5 Nd2-f3 Ne5-f3 Be2-f3
+qsearch Kg1-h1 Ng4-e5 Nd2-f3 Ne5-f3 g2-f3
+qsearch Kg1-h1 Ng4-e5 f2-f4 g5-f4 Rf1-f4
+qsearch Kg1-h1 Ng4-e5 f2-f4 g5-f4 Rf1-f4 Bc5-a3
+qsearch Kg1-h1 Ng4-e5 f2-f4 g5-f4 Rf1-f4 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-e5 f2-f4 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-e5 f2-f4 Bc5-a3 b2-a3 g5-f4
+qsearch Kg1-h1 Ng4-e5 f2-f4 Bc5-a3 b2-a3 g5-f4 Rf1-f4
+qsearch Kg1-h1 Ng4-e5 f2-f4 Ne5-f3 Nd2-f3
+qsearch Kg1-h1 Ng4-e5 f2-f4 Ne5-f3 Nd2-f3 Bc5-a3
+qsearch Kg1-h1 Ng4-e5 f2-f4 Be6-g4 Be2-g4
+qsearch Kg1-h1 Ng4-e5 f2-f4 f7-f5 f4-e5
+qsearch Kg1-h1 Ng4-e5 f2-f4 f7-f5 f4-e5 Bc5-a3
+qsearch Kg1-h1 Ng4-e5 f2-f4 Bc5-b4 f4-e5
+qsearch Kg1-h1 Ng4-e5 f2-f4 Bc5-b4 f4-e5 Bb4-d2
+qsearch Kg1-h1 Ng4-e5 f2-f4 Bc5-b4 f4-e5 Bb4-a3
+qsearch Kg1-h1 Ng4-e5 f2-f4 g5-g4 f4-e5
+qsearch Kg1-h1 Ng4-e5 f2-f4 g5-g4 f4-e5 Bc5-a3
+qsearch Kg1-h1 Ng4-e5 f2-f4 h6-h5 f4-e5
+qsearch Kg1-h1 Ng4-e5 f2-f4 h6-h5 f4-e5 Bc5-a3
+qsearch Kg1-h1 Ng4-e5 f2-f4 a6-a5 f4-e5
+qsearch Kg1-h1 Ng4-e5 f2-f4 a6-a5 f4-e5 Bc5-a3
+qsearch Kg1-h1 Ng4-e5 f2-f4 f7-f6 f4-e5
+qsearch Kg1-h1 Ng4-e5 f2-f4 f7-f6 f4-e5 Bc5-a3
+qsearch Kg1-h1 Ng4-e5 f2-f4 b7-b5 f4-e5
+qsearch Kg1-h1 Ng4-e5 f2-f4 b7-b5 f4-e5 Bc5-a3
+qsearch Kg1-h1 Ng4-e5 f2-f4 b7-b6 f4-e5
+qsearch Kg1-h1 Ng4-e5 f2-f4 b7-b6 f4-e5 Bc5-a3
+qsearch Kg1-h1 Ng4-e5 f2-f4 Ne5-g6 f4-g5
+qsearch Kg1-h1 Ng4-e5 f2-f4 Ne5-g6 f4-g5 h6-g5
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Ne5-c4 Nd2-c4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Ne5-c4 Nd2-c4 Be6-c4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Ne5-c4 Nd2-c4 Be6-c4 d3-c4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Be6-c4 Nd2-c4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Be6-c4 Nd2-c4 Ne5-c4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Be6-c4 Nd2-c4 Ne5-c4 d3-c4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Bc5-b4 Nc4-e5
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Bc5-b4 Nc4-e5 Nc6-e5
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Bc5-b4 Nc4-e5
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Bc5-b4 Nc4-e5 Nc6-e5
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Bc5-b4 Nc4-e5 Bb4-d2
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Be6-g4 Be2-g4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 f7-f5 Nc4-e5
+qsearch Kg1-h1 Ng4-e5 Na3-c4 f7-f5 Nc4-e5 Nc6-e5
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Rh8-g8 Nc4-e5
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Rh8-g8 Nc4-e5 Nc6-e5
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Be6-d5 e4-d5
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Be6-h3 g2-h3
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Be6-h3 g2-h3 Ne5-c4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Be6-f5 e4-f5
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Ne5-d3 c2-d3
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Ne5-d3 c2-d3 Be6-c4
+qsearch Kg1-h1 Ng4-e5 Na3-c4 Ne5-d3 c2-d3 Be6-c4 d3-c4
+qsearch Kg1-h1 Ng4-e5 c2-c4 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-e5 Nd2-c4 Ne5-c4 Na3-c4
+qsearch Kg1-h1 Ng4-e5 Nd2-c4 Ne5-c4 Na3-c4 Be6-c4
+qsearch Kg1-h1 Ng4-e5 Nd2-c4 Ne5-c4 Na3-c4 Be6-c4 d3-c4
+qsearch Kg1-h1 Ng4-e5 Nd2-c4 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-e5 Nd2-c4 Bc5-a3 b2-a3 Ne5-c4
+qsearch Kg1-h1 Ng4-e5 Nd2-c4 Bc5-a3 b2-a3 Ne5-c4 d3-c4
+qsearch Kg1-h1 Ng4-e5 Nd2-c4 Bc5-a3 b2-a3 Be6-c4
+qsearch Kg1-h1 Ng4-e5 Nd2-c4 Bc5-a3 b2-a3 Be6-c4 d3-c4
+qsearch Kg1-h1 Ng4-e5 Nd2-c4 Be6-c4 Na3-c4
+qsearch Kg1-h1 Ng4-e5 Nd2-c4 Be6-c4 Na3-c4 Ne5-c4
+qsearch Kg1-h1 Ng4-e5 Nd2-c4 Be6-c4 Na3-c4 Ne5-c4 d3-c4
+qsearch Kg1-h1 Ng4-e5 Nd2-c4 Bc5-b4 Nc4-e5
+qsearch Kg1-h1 Ng4-e5 Nd2-c4 Bc5-b4 Nc4-e5 Nc6-e5
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Be6-b3 c2-b3
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Be6-b3 c2-b3 Bc5-a3
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Be6-b3 c2-b3 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Bc5-a3 b2-a3 Be6-b3
+qsearch Kg1-h1 Ng4-e5 Nd2-b3 Bc5-a3 b2-a3 Be6-b3 c2-b3
+qsearch Kg1-h1 Ng4-e5 Nd2-f3 Ne5-f3 Be2-f3
+qsearch Kg1-h1 Ng4-e5 Nd2-f3 Ne5-f3 g2-f3
+qsearch Kg1-h1 Ng4-e5 f2-f4 g5-f4 Rf1-f4
+qsearch Kg1-h1 Ng4-e5 f2-f4 g5-f4 Rf1-f4 Bc5-a3
+qsearch Kg1-h1 Ng4-e5 f2-f4 g5-f4 Rf1-f4 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-e5 f2-f4 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-e5 f2-f4 Bc5-a3 b2-a3 g5-f4
+qsearch Kg1-h1 Ng4-e5 f2-f4 Bc5-a3 b2-a3 g5-f4 Rf1-f4
+qsearch Kg1-h1 Ng4-e5 f2-f4 Ne5-g6 f4-g5
+qsearch Kg1-h1 Ng4-e5 f2-f4 Ne5-g6 f4-g5 h6-g5
+qsearch Kg1-h1 Be6-d7 Be2-g4
+qsearch Kg1-h1 Be6-d7 Be2-g4 Bd7-g4
+qsearch Kg1-h1 Be6-d7 Be2-g4
+qsearch Kg1-h1 Be6-d7 Be2-g4 Bd7-g4
+qsearch Kg1-h1 Be6-d7 Be2-g4
+qsearch Kg1-h1 Be6-d7 Be2-g4 Bd7-g4
+qsearch Kg1-h1 Rh8-h7 Be2-g4
+qsearch Kg1-h1 Rh8-h7 Be2-g4 Be6-g4
+qsearch Kg1-h1 Rh8-h7 Be2-g4
+qsearch Kg1-h1 Rh8-h7 Be2-g4 Be6-g4
+qsearch Kg1-h1 Rh8-h7 Be2-g4
+qsearch Kg1-h1 Rh8-h7 Be2-g4 Be6-g4
+qsearch Kg1-h1 Rh8-g8 Be2-g4
+qsearch Kg1-h1 Rh8-g8 Be2-g4 Be6-g4
+qsearch Kg1-h1 Rh8-g8 Be2-g4
+qsearch Kg1-h1 Rh8-g8 Be2-g4 Be6-g4
+qsearch Kg1-h1 Rh8-g8 Be2-g4
+qsearch Kg1-h1 Rh8-g8 Be2-g4 Be6-g4
+qsearch Kg1-h1 Ng4-h2 Kh1-h2
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3 b2-a3 Qd8-d6+
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-a3 b2-a3 Qd8-d6+ g2-g3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+ g2-g3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+ g2-g3 Bd6-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Bc5-d6+ g2-g3 Bd6-a3 b2-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+ g2-g3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+ g2-g3 Bc5-a3
+qsearch Kg1-h1 Ng4-h2 Kh1-h2 Qd8-d6+ g2-g3 Bc5-a3 b2-a3
+qsearch Kg1-h1 Ng4-f2+ Rf1-f2
+qsearch Kg1-h1 Ng4-f2+ Rf1-f2 Bc5-a3
+qsearch Kg1-h1 Ng4-f2+ Rf1-f2 Bc5-a3 b2-a3
+qsearch Kg1-h1 Be6-a2 Ra1-a2
+qsearch Kg1-h1 Be6-a2 Ra1-a2 Bc5-a3
+Kg1-h1 Rh8-g8
+node count 3330
+pv: Kg1-h1 Rh8-g8
+Kg1-h1 Rh8-g8 
+-0.355 Kg1-h1
+10.308357238769531 s
