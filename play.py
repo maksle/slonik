@@ -78,18 +78,17 @@ pos = Position.from_fen("r2qk2r/1pp2p2/p1n1b2p/2b3p1/3pP1n1/N2P4/PPPNBPPP/R1BQ1R
 # pos = Position.from_fen("r1b1kb1r/1pp1pppp/p1n2n2/8/3P2q1/2NB1N2/PPP2PPP/R1BQR1K1 b kq - 1 8")
 
 # play(pos)
-pos.make_move(Move(PieceType.W_BISHOP.value, E2, G4))
-pos.make_move(Move(PieceType.B_BISHOP.value, E6, G4))
-p = SearchPos(pos)
-print_moves(p.children([SearchInfo()], 0))
+# pos.make_move(Move(PieceType.W_BISHOP.value, E2, G4))
+# pos.make_move(Move(PieceType.B_BISHOP.value, E6, G4))
+# p = SearchPos(pos)
+# print_moves(p.children([SearchInfo()], 0))
 
-# import time
-# now = time.time()
-# val,c = iterative_deepening(.95, SearchPos(pos))
-# # val = -val
-# print(val / 200, c)
-# then = time.time()
-# print(then-now, 's')
+import time
+now = time.time()
+val = iterative_deepening(.95, SearchPos(pos))
+print(val / 200)
+then = time.time()
+print(then-now, 's')
 
 # def do_test():
 #     pos = Position.from_fen("r1b1kb1r/1pp1pppp/p1n2n2/8/3P2q1/2NB1N2/PPP2PPP/R1BQR1K1 b kq - 1 8")

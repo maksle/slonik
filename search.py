@@ -103,7 +103,7 @@ def iterative_deepening(thres_confidence, node):
         print (">> curr_thres_p", curr_thres_p, "target_thres_p", target_thres_p)
         
         while not finished:
-            val, chosen = search(node, si, 0, alpha, beta, 1, curr_thres_p, True)
+            val = search(node, si, 0, alpha, beta, 1, curr_thres_p, True)
 
             if val < alpha:
                 print("faillow", "a", alpha, "b", beta, "val", val, "factor", fail_factor)
@@ -126,7 +126,7 @@ def iterative_deepening(thres_confidence, node):
     print("pv:", end=" ")
     print_moves(si[0].pv)
     print_moves(find_pv(node.position))
-    return val, chosen
+    return val
     
 def search(node, si, ply, a, b, curr_p, thres_p, pv_node):
     global node_count
@@ -148,28 +148,29 @@ def search(node, si, ply, a, b, curr_p, thres_p, pv_node):
                or (tt_entry.bound_type == tt.BoundType.HI_BOUND.value and tt_entry.value < a) \
                or tt_entry.bound_type == tt.BoundType.EXACT.value:
                 move = Move.move_uncompacted(tt_entry.move)
-                return tt_entry.value, move
+                return tt_entry.value
     
     if curr_p <= thres_p:
         score = qsearch(node, si, ply, a, b, curr_p, thres_p, pv_node, True)
-        return score, None
+        return score
     
-    # null move pruning.. if pass move and we're still failing high, dont bother searching
-    # if not pv_node and not si.null_move_prune_search and node.value() >= b:
-    #     if depth <= 2: nmp_depth = depth
-    #     else: nmp_depth = max(depth-2, 2)
+    # if not in_check:
+    #     # null move pruning.. if pass move and we're still failing high, dont bother searching
+    #     if not pv_node and not si.null_move_prune_search and node.value() >= b:
+    #         if depth <= 2: nmp_depth = depth
+    #         else: nmp_depth = max(depth-2, 2)
 
-    #     si.null_move_prune_search = True
-    #     si.ply += 1
-    #     node.position.toggle_side_to_move()
-    #     val, chosen_move = search(node, si, -b, -b+1, nmp_depth, False)
-    #     val = -val
-    #     node.position.toggle_side_to_move()
-    #     si.ply -=1
-    #     si.null_move_prune_search = False
+    #         si.null_move_prune_search = True
+    #         si.ply += 1
+    #         node.position.toggle_side_to_move()
+    #         val, chosen_move = search(node, si, -b, -b+1, nmp_depth, False)
+    #         val = -val
+    #         node.position.toggle_side_to_move()
+    #         si.ply -=1
+    #         si.null_move_prune_search = False
 
-    #     if val >= b:
-    #         return val, None
+    #         if val >= b:
+    #             return val
         
     best_move = None
     best_move_is_capture = False
@@ -213,23 +214,19 @@ def search(node, si, ply, a, b, curr_p, thres_p, pv_node):
         # Probabilistic version of LMR
         # .. zero window search reduced 
         if curr_p > .2 and not is_capture:
-            val, chosen_move = search(child, si, ply+1, -(a+1), -a, curr_p * move.prob * .5, thres_p, False)
-            val = -val
-            
+            val = -search(child, si, ply+1, -(a+1), -a, curr_p * move.prob * .5, thres_p, False)
             do_full_zw = val > a
         else:
             do_full_zw = not (pv_node and (move.prob >= .4))
         
         # .. zero window full allotment search
         if do_full_zw:
-            val, chosen_move = search(child, si, ply+1, -(a+1), -a, curr_p * move.prob, thres_p, True)
-            val = -val
+            val = -search(child, si, ply+1, -(a+1), -a, curr_p * move.prob, thres_p, True)
             
         # .. full window full allotment search
         # otherwise we let the fail highs cause parent to fail low and try different move
         if pv_node and (move.prob >= .4 or a < val < b):
-            val, chosen_move = search(child, si, ply+1, -b, -a, curr_p * move.prob, thres_p, True)
-            val = -val
+            val = -search(child, si, ply+1, -b, -a, curr_p * move.prob, thres_p, True)
             
         if val > best_val:
             best_val, best_move = val, move
@@ -282,7 +279,7 @@ def search(node, si, ply, a, b, curr_p, thres_p, pv_node):
     tt.save_tt_entry(tt.TTEntry(node.position.zobrist_hash, best_move.compact(),
                                 bound_type, best_val, curr_p))
     
-    return best_val, best_move
+    return best_val
 
 def qsearch(node, si, ply, alpha, beta, curr_p, thres_p, pv_node, entry_node):
     global node_count
@@ -466,7 +463,7 @@ def sort_moves(moves, position, si, ply, quiescence):
                     # give check
                     checks.append(move)
         else:
-            if move in si[0].pv:
+            if move in si[0].pv + si[ply].pv:
                 from_pv.append(move)
             elif is_capture(move.to_sq, other):
                 captures.append(move)
@@ -484,6 +481,8 @@ def sort_moves(moves, position, si, ply, quiescence):
     captures_see = map(lambda c: (sort_crit(c), c), captures)
     sorted_cap_see = sorted(captures_see, key=itemgetter(0), reverse=True)
 
+    other_moves.sort(key=lambda m: sort_crit(m, en_prise_sort=True), reverse=True)
+    
     if quiescence:
         result = list(itertools.chain(map(itemgetter(1), sorted_cap_see),
                                       checks,
@@ -502,8 +501,7 @@ def sort_moves(moves, position, si, ply, quiescence):
                 cap_see_lt0.append(cs[1])
 
         # counters = [c.move for c in sorted(counters, key=lambda c: c.value, reverse=True)]
-        other_moves = [m for m in sorted(other_moves, key=lambda m: sort_crit(m, en_prise_sort=True), reverse=True)]
-
+        
         result = list(itertools.chain(from_pv, cap_see_gt0, cap_see_eq0, checks, counters, killers, other_moves, cap_see_lt0))
 
     # guassian formula
