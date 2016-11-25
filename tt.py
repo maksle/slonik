@@ -3,12 +3,12 @@ import math
 from enum import Enum
 
 class TTEntry():
-    def __init__(self, key=0, move=0, bound_type=0, value=0, prob=0):
+    def __init__(self, key=0, move=0, bound_type=0, value=0, depth=0):
         self.key = key
         self.move = move
         self.bound_type = bound_type
         self.value = value
-        self.prob = prob
+        self.depth = depth
 
 class BoundType(Enum):
     EXACT = 1

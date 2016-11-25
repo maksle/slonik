@@ -1,7 +1,7 @@
-from enum import Enum
+# from enum import Enum
 from side import Side
 
-class PieceType(Enum):
+class PieceType():
     NULL = 0
     P = PAWN = W_PAWN = 1
     N = KNIGHT = W_KNIGHT = 2
@@ -26,9 +26,9 @@ class PieceType(Enum):
     @classmethod
     def get_side(cls, piece_type):
         if cls.is_white(piece_type):
-            return Side.WHITE.value
+            return Side.WHITE
         else:
-            return Side.BLACK.value
+            return Side.BLACK
         
     @classmethod
     def is_white(cls, val):
@@ -40,26 +40,26 @@ class PieceType(Enum):
 
     @classmethod
     def piece(cls, piece, side):
-        if side == Side.WHITE.value:
+        if side == Side.WHITE:
             return piece
         else:
             return piece + 6
 
     @classmethod
     def piece_types(cls, base_only=True, side=None):
-        if base_only:
-            return [PieceType.P.value, PieceType.N.value, PieceType.B.value,
-                    PieceType.R.value, PieceType.Q.value, PieceType.K.value]
-        else:
-            if side is None:
-                return [PieceType.W_PAWN.value, PieceType.W_KNIGHT.value, PieceType.W_BISHOP.value,
-                        PieceType.W_ROOK.value, PieceType.W_QUEEN.value, PieceType.W_KING.value,
-                        PieceType.B_PAWN.value, PieceType.B_KNIGHT.value, PieceType.B_BISHOP.value,
-                        PieceType.B_ROOK.value, PieceType.B_QUEEN.value, PieceType.B_KING.value]
-            elif side == Side.WHITE.value:
-                return [PieceType.W_PAWN.value, PieceType.W_KNIGHT.value, PieceType.W_BISHOP.value,
-                        PieceType.W_ROOK.value, PieceType.W_QUEEN.value, PieceType.W_KING.value]
+        if side is None:
+            if base_only:
+                return [PieceType.P, PieceType.N, PieceType.B,
+                        PieceType.R, PieceType.Q, PieceType.K]
             else:
-                return [PieceType.B_PAWN.value, PieceType.B_KNIGHT.value, PieceType.B_BISHOP.value,
-                        PieceType.B_ROOK.value, PieceType.B_QUEEN.value, PieceType.B_KING.value]
+                return [PieceType.W_PAWN, PieceType.W_KNIGHT, PieceType.W_BISHOP,
+                        PieceType.W_ROOK, PieceType.W_QUEEN, PieceType.W_KING,
+                        PieceType.B_PAWN, PieceType.B_KNIGHT, PieceType.B_BISHOP,
+                        PieceType.B_ROOK, PieceType.B_QUEEN, PieceType.B_KING]
+        elif side == Side.WHITE:
+            return [PieceType.W_PAWN, PieceType.W_KNIGHT, PieceType.W_BISHOP,
+                    PieceType.W_ROOK, PieceType.W_QUEEN, PieceType.W_KING]
+        else:
+            return [PieceType.B_PAWN, PieceType.B_KNIGHT, PieceType.B_BISHOP,
+                    PieceType.B_ROOK, PieceType.B_QUEEN, PieceType.B_KING]
 

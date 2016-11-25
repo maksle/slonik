@@ -17,18 +17,18 @@ NOT_B_FILE = B_FILE ^ FULL_BOARD
 NOT_G_FILE = G_FILE ^ FULL_BOARD
 
 HUMAN_PIECE = {}
-HUMAN_PIECE[PieceType.W_PAWN.value] = ""
-HUMAN_PIECE[PieceType.W_KNIGHT.value] = "N"
-HUMAN_PIECE[PieceType.W_BISHOP.value] = "B"
-HUMAN_PIECE[PieceType.W_ROOK.value] = "R"
-HUMAN_PIECE[PieceType.W_QUEEN.value] = "Q"
-HUMAN_PIECE[PieceType.W_KING.value] = "K"
-HUMAN_PIECE[PieceType.B_PAWN.value] = ""
-HUMAN_PIECE[PieceType.B_KNIGHT.value] = "N"
-HUMAN_PIECE[PieceType.B_BISHOP.value] = "B"
-HUMAN_PIECE[PieceType.B_ROOK.value] = "R"
-HUMAN_PIECE[PieceType.B_QUEEN.value] = "Q"
-HUMAN_PIECE[PieceType.B_KING.value] = "K"
+HUMAN_PIECE[PieceType.W_PAWN] = ""
+HUMAN_PIECE[PieceType.W_KNIGHT] = "N"
+HUMAN_PIECE[PieceType.W_BISHOP] = "B"
+HUMAN_PIECE[PieceType.W_ROOK] = "R"
+HUMAN_PIECE[PieceType.W_QUEEN] = "Q"
+HUMAN_PIECE[PieceType.W_KING] = "K"
+HUMAN_PIECE[PieceType.B_PAWN] = ""
+HUMAN_PIECE[PieceType.B_KNIGHT] = "N"
+HUMAN_PIECE[PieceType.B_BISHOP] = "B"
+HUMAN_PIECE[PieceType.B_ROOK] = "R"
+HUMAN_PIECE[PieceType.B_QUEEN] = "Q"
+HUMAN_PIECE[PieceType.B_KING] = "K"
 HUMAN_PIECE_INV = {v: k for k, v in HUMAN_PIECE.items()}
 
 HUMAN_BOARD = {}
@@ -270,7 +270,7 @@ def king_attack(g):
         | ((g >> 9) & NOT_A_FILE)
 
 def pawn_attack(pawn, side_to_move):
-    if side_to_move == Side.WHITE.value:
+    if side_to_move == Side.WHITE:
         return ((pawn << 9) & NOT_H_FILE) \
             | ((pawn << 7) & NOT_A_FILE)
     else:
@@ -306,13 +306,13 @@ def mask(b, mask_val):
     return b & (mask_val ^ FULL_BOARD)
 
 def en_pessant_sq(side_to_move, last_move_piece, from_sq, to_sq):
-    if side_to_move == Side.WHITE.value \
-       and last_move_piece == PieceType.B_PAWN.value \
+    if side_to_move == Side.WHITE \
+       and last_move_piece == PieceType.B_PAWN \
        and from_sq & 0xff000000000000 > 0 \
        and to_sq & 0xff00000000 > 0:
         return to_sq << 8
-    if side_to_move == Side.BLACK.value \
-       and last_move_piece == PieceType.W_PAWN.value \
+    if side_to_move == Side.BLACK \
+       and last_move_piece == PieceType.W_PAWN \
        and from_sq & 0xff00 > 0 \
        and to_sq & 0xff000000 > 0:
         return from_sq << 8

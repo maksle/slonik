@@ -51,18 +51,18 @@ def ind_for_square(square, side):
     bit_pos = len(bin(square))-3
     col = bit_pos % 8
     row = bit_pos // 8
-    if side == Side.WHITE.value:
+    if side == Side.WHITE:
         return 8 * (7-row) + (7-col)
     else:
         return 8 * row + col
 
 def psqt_value_sq(piece, square, side):
     val = 0
-    if piece == PieceType.P.value:
+    if piece == PieceType.P:
         val = pawn[ind_for_square(square, side)]
-    elif piece == PieceType.N.value:
+    elif piece == PieceType.N:
         val = knight[ind_for_square(square, side)]
-    elif piece == PieceType.B.value:
+    elif piece == PieceType.B:
         val = bishop[ind_for_square(square, side)]
     else:
         return 0

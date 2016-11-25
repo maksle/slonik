@@ -2,20 +2,20 @@ from search import *
 
 def test_lowest_attacker():
     position = Position()
-    position.make_move(Move(PieceType.W_PAWN.value, E2, E4))
-    position.make_move(Move(PieceType.B_PAWN.value, D7, D5))
-    position.make_move(Move(PieceType.W_KNIGHT.value, B1, C3))
-    position.make_move(Move(PieceType.B_KNIGHT.value, G8, F6))
-    position.make_move(Move(PieceType.W_PAWN.value, F2, F3))
+    position.make_move(Move(PieceType.W_PAWN, E2, E4))
+    position.make_move(Move(PieceType.B_PAWN, D7, D5))
+    position.make_move(Move(PieceType.W_KNIGHT, B1, C3))
+    position.make_move(Move(PieceType.B_KNIGHT, G8, F6))
+    position.make_move(Move(PieceType.W_PAWN, F2, F3))
     
     # print(eval_see(position, E4))
     # print(lowest_attacker(position,E4))
     assert(lowest_attacker(position, E4)[1] == 68719476736)
     
-    position.make_move(Move(PieceType.B_PAWN.value, D5, E4))
+    position.make_move(Move(PieceType.B_PAWN, D5, E4))
     assert(lowest_attacker(position, E4)[1]) == 262144
     assert(eval_see(position, E4) > 0)
-    position.make_move(Move(PieceType.W_PAWN.value, F3, E4))
+    position.make_move(Move(PieceType.W_PAWN, F3, E4))
     assert(eval_see(position, E4) == 0)
     
 test_lowest_attacker()

@@ -2,7 +2,7 @@ from print_bb import *
 from piece_type import *
 from bb import *
 
-class MoveType(Enum):
+class MoveType():
     regular=0
     check=1
     promo=2
@@ -18,12 +18,12 @@ class Move():
         self.see_score = see_score
     
     def __str__(self):
-        if self.piece_type is None or self.piece_type == PieceType.NULL.value:
+        if self.piece_type is None or self.piece_type == PieceType.NULL:
             return ""
         return HUMAN_PIECE[self.piece_type] \
             + HUMAN_BOARD_INV[self.from_sq] \
             + "-" + HUMAN_BOARD_INV[self.to_sq] \
-            + ("+" if self.move_type == MoveType.check.value else "")
+            + ("+" if self.move_type == MoveType.check else "")
     def __eq__(self, other):
         if isinstance(other, self.__class__):
             return self.piece_type == other.piece_type \
@@ -40,7 +40,7 @@ class Move():
         # bits 12-15 piece_type
         # bits 16-19 promo_piece
         # bits 20-21 move_type
-        if self.piece_type == PieceType.NULL.value:
+        if self.piece_type == PieceType.NULL:
             return 0
         from_sq = len(bin(self.from_sq))-3
         to_sq = (len(bin(self.to_sq))-3) << 6

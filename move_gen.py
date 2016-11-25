@@ -59,7 +59,7 @@ def pawn_move_non_capture(pawn, side_to_move, own, other):
     not_own = own ^ FULL_BOARD
     not_other = other ^ FULL_BOARD
     not_occupied = not_own & not_other
-    if side_to_move == Side.WHITE.value:
+    if side_to_move == Side.WHITE:
         moves = (pawn << 8) & not_occupied
         # print('--')
         # print_bb(not_occupied & ((pawn << 8) | (pawn << 16)))
@@ -68,7 +68,7 @@ def pawn_move_non_capture(pawn, side_to_move, own, other):
         if (pawn & 0xff00) > 0 \
            and (not_occupied & squares) == squares:
             moves |= pawn << 16
-    elif side_to_move == Side.BLACK.value:
+    elif side_to_move == Side.BLACK:
         moves = (pawn >> 8) & not_own & not_other
         squares = ((pawn >> 8) | (pawn >> 16))
         if (pawn & 0xff000000000000) > 0 \
@@ -83,7 +83,7 @@ def am_in_check(attacks, king):
     return attacks & king > 0
 
 def preserved_castle_rights(position_flags, side):
-    if side == Side.WHITE.value:
+    if side == Side.WHITE:
         return not (position_flags & 1 or (position_flags & 12) == 12)
     return not (position_flags & 2 or (position_flags & 48) == 48)
     
@@ -119,7 +119,7 @@ def side_to_move(position_flags):
     return (position_flags & 0x40) >> 6
 
 def white_to_move(position_flags):
-    return side_to_move(position_flags) == Side.WHITE.value
+    return side_to_move(position_flags) == Side.WHITE
 
 def black_to_move(position_flags):
-    return side_to_move(position_flags) == Side.BLACK.value
+    return side_to_move(position_flags) == Side.BLACK

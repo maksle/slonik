@@ -4,21 +4,21 @@ from position import Position
 from bb import *
 
 def lowest_attacker(position, square, side=None):
-    """Finds lowest-value piece attacking a square"""
-    side = side or position.side_to_move()
+    """Finds lowest piece of `side` attacking a square"""
+    side = position.side_to_move() if side is None else side
 
     # pawn
-    if position.white_to_move():
+    if side == Side.WHITE:
         possible_from_squares = south_west(square) | south_east(square)
     else:
         possible_from_squares = north_west(square) | north_east(square)
-    piece_type = PieceType.piece(PieceType.P.value, side)
+    piece_type = PieceType.piece(PieceType.P, side)
     attackers = position.pieces[piece_type] & possible_from_squares
     if attackers:
         return piece_type, ls1b(attackers)
 
     # knight
-    piece_type = PieceType.piece(PieceType.N.value, side)
+    piece_type = PieceType.piece(PieceType.N, side)
     possible_from_squares = knight_attack(square)
     attackers = position.pieces[piece_type] & possible_from_squares
     if attackers:
@@ -26,7 +26,7 @@ def lowest_attacker(position, square, side=None):
 
     # sliders
     for piece_type in [PieceType.B, PieceType.R, PieceType.Q]:
-        piece_type_stm = PieceType.piece(piece_type.value, side)
+        piece_type_stm = PieceType.piece(piece_type, side)
         if piece_type == PieceType.B:
             slider_attack = bishop_attack
         elif piece_type == PieceType.R:
@@ -40,7 +40,7 @@ def lowest_attacker(position, square, side=None):
                 return piece_type_stm, attacker
 
     # king
-    piece_type = PieceType.piece(PieceType.K.value, side)
+    piece_type = PieceType.piece(PieceType.K, side)
     possible_from_squares = king_attack(square)
     attackers = position.pieces[piece_type] & possible_from_squares
     if attackers:
@@ -109,9 +109,9 @@ def eval_see(pos, move):
     
 def king_safety_squares(position, side):
     """squares surrounding king plus one rank further"""
-    king_sq = position.pieces[PieceType.piece(PieceType.K.value, side)]
+    king_sq = position.pieces[PieceType.piece(PieceType.K, side)]
     attacks = king_attack(king_sq)
-    if side == Side.WHITE.value:
+    if side == Side.WHITE:
         attacks |= attacks >> 8
     else:
         attacks |= attacks << 8
@@ -131,11 +131,11 @@ xray attacks."""
     return bonus
 
 def pawn_structure(position, side):
-    pt = PieceType.piece(PieceType.P.value, side)
+    pt = PieceType.piece(PieceType.P, side)
     pawns = position.pieces[pt]
     penalty = 0
     # doubled
-    if side == Side.WHITE.value:
+    if side == Side.WHITE:
         penalty += count_bits(pawns & pawns << 8)
         penalty += count_bits(pawns & pawns << 16)
         penalty += count_bits(pawns & pawns << 24)
@@ -148,14 +148,14 @@ def pawn_structure(position, side):
     return penalty
     
 def pawn_cover_bonus(king_zone, position, side):
-    pawn_type = PieceType.piece(PieceType.P.value, side)
+    pawn_type = PieceType.piece(PieceType.P, side)
     pawn_cover = king_zone & position.pieces[pawn_type]
-    pawn_value = MG_PIECES[PieceType.P.value]
+    pawn = MG_PIECES[PieceType.P]
     return count_bits(pawn_cover) * 20
 
 def rook_position_bonus(rook, position, side):
-    pawns_us = position.pieces[PieceType.piece(PieceType.P.value, side)]
-    pawns_them = position.pieces[PieceType.piece(PieceType.P.value, side ^ 1)]
+    pawns_us = position.pieces[PieceType.piece(PieceType.P, side)]
+    pawns_them = position.pieces[PieceType.piece(PieceType.P, side ^ 1)]
     bonus = 0
     fill = south_attack(rook, FULL_BOARD) | north_attack(rook, FULL_BOARD)
     if pawns_us & fill and not pawns_them & fill:
@@ -176,13 +176,13 @@ def rook_position_bonus(rook, position, side):
 
 def minor_outpost_bonus(minor, position, side):
     base_type = PieceType.base_type(minor)
-    pawns_us = position.pieces[PieceType.piece(PieceType.P.value, side)]
+    pawns_us = position.pieces[PieceType.piece(PieceType.P, side)]
     bonus = 25
-    if base_type == PieceType.N.value:
+    if base_type == PieceType.N:
         bonus += 10
-    if side == Side.WHITE.value and (south_west(minor) | south_east(minor)) & pawns_us:
+    if side == Side.WHITE and (south_west(minor) | south_east(minor)) & pawns_us:
         return bonus
-    if side == Side.BLACK.value and (north_west(minor) | north_east(minor)) & pawns_us:
+    if side == Side.BLACK and (north_west(minor) | north_east(minor)) & pawns_us:
         return bonus
     return bonus
     
@@ -190,10 +190,10 @@ def mobility(position, side):
     mobility = 0
     piece_types = [PT.P, PT.N, PT.B, PT.R, PT.Q]
     for base_pt in piece_types:
-        pt = PT.piece(base_pt.value, side)
+        pt = PT.piece(base_pt, side)
         
         # if attacked by lower weight piece, it doesn't count
-        lower_wts = (pt.value for pt in piece_types if pt.value < base_pt.value)
+        lower_wts = (pt for pt in piece_types if pt < base_pt)
         opp_attacks = 0
         for piece_type in lower_wts:
             opp_pt = PieceType.piece(piece_type, side ^ 1)

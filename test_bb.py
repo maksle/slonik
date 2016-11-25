@@ -516,7 +516,7 @@ def test_pawn_attack():
         '00000000',
     ]
     attacker = int(''.join(g_arr), 2)
-    res = pawn_attack(attacker, Side.WHITE.value)
+    res = pawn_attack(attacker, Side.WHITE)
     # print_bb(res)
     assert res == 720576026283868160
 
@@ -532,7 +532,7 @@ def test_pawn_attack_2():
         '00000000',
     ]
     attacker = int(''.join(g_arr), 2)
-    res = pawn_attack(attacker, Side.WHITE.value)
+    res = pawn_attack(attacker, Side.WHITE)
     # print_bb(res)
     assert res == 0x500025400500000
     
@@ -723,14 +723,14 @@ def test_pawn_moves():
     e7 = 0x8000000000000
     e5 = 0x800000000
     assert list(pawn_moves(pawns, own, other,
-               Side.WHITE.value, PieceType.B_PAWN.value, e7, e5)) == [(512, 65536), (512, 131072), (512, 33554432), (16384, 2097152), (262144, 67108864), (4194304, 1073741824), (68719476736, 8796093022208), (68719476736, 17592186044416), (137438953472, 35184372088832), (36028797018963968, 9223372036854775808)]
+               Side.WHITE, PieceType.B_PAWN, e7, e5)) == [(512, 65536), (512, 131072), (512, 33554432), (16384, 2097152), (262144, 67108864), (4194304, 1073741824), (68719476736, 8796093022208), (68719476736, 17592186044416), (137438953472, 35184372088832), (36028797018963968, 9223372036854775808)]
 
     # pawn_moves(pawns, own, other,
-    #            Side.WHITE.value, PieceType.B_PAWN.value, e7, e5)
+    #            Side.WHITE, PieceType.B_PAWN, e7, e5)
     # print(list(move for move in pawn_moves(pawns, own, other,
-    #            Side.WHITE.value, PieceType.B_PAWN.value, e7, e5)))
+    #            Side.WHITE, PieceType.B_PAWN, e7, e5)))
     # for move in (move for move in pawn_moves(pawns, own, other,
-    #            Side.WHITE.value, PieceType.B_PAWN.value, e7, e5)):
+    #            Side.WHITE, PieceType.B_PAWN, e7, e5)):
     #     print('From:')
     #     print_bb(move[0])
     #     print('To:')
@@ -815,7 +815,7 @@ def test_king_castle_moves():
     own = int(''.join(own_arr), 2)
     other = int(''.join(other_arr), 2)
     attacked = int(''.join(attacked_arr), 2)
-    position_flags = Side.WHITE.value << 6
+    position_flags = Side.WHITE << 6
 
     # king_castle_moves(own, other, attacked, position_flags)
     # print("Castles:")
@@ -864,7 +864,7 @@ def test_king_castle_moves_2():
     own = int(''.join(own_arr), 2)
     other = int(''.join(other_arr), 2)
     attacked = int(''.join(attacked_arr), 2)
-    position_flags = Side.WHITE.value << 6
+    position_flags = Side.WHITE << 6
 
     # king_castle_moves(own, other, attacked, position_flags)
     # print(list(king_castle_moves(own, other, attacked, position_flags)))
@@ -911,7 +911,7 @@ def test_king_castle_moves_3():
     own = int(''.join(own_arr), 2)
     other = int(''.join(other_arr), 2)
     attacked = int(''.join(attacked_arr), 2)
-    position_flags = Side.BLACK.value << 6
+    position_flags = Side.BLACK << 6
 
     # king_castle_moves(own, other, attacked, position_flags)
     # print(list(king_castle_moves(own, other, attacked, position_flags)))
@@ -958,13 +958,13 @@ def test_king_castle_moves_4():
     own = int(''.join(own_arr), 2)
     other = int(''.join(other_arr), 2)
     attacked = int(''.join(attacked_arr), 2)
-    position_flags = Side.BLACK.value << 6
+    position_flags = Side.BLACK << 6
 
     # king_castle_moves(own, other, attacked, position_flags)
     # print(list(king_castle_moves(own, other, attacked, position_flags)))
     assert list(king_castle_moves(own, other, attacked, position_flags)) == [(8<<56, 2<<56)]
 
-    position_flags = Side.BLACK.value | 2
+    position_flags = Side.BLACK | 2
     # print('here', (own, other, attacked, position_flags))
     # print(list(king_castle_moves(own, other, attacked, position_flags)))
     assert list(king_castle_moves(own, other, attacked, position_flags)) == []
@@ -1010,7 +1010,7 @@ def test_king_castle_moves_5():
     own = int(''.join(own_arr), 2)
     other = int(''.join(other_arr), 2)
     attacked = int(''.join(attacked_arr), 2)
-    position_flags = Side.BLACK.value << 6
+    position_flags = Side.BLACK << 6
 
     # king_castle_moves(own, other, attacked, position_flags)
     # print(list(king_castle_moves(own, other, attacked, position_flags)))
