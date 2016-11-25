@@ -11,15 +11,15 @@ MG_PIECES[PieceType.K] = 0
 
 def material_eval(counts, piece_t, side):
     if piece_t == PieceType.P:
-        return pawn(counts, side)
+        return pawn_value(counts, side)
     elif piece_t == PieceType.N:
-        return knight(counts, side)
+        return knight_value(counts, side)
     elif piece_t == PieceType.B:
-        return bishop(counts, side)
+        return bishop_value(counts, side)
     elif piece_t == PieceType.R:
-        return rook(counts, side)
+        return rook_value(counts, side)
     elif piece_t == PieceType.Q:
-        return queen(counts, side)
+        return queen_value(counts, side)
 
 def piece_counts(pos):
     counts = [None for pt in range(0, 13)]
@@ -32,7 +32,7 @@ def piece_counts(pos):
             counts[spt] = count_bits(pos.pieces[spt])
     return counts
 
-def knight(counts, side):
+def knight_value(counts, side):
     piece_type = PieceType.N
     spt = PieceType.piece(piece_type, side)
     us, them = side, side ^ 1
@@ -56,7 +56,7 @@ def knight(counts, side):
     # print("knight:", val)
     return val
 
-def bishop(counts, side):
+def bishop_value(counts, side):
     piece_type = PieceType.B
     us_pt = PieceType.piece(piece_type, side)
     us, them = side, side ^ 1

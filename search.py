@@ -53,7 +53,7 @@ def update_history(side, move, value):
     entry = move_history[side][move.piece_type][bit_position(move.to_sq)]
     adjusted_val = value
     if entry:
-        adjusted_val = entry + .2 * (value - entry)
+        adjusted_val = entry.value + .2 * (value - entry.value)
     move_history[side][move.piece_type][bit_position(move.to_sq)] = History(move, adjusted_val)
 def lookup_history(side, move):
     if move and move.piece_type is not PieceType.NULL:
@@ -175,7 +175,7 @@ def search(node, si, ply, a, b, allowance, pv_node):
         if not si[ply].skip_early_pruning:
             # null move pruning.. if pass move and we're still failing high, dont bother searching further
             if not pv_node and not si[ply].null_move_prune_search \
-               and found and tt_entry >= b:
+               and found and tt_entry.value >= b:
                 si[ply+1].null_move_prune_search = True
                 node.position.toggle_side_to_move()
                 val = -search(node, si, ply+1, -b, -b+1, int(allowance * .75), False)
@@ -183,7 +183,7 @@ def search(node, si, ply, a, b, allowance, pv_node):
                 si[ply+1].null_move_prune_search = False
 
                 if val >= b:
-                    print(" **** NULL BETA CUTTOFF after", ' '.join(map(str,node.position.moves)), "--winning for", node.position.side_to_move(), tt_entry, val, a, b)
+                    print(" **** NULL BETA CUTTOFF after", ' '.join(map(str,node.position.moves)), "--winning for", node.position.side_to_move(), tt_entry.value, val, a, b)
                     return val
 
         # internal iterative deepening to improve move order when there's no pv
@@ -216,7 +216,7 @@ def search(node, si, ply, a, b, allowance, pv_node):
     for move in moves:
         # Ng4-e5 Nf3-e5 Nc6-e5 Rf1-e1
         if ' '.join(map(str,node.position.moves)).startswith("Ng4-e5 Nf3-e5 Nc6-e5 Rf1-e1") and str(move) == "f2-f4":
-            # print("f4 prob", move.prob, allowance, singular_extension_eligible, tt_entry)
+            # print("f4 prob", move.prob, allowance, singular_extension_eligible, tt_entry.value)
             print("debug")
         
         if si[ply].excluded_move == move:
@@ -236,7 +236,7 @@ def search(node, si, ply, a, b, allowance, pv_node):
             if ' '.join(map(str,node.position.moves)).startswith("Ng4-e5 Rf1-e1 Ke8-g8") and str(move) == "Nf3-e5":
                 print("debug")
             print("Trying Singular:", ' '.join(map(str,node.position.moves)), move)
-            rbeta = tt_entry - (2 * allowance_to_depth(allowance))
+            rbeta = tt_entry.value - (2 * allowance_to_depth(allowance))
             si[ply].excluded_move = move
             si[ply].singular_search = True
             si[ply].skip_early_pruning = True
@@ -363,16 +363,16 @@ def qsearch(node, si, ply, alpha, beta, allowance, pv_node):
         tt_hit, tt_ind, tt_entry = tt.get_tt_index(node.position.zobrist_hash)
         if tt_hit and tt_entry.depth <= allowance:
             if tt_entry.bound_type == tt.BoundType.EXACT:
-                return tt_entry
+                return tt_entry.value
             
-            if tt_entry.bound_type == tt.BoundType.LO_BOUND and tt_entry >= beta:
-                alpha = max(alpha, tt_entry)
-            elif tt_entry.bound_type == tt.BoundType.HI_BOUND and tt_entry < alpha:
-                beta = min(beta, tt_entry)
+            if tt_entry.bound_type == tt.BoundType.LO_BOUND and tt_entry.value >= beta:
+                alpha = max(alpha, tt_entry.value)
+            elif tt_entry.bound_type == tt.BoundType.HI_BOUND and tt_entry.value < alpha:
+                beta = min(beta, tt_entry.value)
 
             if alpha >= beta:
                 update_ply_stat(ply)
-                return tt_entry
+                return tt_entry.value
 
     in_check = node.position.in_check()
 
@@ -382,13 +382,13 @@ def qsearch(node, si, ply, alpha, beta, allowance, pv_node):
         if allowance <= 1 and num_moves > 3 \
            and node.position.moves[-3].move_type == MoveType.check:
             update_ply_stat(ply)
-            return node()
+            return node.value()
     
     best_move = Move(PieceType.NULL)
     if in_check:
         best_value = start_val = LOW_BOUND
     else:
-        best_value = start_val = node()
+        best_value = start_val = node.value()
 
     if best_value >= beta:
         # "stand pat"
@@ -451,7 +451,7 @@ def qsearch(node, si, ply, alpha, beta, allowance, pv_node):
                     return score
         
     if len(moves) == 0:
-        best_value = node()
+        best_value = node.value()
         update_ply_stat(ply)
         assert(not in_check or (best_value == -1000000 or best_value == 0))
 
@@ -515,7 +515,7 @@ def sort_moves(moves, position, si, ply, quiescence):
             gain = pto2 - pto
             see_val += gain
             
-        hist_val = entry if entry else 0
+        hist_val = entry.value if entry else 0
         psqt_val = psqt_value_sq(move.piece_type, move.to_sq, position.side_to_move())
         return (see_val, hist_val, psqt_val)
     
