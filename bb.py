@@ -16,6 +16,11 @@ NOT_H_FILE = H_FILE ^ FULL_BOARD
 NOT_B_FILE = B_FILE ^ FULL_BOARD
 NOT_G_FILE = G_FILE ^ FULL_BOARD
 
+# bottom up 0-7
+RANKS = [0xff << (8*i) for i in range(8)]
+# H==0, A==7
+FILES = [0x0101010101010101 << (i) for i in range(8)]
+
 HUMAN_PIECE = {}
 HUMAN_PIECE[PieceType.W_PAWN] = ""
 HUMAN_PIECE[PieceType.W_KNIGHT] = "N"
@@ -32,6 +37,7 @@ HUMAN_PIECE[PieceType.B_KING] = "K"
 HUMAN_PIECE_INV = {v: k for k, v in HUMAN_PIECE.items()}
 
 HUMAN_BOARD = {}
+SQS = []
 
 A1 = HUMAN_BOARD["a1"] = 0x80
 B1 = HUMAN_BOARD["b1"] = 0x40
@@ -107,6 +113,17 @@ H8 = HUMAN_BOARD["h8"] = 1 << 56
 
 HUMAN_BOARD_INV = {v: k for k, v in HUMAN_BOARD.items()}
 
+SQS = [1<<x for x in range(64)]
+
+# BETWEEN_SQS = [[0] * 64 for i in range(64)]
+# offset = 1
+# c = -1
+# while offset < 65:
+#     y = 1 << offset
+#     c += 1
+#     BETWEEN_SQS[offset][y] = c
+#     BETWEEN_SQS[y][offset] = c
+    
 def north(b):
     return b << 8
 
@@ -320,3 +337,26 @@ def en_pessant_sq(side_to_move, last_move_piece, from_sq, to_sq):
 
 def bit_position(square):
     return len(bin(square))-3
+
+BETWEEN_SQS = [[0] * 65 for i in range(64)]
+LINE_SQS = [[0] * 65 for i in range(64)]
+
+PSEUDO_ATTACKS = [[0] * 64 for i in range(7)]
+for sq_ind in range(64):
+    for pt in [PieceType.B, PieceType.R]:
+        sq = 1 << sq_ind
+        attack_fn = bishop_attack if pt == PieceType.B else rook_attack
+        PSEUDO_ATTACKS[pt][sq_ind] = attack_fn(sq, FULL_BOARD)
+        PSEUDO_ATTACKS[PieceType.Q][sq_ind] |= attack_fn(sq, FULL_BOARD)
+
+for sq_ind in range(64):
+    for sq2_ind in range(64):
+        for pt in [PieceType.B, PieceType.R]:
+            attack_fn = bishop_attack if pt == PieceType.B else rook_attack
+            sq = 1 << sq_ind
+            sq2 = 1 << sq2_ind
+            if PSEUDO_ATTACKS[pt][sq_ind] & sq2 == 0:
+                continue
+            BETWEEN_SQS[sq_ind][sq2_ind] = attack_fn(sq, sq2 ^ FULL_BOARD) & attack_fn(sq2, sq ^ FULL_BOARD)
+            LINE_SQS[sq_ind][sq2_ind] = (attack_fn(sq, FULL_BOARD) & attack_fn(sq2, FULL_BOARD)) | sq | sq2
+

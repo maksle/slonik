@@ -59,12 +59,16 @@ def next_en_prise(position, side, move=None):
         pos = position
 
     for pt in sorted(PieceType.piece_types(side=side), reverse=True):
+        if PieceType.base_type(pt) == PieceType.P:
+            continue
         for square in iterate_pieces(pos.pieces[pt]):
             lowest = lowest_attacker(pos, square, side ^ 1)
             if not lowest: continue
             attacker_pt, attacker_sq = lowest
             # equal val but undefended more readily handled by eval_see
-            if MG_PIECES[PieceType.base_type(attacker_pt)] < MG_PIECES[PieceType.base_type(pt)]:
+            if MG_PIECES[PieceType.base_type(attacker_pt)] < MG_PIECES[PieceType.base_type(pt)] \
+               or not position.attacks[side] & square: # not defended
+                # TODO: re not defended, it's not accurate if the piece defending is pinned to a heavier piece
                 yield pt, square, attacker_pt, attacker_sq
                 break
 
@@ -112,9 +116,9 @@ def king_safety_squares(position, side):
     king_sq = position.pieces[PieceType.piece(PieceType.K, side)]
     attacks = king_attack(king_sq)
     if side == Side.WHITE:
-        attacks |= attacks >> 8
-    else:
         attacks |= attacks << 8
+    else:
+        attacks |= attacks >> 8
     return attacks
 
 def king_zone_attack_bonus(king_zone, position, side):
@@ -150,8 +154,7 @@ def pawn_structure(position, side):
 def pawn_cover_bonus(king_zone, position, side):
     pawn_type = PieceType.piece(PieceType.P, side)
     pawn_cover = king_zone & position.pieces[pawn_type]
-    pawn = MG_PIECES[PieceType.P]
-    return count_bits(pawn_cover) * 20
+    return count_bits(pawn_cover) * 40
 
 def rook_position_bonus(rook, position, side):
     pawns_us = position.pieces[PieceType.piece(PieceType.P, side)]
@@ -186,9 +189,16 @@ def minor_outpost_bonus(minor, position, side):
         return bonus
     return bonus
     
-def mobility(position, side):
+def mobility(position, side, pinned):
+    """Bonus for legal moves not attacked by lower weight piece. Pinned pieces
+    have restricted mobility"""
     mobility = 0
     piece_types = [PT.P, PT.N, PT.B, PT.R, PT.Q]
+
+    pinned_piece_types = []
+    if len(pinned):
+        pinned_piece_types = [position.squares[bit_position(p)] for p in pinned]
+    
     for base_pt in piece_types:
         pt = PT.piece(base_pt, side)
         
@@ -198,20 +208,125 @@ def mobility(position, side):
         for piece_type in lower_wts:
             opp_pt = PieceType.piece(piece_type, side ^ 1)
             opp_attacks |= position.piece_attacks[opp_pt]
+        
+        attacks = 0
+        
+        if len(pinned_piece_types) and pt in pinned_piece_types:
+            occupied = position.occupied[Side.WHITE] | position.occupied[Side.BLACK]
+            free = occupied ^ FULL_BOARD
 
-        attacks = position.piece_attacks[pt]
+            for p_sq in iterate_pieces(position.pieces[pt]):
+                this_piece_attacks = 0
+                if pt == PieceType.P:
+                    this_piece_attacks = pawn_attack(p_sq, side)
+                elif pt == PieceType.N:
+                    this_piece_attacks = knight_attack(p_sq)
+                elif pt == PieceType.B:
+                    this_piece_attacks = bishop_attack(p_sq, free)
+                elif pt == PieceType.R:
+                    this_piece_attacks = rook_attack(p_sq, free)
+                elif pt == PieceType.Q:
+                    this_piece_attacks = queen_attack(p_sq, free)
+                elif pt == PieceType.K:
+                    this_piece_attacks = king_attack(p_sq)
+
+                # mobility restricted for pinned pieces
+                if p_sq in pinned:
+                    k_sq = position.pieces[PieceType.piece(PieceType.K, side)]
+                    this_piece_attacks &= LINE_SQS[bit_position(p_sq)][bit_position(k_sq)]
+                
+                attacks |= this_piece_attacks
+        else:
+            attacks = position.piece_attacks[pt]
+        
         attacks &= opp_attacks ^ FULL_BOARD
         attacks &= position.occupied[side] ^ FULL_BOARD
         mobility += count_bits(attacks)
+
     return mobility
 
-def unprotected(position, side):
+def attacked_pieces(position, side):
     return position.occupied[side] & (position.attacks[side] ^ FULL_BOARD)
     
-def unprotected_penalty(position, side):
-    unprotected_pieces = unprotected(position, side)
+def unprotected_penalty(position, side, pins):
+    us = position.occupied[side]
+    them = position.occupied[side ^ 1]
+    free = (us | them) ^ FULL_BOARD
+    us_attacked = attacked_pieces(position, side)
     penalty = 0
     for pt in PieceType.piece_types(side=side):
-        num = count_bits(position.pieces[pt] & unprotected_pieces)
-        penalty += num * MG_PIECES[PieceType.base_type(pt)]
-    return penalty // 200
+        num = count_bits(position.pieces[pt] & us_attacked)
+        penalty += num * MG_PIECES[PieceType.P]
+        
+        defended = us_attacked & position.pieces[pt] & position.attacks[side]
+        for defended_piece in iterate_pieces(defended):
+            if defended_piece & position.piece_attacks[PieceType.piece(PieceType.P, side=side)]:
+                # defended by pawn
+                penalty -= MG_PIECES[PieceType.P] / 2
+            else:
+                penalty -= MG_PIECES[PieceType.P] / 4
+
+        if PieceType.base_type(pt) == PieceType.P:
+            continue
+        # possible to get attack from pawn. Penalty regardless if defended
+        for p in iterate_pieces(position.pieces[pt]):
+            if side == Side.WHITE:
+                pawn_attack_sqs = (north_east(p) | north_west(p)) & free
+            else:
+                pawn_attack_sqs = (south_east(p) | south_west(p)) & free
+
+            for pawn_attack_sq in iterate_pieces(pawn_attack_sqs):
+                if side == Side.WHITE:
+                    pawn_from_sqs = (pawn_attack_sq << 8)
+                    if pawn_attack_sq & RANKS[4]:
+                        pawn_from_sqs |= (pawn_attack_sq << 16)
+                    pawn_from_sqs &= free << 8
+                else:
+                    pawn_from_sqs = (pawn_attack_sq >> 8)
+                    if pawn_attack_sq & RANKS[3]:
+                        pawn_from_sqs |= (pawn_attack_sq >> 16)
+                    pawn_from_sqs &= free >> 8
+                
+                pawn_from_sqs &= position.pieces[PieceType.piece(PieceType.P, side=side^1)]
+                if pawn_from_sqs:
+                    penalty += (MG_PIECES[PieceType.base_type(pt)] / 8) - 20
+                    # more penalty if the piece is pinned
+                    if p in pins:
+                        penalty += (MG_PIECES[PieceType.base_type(pt)] / 3) - 20
+                        # more penalty if the pawn is supported on the attack square
+                        if position.attacks[side ^ 1] & pawn_attack_sq or \
+                           position.attacks[side] & pawn_attack_sq == 0:
+                            penalty += (MG_PIECES[PieceType.base_type(pt)] / 3) - 20
+    
+    return int(penalty * 1 / 4)
+
+def discoveries_and_pins(position, side, target_piece_type=PieceType.K):
+    """Return squares of singular pieces between sliders and the king of side
+    `side`. Blockers of opposite side can move and cause discovered check, and
+    blockers of same side are pinned. `target_piece_type` is piece things are pinned to."""
+    pinned = []
+    discoverers = []
+    target_piece_sq = position.pieces[PieceType.piece(target_piece_type, side)]
+    us = position.occupied[side]
+    them = position.occupied[side ^ 1]
+    all_occupied = us | them
+
+    diags = PSEUDO_ATTACKS[PieceType.B][bit_position(target_piece_sq)]
+    diag_sliders = position.pieces[PieceType.piece(PieceType.B, side ^ 1)]
+    diag_sliders |= position.pieces[PieceType.piece(PieceType.Q, side ^ 1)]
+    snipers = diags & diag_sliders
+
+    cross = PSEUDO_ATTACKS[PieceType.R][bit_position(target_piece_sq)]
+    cross_sliders = position.pieces[PieceType.piece(PieceType.R, side ^ 1)]
+    cross_sliders |= position.pieces[PieceType.piece(PieceType.Q, side ^ 1)]
+    snipers |= cross & cross_sliders
+    
+    for sniper_sq in iterate_pieces(snipers):
+        squares_between = BETWEEN_SQS[bit_position(sniper_sq)][bit_position(target_piece_sq)]
+        if count_bits(squares_between & all_occupied) == 1:
+            p = us & squares_between
+            d = them & squares_between
+            if p: pinned.append(p)
+            else: discoverers.append(d)
+
+    return (discoverers, pinned)

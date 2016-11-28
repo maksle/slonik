@@ -184,14 +184,14 @@ class Position():
     def blocking_change(self, move):
         """Returns piece types who's piece attacks need to be recalculated, either
 because they are being blocked, or will no longer be blocked, by the move."""
-        being_blocked = []
+        # being_blocked = []
         blocking_squares = move.from_sq | move.to_sq
         for bt in [PieceType.B, PieceType.R, PieceType.Q]:
             for side in [Side.WHITE, Side.BLACK]:
                 pt = PieceType.piece(bt, side)
                 if self.piece_attacks[pt] & blocking_squares:
-                    being_blocked.append(pt)
-        return being_blocked
+                    yield pt
+        # return being_blocked
     
     def get_occupied(self, side):
         occupied = 0

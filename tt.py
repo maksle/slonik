@@ -3,17 +3,19 @@ import math
 from enum import Enum
 
 class TTEntry():
-    def __init__(self, key=0, move=0, bound_type=0, value=0, depth=0):
+    def __init__(self, key=0, move=0, bound_type=0, value=0, depth=0, static_eval=None):
         self.key = key
         self.move = move
         self.bound_type = bound_type
         self.value = value
         self.depth = depth
+        self.static_eval = static_eval
 
 class BoundType(Enum):
     EXACT = 1
     LO_BOUND = 2
     HI_BOUND = 3
+    NONE = 4
 
 def make_tt():
     tt = [None] * (1<<25)
