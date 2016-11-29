@@ -194,6 +194,11 @@ def minor_outpost_bonus(minor, position, side, potentials):
             bonus += 30
         return bonus
     return 0
+
+def minor_behind_pawn(minors, position, side):
+    pawns_in_front = position.pieces[PieceType.piece(PieceType.P, side)] & shift_north(minors, side)
+    pawns_in_front &= (RANKS[2] | RANKS[3] | RANKS[4] | RANKS[5])
+    return count_bits(pawns_in_front) * 8
     
 def mobility(position, side, pinned):
     """Bonus for legal moves not attacked by lower weight piece. Pinned pieces
@@ -368,5 +373,8 @@ def all_pawn_attack_potentials(position, side):
 def center_attacks_bonus(position, side):
     bonus = 0
     for pt in PieceType.piece_types(side=side):
-        bonus += count_bits(position.piece_attacks[pt] & (E4 | E5 | D4 | D5))
+        value = count_bits(position.piece_attacks[pt] & (E4 | E5 | D4 | D5))
+        if PieceType.base_type(pt) == PieceType.P:
+            value *= 2
+        bonus += value
     return bonus * 10

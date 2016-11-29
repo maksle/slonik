@@ -671,7 +671,7 @@ def evaluate(position, debug=False):
                         print(side_str, "Rook Position", HUMAN_PIECE[piece_type], value)
                     evaluations[side] += value
                 
-            # ..minor outpost
+            # ..minor outpost, minor behind pawn
             if base_type in [PieceType.B, PieceType.N]:
                 for minor in iterate_pieces(position.pieces[piece_type]):
                     value = minor_outpost_bonus(base_type, position, side, potentials)
@@ -679,6 +679,11 @@ def evaluate(position, debug=False):
                         print(side_str, "Minor Outpost", HUMAN_PIECE[piece_type], value)
                     evaluations[side] += value
                 
+                value = minor_behind_pawn(piece_type, position, side)
+                if debug:
+                    print(side_str, "Minor Behind Pawn", HUMAN_PIECE[piece_type], value)
+                evaluations[side] += value
+            
             # ..pawn structure
             if base_type == PieceType.P:
                 value = pawn_structure(position, side)

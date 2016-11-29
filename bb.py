@@ -338,7 +338,7 @@ def en_pessant_sq(side_to_move, last_move_piece, from_sq, to_sq):
 def bit_position(square):
     return len(bin(square))-3
 
-def shift_north(n, side, times):
+def shift_north(n, side):
     if side == Side.WHITE:
         return north(n)
     else:

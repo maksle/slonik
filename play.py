@@ -19,10 +19,11 @@ def play(position):
     #         pass
 
     si = [None] * 64
+    depth = 5.5
     
     if (human_side == "w" and root.side_to_move() == Side.BLACK) or \
        (human_side == "b" and root.side_to_move() == Side.WHITE):
-        val, si = iterative_deepening(5, root, si)
+        val, si = iterative_deepening(depth, root, si)
         # print("==== Computer move: ==========")
         # print(chosen)
         # print("==============================")
@@ -40,7 +41,7 @@ def play(position):
         print("===============================")
         root.make_move(user_move)
         
-        val, si = iterative_deepening(5, root, si)
+        val, si = iterative_deepening(depth, root, si)
         # print("==== Computer move: ==========")
         # print("==============================")
         root.make_move(si[0].pv[0])
@@ -79,12 +80,14 @@ pos = Position()
 # pos = Position.from_fen("r1bqk2r/ppp2ppp/8/4n3/2Bp4/7P/PP1N1PP1/R2Q1RK1 w kq - 1 1")
 # pos = Position.from_fen("1Qb1kb1r/3q1pp1/p1Rp2n1/4p2p/2PNPP2/N7/6PP/1B4K1 b k - 1 31")
 
-play(pos)
+# play(pos)
+# pos = Position.from_fen("r2qkbnr/pbpp1ppp/1pn5/4p3/2P1P3/2N2N2/PP1P1PPP/R1BQKB1R w KQkq - 2 5")
+# print(minor_behind_pawn(pos.pieces[3], pos, 0))
 
 # pos.make_move(Move(1,E2,E4))
 # pos.make_move(Move(8,B8,C6))
 # pos.make_move(Move(1,D2,D3))
-# evaluate(pos, True)
+evaluate(pos, True)
 # print()
 
 # pos = Position()
