@@ -314,6 +314,7 @@ def search(node, si, ply, a, b, allowance, pv_node, cut_node):
             best_move_is_capture = is_capture
             if val > a and pv_node:
                 si[ply].pv = [move] + si[ply+1].pv
+                si[ply+1].pv = []
                 # si.pv = si.current_variation
                 # si.pv = si.pv[:si.ply] + si.current_variation[si.ply:]
                 if is_root:
@@ -475,6 +476,7 @@ def qsearch(node, si, ply, alpha, beta, allowance, pv_node, in_check):
                     alpha = score
                     best_move = move
                     si[ply].pv = [move] + si[ply+1].pv
+                    si[ply+1].pv = []
                 else:
                     # assert score >= beta
                     if score >= beta:
@@ -628,9 +630,9 @@ def sort_moves(moves, position, si, ply, quiescence):
 
 def evaluate(position, debug=False):
 
-    if ' '.join(map(str, position.moves)) == "Nf3-e5 Nc6-e5 Rf1-e1 Qd8-e7":
+    if ' '.join(map(str, position.moves)) == "e2-e4":
         debug = True
-        
+    
     # Check for mate
     if position.is_mate():
         return -1000000
@@ -641,6 +643,9 @@ def evaluate(position, debug=False):
 
     counts = piece_counts(position)
 
+    potentials = [all_pawn_attack_potentials(position, Side.WHITE),
+                 all_pawn_attack_potentials(position, Side.BLACK)]
+    
     for side in [Side.WHITE, Side.BLACK]:
 
         side_str = "WHITE" if side == Side.WHITE else "BLACK"
@@ -656,7 +661,7 @@ def evaluate(position, debug=False):
                     print(side_str, "Material", HUMAN_PIECE[piece_type], value)
                 evaluations[side] += value
                 
-            # positional bonuses and penalties
+            # Positional bonuses and penalties:
 
             # ..rook considerations
             if base_type == PieceType.R:
@@ -669,7 +674,7 @@ def evaluate(position, debug=False):
             # ..minor outpost
             if base_type in [PieceType.B, PieceType.N]:
                 for minor in iterate_pieces(position.pieces[piece_type]):
-                    value = minor_outpost_bonus(base_type, position, side)
+                    value = minor_outpost_bonus(base_type, position, side, potentials)
                     if debug:
                         print(side_str, "Minor Outpost", HUMAN_PIECE[piece_type], value)
                     evaluations[side] += value
@@ -680,6 +685,11 @@ def evaluate(position, debug=False):
                 if debug:
                     print(side_str, "Pawn Structure", value)
                 evaluations[side] += value
+
+                value = pawn_potential_penalty(position, side, potentials)
+                if debug:
+                    print(side_str, "Pawn Potential Penalty", value)
+                evaluations[side] -= value
                 
             # ..piece-square table adjustments
             if base_type in [PieceType.P, PieceType.N, PieceType.B, PieceType.K]:
@@ -687,6 +697,11 @@ def evaluate(position, debug=False):
                 if debug:
                     print(side_str, "PSQT adjustments", HUMAN_PIECE[piece_type], value)
                 evaluations[side] += value
+
+        # center attacks bonus
+        value = center_attacks_bonus(position, side)
+        if debug: print(side_str, "Center Attack Bonus", value)
+        evaluations[side] += value
                 
         # weak/hanging pieces penalties
         for ep in next_en_prise(position, side):

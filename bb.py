@@ -18,8 +18,8 @@ NOT_G_FILE = G_FILE ^ FULL_BOARD
 
 # bottom up 0-7
 RANKS = [0xff << (8*i) for i in range(8)]
-# H==0, A==7
-FILES = [0x0101010101010101 << (i) for i in range(8)]
+# A==0, H==7
+FILES = [0x0101010101010101 << (i) for i in range(7,-1,-1)]
 
 HUMAN_PIECE = {}
 HUMAN_PIECE[PieceType.W_PAWN] = ""
@@ -337,6 +337,60 @@ def en_pessant_sq(side_to_move, last_move_piece, from_sq, to_sq):
 
 def bit_position(square):
     return len(bin(square))-3
+
+def shift_north(n, side, times):
+    if side == Side.WHITE:
+        return north(n)
+    else:
+        return south(n)
+
+def shift_south(n, side):
+    if side == Side.WHITE:
+        return south(n)
+    else:
+        return north(n)
+
+def shift_east(n, side):
+    if side == Side.WHITE:
+        return east(n)
+    else:
+        return west(n)
+
+def shift_west(n, side):
+    if side == Side.WHITE:
+        return west(n)
+    else:
+        return east(n)
+
+def shift_ne(n, side):
+    if side == Side.WHITE:
+        return north_east(n)
+    else:
+        return south_west(n)   
+
+def shift_nw(n, side):
+    if side == Side.WHITE:
+        return north_west(n)
+    else:
+        return south_east(n)
+
+def shift_se(n, side):
+    if side == Side.WHITE:
+        return south_east(n)
+    else:
+        return north_west(n)
+
+def shift_sw(n, side):
+    if side == Side.WHITE:
+        return south_west(n)
+    else:
+        return north_east(n)
+
+def get_file(n):
+    return 7 - (bit_position(n) % 8)
+
+def get_rank(n):
+    return bit_position(n) // 8
 
 BETWEEN_SQS = [[0] * 65 for i in range(64)]
 LINE_SQS = [[0] * 65 for i in range(64)]

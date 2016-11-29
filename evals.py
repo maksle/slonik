@@ -137,18 +137,21 @@ xray attacks."""
 def pawn_structure(position, side):
     pt = PieceType.piece(PieceType.P, side)
     pawns = position.pieces[pt]
+
     penalty = 0
-    # doubled
+
+    # doubled and tripled pawns
+    double_triple = 0
     if side == Side.WHITE:
-        penalty += count_bits(pawns & pawns << 8)
-        penalty += count_bits(pawns & pawns << 16)
-        penalty += count_bits(pawns & pawns << 24)
-        penalty *= -10
+        double_triple += count_bits(pawns & pawns << 8)
+        double_triple += count_bits(pawns & pawns << 16)
+        double_triple += count_bits(pawns & pawns << 24)
     else:
-        penalty += count_bits(pawns & pawns >> 8)
-        penalty += count_bits(pawns & pawns >> 16)
-        penalty += count_bits(pawns & pawns >> 24)
-        penalty *= -10
+        double_triple += count_bits(pawns & pawns >> 8)
+        double_triple += count_bits(pawns & pawns >> 16)
+        double_triple += count_bits(pawns & pawns >> 24)
+    penalty -= (double_triple * 15)
+    
     return penalty
     
 def pawn_cover_bonus(king_zone, position, side):
@@ -177,17 +180,20 @@ def rook_position_bonus(rook, position, side):
     
     return bonus
 
-def minor_outpost_bonus(minor, position, side):
+def minor_outpost_bonus(minor, position, side, potentials):
+    potential_them = potentials[side ^ 1]
     base_type = PieceType.base_type(minor)
     pawns_us = position.pieces[PieceType.piece(PieceType.P, side)]
-    bonus = 25
-    if base_type == PieceType.N:
-        bonus += 10
-    if side == Side.WHITE and (south_west(minor) | south_east(minor)) & pawns_us:
+    if (side == Side.WHITE and (south_west(minor) | south_east(minor)) & pawns_us) or \
+       (side == Side.BLACK and (north_west(minor) | north_east(minor)) & pawns_us):
+        if base_type == PieceType.N:
+            bonus = 45
+        else:
+            bonus = 35
+        if not potentials_them & minor:
+            bonus += 30
         return bonus
-    if side == Side.BLACK and (north_west(minor) | north_east(minor)) & pawns_us:
-        return bonus
-    return bonus
+    return 0
     
 def mobility(position, side, pinned):
     """Bonus for legal moves not attacked by lower weight piece. Pinned pieces
@@ -241,12 +247,12 @@ def mobility(position, side, pinned):
         
         attacks &= opp_attacks ^ FULL_BOARD
         attacks &= position.occupied[side] ^ FULL_BOARD
-        mobility += count_bits(attacks)
+        mobility += count_bits(attacks) * 2
 
     return mobility
 
 def attacked_pieces(position, side):
-    return position.occupied[side] & (position.attacks[side] ^ FULL_BOARD)
+    return position.occupied[side] & position.attacks[side ^ 1]
     
 def unprotected_penalty(position, side, pins):
     us = position.occupied[side]
@@ -256,18 +262,19 @@ def unprotected_penalty(position, side, pins):
     penalty = 0
     for pt in PieceType.piece_types(side=side):
         num = count_bits(position.pieces[pt] & us_attacked)
-        penalty += num * MG_PIECES[PieceType.P]
+        penalty += num * MG_PIECES[PieceType.P] * .5 + 5
         
         defended = us_attacked & position.pieces[pt] & position.attacks[side]
         for defended_piece in iterate_pieces(defended):
             if defended_piece & position.piece_attacks[PieceType.piece(PieceType.P, side=side)]:
                 # defended by pawn
-                penalty -= MG_PIECES[PieceType.P] / 2
+                penalty -= MG_PIECES[PieceType.P] * .25
             else:
-                penalty -= MG_PIECES[PieceType.P] / 4
+                penalty -= MG_PIECES[PieceType.P] * .125
 
         if PieceType.base_type(pt) == PieceType.P:
             continue
+
         # possible to get attack from pawn. Penalty regardless if defended
         for p in iterate_pieces(position.pieces[pt]):
             if side == Side.WHITE:
@@ -289,7 +296,7 @@ def unprotected_penalty(position, side, pins):
                 
                 pawn_from_sqs &= position.pieces[PieceType.piece(PieceType.P, side=side^1)]
                 if pawn_from_sqs:
-                    penalty += (MG_PIECES[PieceType.base_type(pt)] / 8) - 20
+                    # penalty += (MG_PIECES[PieceType.base_type(pt)] / 8) - 20
                     # more penalty if the piece is pinned
                     if p in pins:
                         penalty += (MG_PIECES[PieceType.base_type(pt)] / 3) - 20
@@ -330,3 +337,36 @@ def discoveries_and_pins(position, side, target_piece_type=PieceType.K):
             else: discoverers.append(d)
 
     return (discoverers, pinned)
+
+def pawn_potential_penalty(position, side, potentials):
+    potential = potentials[side]
+    potential ^= FULL_BOARD
+    potential &= (RANKS[2] | RANKS[3] | RANKS[4] | RANKS[5])
+    return count_bits(potential) * 20
+    
+def pawn_attack_potential(p, side):
+    """Returns the squares on either side of pawn, ahead of the pawn. Those
+    squares can be attacked potentially."""
+    p_file, p_rank = get_file(p), get_rank(p)
+    left_file = max(p_file - 1, 0)
+    right_file = min(p_file + 1, 7)
+    above = (p - 1)
+    if side == Side.WHITE:
+        above = above ^ FULL_BOARD
+    above &= (RANKS[p_rank] ^ FULL_BOARD)
+    above &= (FILES[left_file] | FILES[right_file])
+    return above
+
+def all_pawn_attack_potentials(position, side):
+    """Return attack potentials of pawns of side `side`"""
+    pawns = position.pieces[PieceType.piece(PieceType.P, side)]
+    potential = 0
+    for pawn in iterate_pieces(pawns):
+        potential |= pawn_attack_potential(pawn, side)
+    return potential
+    
+def center_attacks_bonus(position, side):
+    bonus = 0
+    for pt in PieceType.piece_types(side=side):
+        bonus += count_bits(position.piece_attacks[pt] & (E4 | E5 | D4 | D5))
+    return bonus * 10

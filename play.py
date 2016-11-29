@@ -22,11 +22,11 @@ def play(position):
     
     if (human_side == "w" and root.side_to_move() == Side.BLACK) or \
        (human_side == "b" and root.side_to_move() == Side.WHITE):
-        val = iterative_deepening(5, root)
-        print("==== Computer move: ==========")
-        print(chosen)
-        print("==============================")
-        root.position.make_move(chosen)
+        val, si = iterative_deepening(5, root, si)
+        # print("==== Computer move: ==========")
+        # print(chosen)
+        # print("==============================")
+        root.make_move(si[0].pv[0])
         
     while not root.is_mate():
         user_move = get_user_move(root.side_to_move())
@@ -77,15 +77,40 @@ pos = Position()
 # pos = Position.from_fen("r1bqk2r/ppp2ppp/8/4n3/2Bp4/7P/PP1N1PP1/R2Q1RK1 w kq - 0 3")
 
 # pos = Position.from_fen("r1bqk2r/ppp2ppp/8/4n3/2Bp4/7P/PP1N1PP1/R2Q1RK1 w kq - 1 1")
+# pos = Position.from_fen("1Qb1kb1r/3q1pp1/p1Rp2n1/4p2p/2PNPP2/N7/6PP/1B4K1 b k - 1 31")
 
 play(pos)
 
-# print("eval", evaluate(pos))
+# pos.make_move(Move(1,E2,E4))
+# pos.make_move(Move(8,B8,C6))
+# pos.make_move(Move(1,D2,D3))
+# evaluate(pos, True)
+# print()
 
+# pos = Position()
+# pos.make_move(Move(1,E2,E4))
+# pos.make_move(Move(8,B8,C6))
+# pos.make_move(Move(1,D2,D4))
+# evaluate(pos, True)
 
-# import time
+# pos = Position.from_fen("rnbqkbnr/ppp1pppp/3p4/8/3PP3/8/PPP2PPP/RNBQKBNR b KQkq - 0 2")
+# print(list(pos.generate_moves()))
+
+# pos = Position.from_fen("rnbqkbnr/1p1p1pp1/7p/p1pP4/4P3/2N2N2/PP2BPPP/R1BQK2R b KQkq - 0 8")
+# print("eval", evaluate(pos, True))
+# pos.make_move(Move(PieceType.B_KING, E8, E7))
+# print()
+# print("eval", evaluate(pos, True))
+
+# pos = Position.from_fen("r1bqk2r/pp3ppp/8/2p1n3/2Bp4/7P/PP1N1PP1/1R1Q1RK1 w kq - 0 2")
+# print_bb(all_pawn_attack_potentials(pos, 0))
+# return count_bits(potential ^ FULL_BOARD) * 20
+# print()
+# print_bb(all_pawn_attack_potentials(pos, 1))
+
+# import time 
 # now = time.time()
-# val = iterative_deepening(6, pos)
+# val, si = iterative_deepening(5, pos)
 # # val = search(SearchPos(pos), [None] * 64, 0, -10000000, 10000000, 1, .001, True)
 # # print("node count", node_count)
 # print(val / 200)
