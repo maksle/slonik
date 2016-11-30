@@ -21,6 +21,9 @@ RANKS = [0xff << (8*i) for i in range(8)]
 # A==0, H==7
 FILES = [0x0101010101010101 << (i) for i in range(7,-1,-1)]
 
+WHITE_SQUARES = 0xAA55AA55AA55AA55
+DARK_SQUARES = WHITE_SQUARES ^ FULL_BOARD
+
 HUMAN_PIECE = {}
 HUMAN_PIECE[PieceType.W_PAWN] = ""
 HUMAN_PIECE[PieceType.W_KNIGHT] = "N"
@@ -389,9 +392,13 @@ def shift_sw(n, side):
 def get_file(n):
     return 7 - (bit_position(n) % 8)
 
-def get_rank(n):
-    return bit_position(n) // 8
-
+def get_rank(n, side=None):
+    rank = bit_position(n) // 8
+    if side is None or side == Side.WHITE:
+        return rank
+    else:
+        return 7 - rank
+       
 BETWEEN_SQS = [[0] * 65 for i in range(64)]
 LINE_SQS = [[0] * 65 for i in range(64)]
 

@@ -179,26 +179,35 @@ def rook_position_bonus(rook, position, side):
             bonus += 45
 
     rank_fill = east_attack(rook, FULL_BOARD) | west_attack(rook, FULL_BOARD)
-    bonus += count_bits(rank_fill & pawns_them) * 70
+    bonus += count_bits(rank_fill & pawns_them) * 8
     
     return bonus
 
 def minor_outpost_bonus(minor, position, side, potentials):
+    if minor == 0: return 0
     potential_them = potentials[side ^ 1]
     base_type = PieceType.base_type(minor)
     pawns_us = position.pieces[PieceType.piece(PieceType.P, side)]
-    outpost_ranks = [RANKS[4] | RANKS[5] | RANKS[6],
-                     RANKS[3] | RANKS[4] | RANKS[5]]
-    if minor & outpost_ranks[side] and ((shift_sw(minor, side) | shift_se(minor, side)) & pawns_us):
-        if base_type == PieceType.N:
-            bonus = 45
-        else:
-            bonus = 35
-        if not potentials_them & minor:
-            bonus += 30
+    outpost_ranks = [RANKS[3] | RANKS[4] | RANKS[5],
+                     RANKS[2] | RANKS[3] | RANKS[4]]
+    outpost_squares = outpost_ranks[side] & (potential_them ^ FULL_BOARD)
+    if outpost_squares:
+        if base_type == PieceType.N: bonus = 25
+        else: bonus = 15
+
+        if minor & outpost_squares: bonus += 10
+        else: bonus += 5
+
         return bonus
     return 0
 
+def bad_bishop_penalty(minor, position, side):
+    color = minor & DARK_SQUARES
+    pawns_us = position.pieces[PieceType.piece(PieceType.P, side)]
+    if color == 0: pawns = pawns_us & WHITE_SQUARES
+    else: pawns = pawns_us & DARK_SQUARES
+    return count_bits(pawns) * 8
+    
 def minor_behind_pawn(minors, position, side):
     pawns_in_front = position.pieces[PieceType.piece(PieceType.P, side)] & shift_north(minors, side)
     pawns_in_front &= (RANKS[2] | RANKS[3] | RANKS[4] | RANKS[5])
@@ -435,6 +444,12 @@ def evaluate(position, debug=False):
                     if debug:
                         print(side_str, "Minor Outpost", HUMAN_PIECE[piece_type], value)
                     evaluations[side] += value
+
+                    if base_type == PieceType.B:
+                        value = bad_bishop_penalty(minor, position, side)
+                        if debug:
+                            print(side_str, "Bad Bishop Penalty", HUMAN_PIECE[piece_type], value)
+                        evaluations[side] -= value
                 
                 value = minor_behind_pawn(piece_type, position, side)
                 if debug:
