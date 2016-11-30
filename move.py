@@ -19,19 +19,14 @@ class Move():
     
     def __str__(self):
         if self.piece_type is None or self.piece_type == PieceType.NULL:
-            return ""
+            return "NULL"
         return HUMAN_PIECE[self.piece_type] \
             + HUMAN_BOARD_INV[self.from_sq] \
             + "-" + HUMAN_BOARD_INV[self.to_sq] \
             + ("+" if self.move_type == MoveType.check else "")
     
     def __repr__(self):
-        if self.piece_type is None or self.piece_type == PieceType.NULL:
-            return ""
-        return HUMAN_PIECE[self.piece_type] \
-            + HUMAN_BOARD_INV[self.from_sq] \
-            + "-" + HUMAN_BOARD_INV[self.to_sq] \
-            + ("+" if self.move_type == MoveType.check else "")
+        return self.__str__()
     
     def __eq__(self, other):
         if isinstance(other, self.__class__):

@@ -68,48 +68,15 @@ def get_user_move(side):
 
 pos = Position()
 
-# alina's game with bxg4 wins piece
-# pos = Position.from_fen("r2qk2r/1pp2p2/p1n1b2p/2b3p1/3pP1n1/N2P4/PPPNBPPP/R1BQ1RK1 w kq - 0 0")
-# pos = Position.from_fen("rn1qkb1r/pp2pppp/5n2/3p1b2/3P4/2N1P3/PP3PPP/R1BQKBNR w KQkq - 0 1")
-# pos = Position.from_fen("rn1qkb1r/pp2pppp/5n2/3p1b2/3P4/1QN1P3/PP3PPP/R1B1KBNR b KQkq - 1 1")
-
-# pos = Position.from_fen("r1bqk2r/ppp2ppp/2n5/4P3/2Bp2n1/5N1P/PP1N1PP1/R2Q1RK1 b kq - 1 1")
-# pos = Position.from_fen("r1bqk2r/ppp2ppp/2n5/4n3/2Bp4/5N1P/PP1N1PP1/R2Q1RK1 w kq - 0 2")
-# pos = Position.from_fen("r1bqk2r/ppp2ppp/8/4n3/2Bp4/7P/PP1N1PP1/R2Q1RK1 w kq - 0 3")
-
-# pos = Position.from_fen("r1bqk2r/ppp2ppp/8/4n3/2Bp4/7P/PP1N1PP1/R2Q1RK1 w kq - 1 1")
-# pos = Position.from_fen("1Qb1kb1r/3q1pp1/p1Rp2n1/4p2p/2PNPP2/N7/6PP/1B4K1 b k - 1 31")
-
-# play(pos)
-# pos = Position.from_fen("r2qkbnr/pbpp1ppp/1pn5/4p3/2P1P3/2N2N2/PP1P1PPP/R1BQKB1R w KQkq - 2 5")
-# print(minor_behind_pawn(pos.pieces[3], pos, 0))
-
-# pos.make_move(Move(1,E2,E4))
-# pos.make_move(Move(8,B8,C6))
-# pos.make_move(Move(1,D2,D3))
-evaluate(pos, True)
-# print()
-
-# pos = Position()
-# pos.make_move(Move(1,E2,E4))
-# pos.make_move(Move(8,B8,C6))
-# pos.make_move(Move(1,D2,D4))
+# pos = Position.from_fen("rnb1kbnr/pp1ppppp/2p5/q7/3PP3/8/PPP2PPP/RNBQKBNR w KQkq - 1 3")
+# pos.make_move(Move(PieceType.K,E1,E2))
 # evaluate(pos, True)
 
-# pos = Position.from_fen("rnbqkbnr/ppp1pppp/3p4/8/3PP3/8/PPP2PPP/RNBQKBNR b KQkq - 0 2")
-# print(list(pos.generate_moves()))
+pos = Position.from_fen("rnb1kbnr/pp1ppppp/2p5/q7/3PP3/8/PPP2PPP/RNBQKBNR w KQkq - 1 3")
+pos.make_move(Move(PieceType.N,B1,C3))
+evaluate(pos, True)
 
-# pos = Position.from_fen("rnbqkbnr/1p1p1pp1/7p/p1pP4/4P3/2N2N2/PP2BPPP/R1BQK2R b KQkq - 0 8")
-# print("eval", evaluate(pos, True))
-# pos.make_move(Move(PieceType.B_KING, E8, E7))
-# print()
-# print("eval", evaluate(pos, True))
-
-# pos = Position.from_fen("r1bqk2r/pp3ppp/8/2p1n3/2Bp4/7P/PP1N1PP1/1R1Q1RK1 w kq - 0 2")
-# print_bb(all_pawn_attack_potentials(pos, 0))
-# return count_bits(potential ^ FULL_BOARD) * 20
-# print()
-# print_bb(all_pawn_attack_potentials(pos, 1))
+# play(pos)
 
 # import time 
 # now = time.time()
@@ -119,7 +86,6 @@ evaluate(pos, True)
 # print(val / 200)
 # then = time.time()
 # print(then-now, 's')
-
 
 # import time
 # now = time.time()
@@ -131,14 +97,3 @@ evaluate(pos, True)
 #     pos = Position.from_fen("r1b1kb1r/1pp1pppp/p1n2n2/8/3P2q1/2NB1N2/PPP2PPP/R1BQR1K1 b kq - 1 8")
 #     pos.make_move(Move(PieceType.B_KNIGHT, C6, D4))
 #     return pos
-
-# import timeit
-# print("evaluate(pos)")
-# timeit.timeit("evaluate(pos)", setup="from search import evaluate; from __main__ import do_test; pos=do_test()", number=1000)
-# print("eval_see(pos, Move(2,F3,D4))")
-# timeit.timeit("eval_see(pos, Move(2,F3,D4))", setup="from evals import eval_see; from move import Move; from bb import F3, D4; from __main__ import do_test; pos=do_test()", number=1000)
-
-# 1262 nodes, .05, 3.6s avg 3.3, max 9
-# 7987 nodes, .01, 21.8s avg 4.9, max 12
-# 20723 nodes, .005, 56.8s, avg 5.8, max 19
-# 94124 nodes, .001, 257.6s, avg 7.8, max 21
