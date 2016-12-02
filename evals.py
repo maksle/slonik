@@ -198,9 +198,11 @@ def minor_outpost_bonus(minor, position, side, potentials):
                      RANKS[2] | RANKS[3] | RANKS[4]]
     outpost_squares = outpost_ranks[side] & (potential_them ^ FULL_BOARD)
     if outpost_squares:
+        # reachable squares
         if base_type == PieceType.N: bonus = 25
         else: bonus = 15
 
+        # successfully outposted
         if minor & outpost_squares: bonus += 10
         else: bonus += 5
 
@@ -272,12 +274,93 @@ def mobility(position, side, pinned):
         attacks &= opp_attacks ^ FULL_BOARD
         attacks &= position.occupied[side] ^ FULL_BOARD
         mobility += count_bits(attacks)
-
+        
     return mobility * 5
 
 def attacked_pieces(position, side):
     return position.occupied[side] & position.attacks[side ^ 1]
     
+def threats(position, side, pins):
+    occupied = position.occupied[Side.WHITE] | position.occupied[Side.BLACK]
+    free = occupied ^ FULL_BOARD
+    rank2 = RANKS[1] if side == Side.WHITE else RANKS[6]
+ 
+    bonus = 0
+    penalty = 0
+    # them_no_qk = position.occupied[side ^ 1] \
+    #     ^ position.pieces[PieceType.piece(PieceType.Q, side ^ 1)] \
+    #     ^ position.pieces[PieceType.piece(PieceType.K, side ^ 1)]
+    # loose_pieces = them_no_qk & ((position.attacks[side] | position.attacks[side]) ^ FULL_BOARD)
+    # if loose_pieces:
+    #     bonus += 25
+
+    # The following is copied as in stockfish:
+    
+    # non-pawn enemies attacked by pawn
+    weak = (position.occupied[side ^ 1] ^ position.pieces[PieceType.piece(PieceType.P, side ^ 1)]) \
+           & (position.piece_attacks[PieceType.piece(PieceType.P, side)])
+
+    if weak:
+        # our pawns protected by us or not attacked by them
+        b = position.pieces[PieceType.piece(PieceType.P, side)] & (position.attacks[side] | (position.attacks[side] ^ FULL_BOARD))
+
+        safe_threats = (shift_ne(b, side) | shift_nw(b, side)) & weak
+
+        if weak ^ safe_threats:
+            bonus += 70
+
+        for threatened_piece in iterate_pieces(safe_threats):
+            bonus += 150
+            if PieceType.base_type(position.squares[threatened_piece]) in [PieceType.R, PieceType.Q]:
+                bonus += 50
+
+    # non-pawn enemies defended by pawn
+    defended = (position.occupied[side ^ 1] ^ position.pieces[PieceType.piece(PieceType.P, side ^ 1)]) \
+           & (position.piece_attacks[PieceType.piece(PieceType.P, side ^ 1)])
+
+    # enemies not defended by a pawn and under our attack
+    weak = position.occupied[side ^ 1] \
+           & (position.piece_attacks[PieceType.piece(PieceType.P, side ^ 1)] ^ FULL_BOARD) \
+           & position.attacks[side]
+
+    if defended | weak:
+        # minor attacks
+        minor_attack = position.piece_attacks[PieceType.piece(PieceType.N, side)] | position.piece_attacks[PieceType.piece(PieceType.B, side)]
+        b = (defended | weak) & minor_attack
+        for attacked in iterate_pieces(b):
+            if position.squares[attacked] == PieceType.N:
+                bonus += 10
+            if position.squares[attacked] > PieceType.N:
+                bonus += 45
+            if position.squares[attacked] == PieceType.Q:
+                bonus += 30
+
+        # rook attacks
+        b = (position.pieces[PieceType.piece(PieceType.Q, side ^ 1)] | weak) & position.piece_attacks[PieceType.piece(PieceType.R, side)]
+        for attacked in iterate_pieces(b):
+            if position.squares[attacked] > PieceType.P and position.squares[attacked] != PieceType.R:
+                bonus += 40
+
+        # hanging
+        bonus += 45 * bit_count(weak & (position.attacks[side ^ 1] ^ FULL_BOARD))
+
+        # king attacks
+        b = weak & position.piece_attacks[PieceType.piece(PieceType.K, side)]:
+        more_than_one = reset_ls1b(b) > 0
+        if more_than_one: bonus += 9 # 120 for endgame
+        elif b: bonus += 3 # 60 for endgame
+
+    # bonus for pawn push that attacks pieces
+    b = position.pieces[PieceType.piece(PieceType.P, side)]
+    b = shift_north(b | (shift_north(b & rank2, side) & free), side)
+    b &= free & (position.attacks[side] | invert(position.attacks[side ^ 1]))
+    b = (shift_ne(b, side) | shift_nw(b, side)) & invert(position.piece_attacks[PieceType.piece(PieceType.P, side)])
+    b2 = 0
+    for p in pinned:
+        b2 |= p
+    bonus += bit_count(b & b2) * 140 + bit_count(b & invert(b2)) * 40
+    return bonus
+        
 def unprotected_penalty(position, side, pins):
     us = position.occupied[side]
     them = position.occupied[side ^ 1]
@@ -286,7 +369,7 @@ def unprotected_penalty(position, side, pins):
     penalty = 0
     for pt in PieceType.piece_types(side=side):
         num = count_bits(position.pieces[pt] & us_attacked)
-        penalty += num * MG_PIECES[PieceType.P] * .5
+        penalty += num * 10
         
         defended = us_attacked & position.pieces[pt] & position.attacks[side]
         for defended_piece in iterate_pieces(defended):
@@ -481,12 +564,12 @@ def evaluate(position, debug=False):
         evaluations[side] += value
                 
         # weak/hanging pieces penalties
-        for ep in next_en_prise(position, side):
-            pt, *rest = ep
-            bt = PieceType.base_type(pt)
-            value = (MG_PIECES[bt] / MG_PIECES[PieceType.P]) * 30
-            if debug: evals["En-prise penalties %s" % (HUMAN_PIECE[bt])][side] += value
-            evaluations[side] -= value
+        # for ep in next_en_prise(position, side):
+        #     pt, *rest = ep
+        #     bt = PieceType.base_type(pt)
+        #     value = (MG_PIECES[bt] / MG_PIECES[PieceType.P]) * 30
+        #     if debug: evals["En-prise penalties %s" % (HUMAN_PIECE[bt])][side] += value
+        #     evaluations[side] -= value
         
         # pins and discoveries to king
         discoverers, pinned = discoveries_and_pins(position, side)
@@ -494,9 +577,14 @@ def evaluate(position, debug=False):
         q_discoverers, q_pinned = discoveries_and_pins(position, side, PieceType.Q)
         
         # unprotected
-        value = unprotected_penalty(position, side, pinned + q_pinned)
-        if debug: evals["Weak/Hanging penalties"][side] += value
-        evaluations[side] -= value
+        # value = unprotected_penalty(position, side, pinned + q_pinned)
+        # if debug: evals["Weak/Hanging penalties"][side] += value
+        # evaluations[side] -= value
+
+        # threats
+        value = threats(position, side, pinned + q_pinned)
+        if debug: evals["Threats bonus"][side] += value
+        evaluations[side] += value
         
         value = len(pinned) * 15
         if debug: evals["Pins to King penalty"][side] += value

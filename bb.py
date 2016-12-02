@@ -338,6 +338,9 @@ def en_pessant_sq(side_to_move, last_move_piece, from_sq, to_sq):
         return from_sq << 8
     return 0
 
+def invert(b):
+    return b ^ FULL_BOARD
+
 def bit_position(square):
     return len(bin(square))-3
 
