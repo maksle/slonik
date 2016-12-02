@@ -85,11 +85,11 @@ pos = Position()
 
 # pos = Position.from_fen("5rk1/5ppp/1p2bn2/2b2N2/4P3/8/P2BP1PP/4KB1R w K - 3 26")
 # pos = Position.from_fen("8/5pkp/6p1/8/4K3/8/6PP/n7 w - - 0 42")
-pos = Position.from_fen("5rk1/4bppp/1p2bn2/8/4P3/4N3/P2BP1PP/4KB1R w K - 1 25")
+# pos = Position.from_fen("5rk1/4bppp/1p2bn2/8/4P3/4N3/P2BP1PP/4KB1R w K - 1 25")
 # pos = Position.from_fen("r4rk1/p3ppbp/5np1/2pp1b2/3P1B2/3BP3/PqP1NPPP/R2QK2R w KQ - 0 13")
-evaluate(pos, True)
+# evaluate(pos, True)
 
-# play(pos)
+play(pos)
 
 # import time 
 # now = time.time()

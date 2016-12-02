@@ -62,4 +62,3 @@ class PieceType():
         else:
             return [PieceType.B_PAWN, PieceType.B_KNIGHT, PieceType.B_BISHOP,
                     PieceType.B_ROOK, PieceType.B_QUEEN, PieceType.B_KING]
-
