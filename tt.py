@@ -47,7 +47,8 @@ ZOBRIST_PIECE_SQUARES = []
 for i in range(0,64):
     piece_arr = []
     ZOBRIST_PIECE_SQUARES.append(piece_arr)
-    for j in range(0,12):
+    piece_arr.append(0)
+    for j in range(1,13):
         piece_arr.append(random.getrandbits(64))
 ZOBRIST_SIDE = get_rand_array(2)
 ZOBRIST_CASTLE = get_rand_array(4)

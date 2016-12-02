@@ -32,14 +32,6 @@ class Position():
         else:
             self.position_flags = Side.WHITE << 6
 
-            self.init_squares() 
-            self.init_pieces()
-            self.init_occupied()
-            self.init_attacks()
-            self.init_zobrist()
-
-            self.moves = []
-
             self.w_king_move_ply = -1
             self.w_king_castle_ply = -1
             self.w_kr_move_ply = -1
@@ -48,6 +40,14 @@ class Position():
             self.b_king_castle_ply = -1
             self.b_kr_move_ply = -1
             self.b_qr_move_ply = -1
+            
+            self.init_squares() 
+            self.init_pieces()
+            self.init_occupied()
+            self.init_attacks()
+            self.init_zobrist()
+
+            self.moves = []
             
     def init_squares(self):
         self.squares = [PieceType.NULL for i in range(0,64)]
@@ -95,14 +95,27 @@ class Position():
             self.piece_attacks[black] = self.get_piece_attacks(base_pt, Side.BLACK)
 
     def init_zobrist(self):
+        free = FULL_BOARD ^ (self.occupied[0] | self.occupied[1])
         self.zobrist_hash = 0
+
+        # pieces
         for piece_type, pieces in enumerate(self.pieces):
             if piece_type != PieceType.NULL:
                 self.zobrist_hash ^= zobrist_pieces(pieces, piece_type)
-        self.zobrist_hash ^= tt.ZOBRIST_SIDE[Side.WHITE]
-        for ind, rand in enumerate(tt.ZOBRIST_CASTLE):
-            self.zobrist_hash ^= rand
-            
+
+        # side to move
+        self.zobrist_hash ^= tt.ZOBRIST_SIDE[self.side_to_move()]
+
+        # castling
+        if self.w_kr_move_ply == -1 and self.w_king_move_ply == -1:
+            self.zobrist_hash ^= tt.ZOBRIST_CASTLE[0]
+        if self.w_qr_move_ply == -1 and self.w_king_move_ply == -1:
+            self.zobrist_hash ^= tt.ZOBRIST_CASTLE[1]
+        if self.b_kr_move_ply == -1 and self.b_king_move_ply == -1:
+            self.zobrist_hash ^= tt.ZOBRIST_CASTLE[2]
+        if self.b_qr_move_ply == -1 and self.b_king_move_ply == -1:
+            self.zobrist_hash ^= tt.ZOBRIST_CASTLE[3]
+        
     @classmethod
     def from_fen(cls, fen):
         pieces, color, castling, en_pessant, halfmove_clock, move_num = fen.split()
@@ -174,11 +187,12 @@ class Position():
 
         # nothing to update for halfmove clock or fullmove num (yet)
         
+        # order matters
+        position.position_flags = position_flags
         position.init_occupied()
         position.init_attacks()
         position.init_zobrist()
         
-        position.position_flags = position_flags
         return position
         
     def blocking_change(self, move):
@@ -225,7 +239,11 @@ because they are being blocked, or will no longer be blocked, by the move."""
                 moves = itertools.chain(king_castle_moves(own, other, attacked, self.position_flags),
                                         king_moves(pieces, own, attacked))
             for from_sq, to_sq in moves:
-                yield Move(pt, from_sq, to_sq, MoveType.regular)
+                if bt == PieceType.P and to_sq & (RANKS[0] | RANKS[7]):
+                    for promo_pt in PieceType.piece_types(side=side):
+                        yield Move(pt, from_sq, to_sq, MoveType.promo, promo_pt)
+                else:
+                    yield Move(pt, from_sq, to_sq, MoveType.regular)
         
     def last_move(self):
         return self.moves[-1] if len(self.moves) else Move(PieceType.NULL, None, None)
@@ -253,9 +271,11 @@ because they are being blocked, or will no longer be blocked, by the move."""
             if not try_move.in_check(self.side_to_move()):
                 if try_move.in_check():
                     move.move_type = MoveType.check
+                if move.to_sq & self.occupied[self.side_to_move() ^ 1]:
+                    move.is_capture = True
                 move.position = try_move
                 yield move
-            
+
     def get_piece_attacks(self, piece_type, side):
         if side is None:
             side = self.side_to_move()
@@ -321,6 +341,7 @@ because they are being blocked, or will no longer be blocked, by the move."""
     
     def make_move(self, move):
         piece_type = move.piece_type
+        base_type = PieceType.base_type(piece_type)
         from_sq = move.from_sq
         to_sq = move.to_sq
         side = Side.WHITE if PieceType.is_white(piece_type) else Side.BLACK
@@ -329,12 +350,11 @@ because they are being blocked, or will no longer be blocked, by the move."""
         capture_mask = to_sq ^ FULL_BOARD
         from_square_ind = bit_position(from_sq)
         to_square_ind = bit_position(to_sq)
-        piece_ind = piece_type - 1
-
+        
         self.position_flags = self.position_flags ^ (1 << 6)
 
-        self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[from_square_ind][piece_ind]
-        self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[to_square_ind][piece_ind]
+        self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[from_square_ind][piece_type]
+        self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[to_square_ind][piece_type]
         self.zobrist_hash ^= tt.ZOBRIST_SIDE[0]
         self.zobrist_hash ^= tt.ZOBRIST_SIDE[1]
 
@@ -387,7 +407,7 @@ because they are being blocked, or will no longer be blocked, by the move."""
                 self.occupied[Side.BLACK] ^= last_move.to_sq
                 self.pieces[PieceType.B_PAWN] ^= last_move.to_sq
                 self.squares[bit_position(last_move.to_sq)] = PieceType.NULL
-
+            
         elif piece_type == PieceType.W_KNIGHT:
             self.pieces[piece_type] = self.pieces[piece_type] ^ (from_sq | to_sq)
 
@@ -417,8 +437,8 @@ because they are being blocked, or will no longer be blocked, by the move."""
                 self.pieces[PieceType.W_ROOK] ^= 0x5
                 self.squares[bit_position(H1)] = PieceType.NULL
                 self.squares[bit_position(F1)] = PieceType.W_ROOK
-                self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[0][PieceType.W_ROOK - 1]
-                self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[2][PieceType.W_ROOK - 1]
+                self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[0][PieceType.W_ROOK]
+                self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[2][PieceType.W_ROOK]
 
             elif from_sq == E1 and to_sq == C1:
                 self.w_qr_move_ply = this_move_num
@@ -429,8 +449,8 @@ because they are being blocked, or will no longer be blocked, by the move."""
                 self.pieces[PieceType.W_ROOK] ^= 0x90
                 self.squares[bit_position(A1)] = PieceType.NULL
                 self.squares[bit_position(D1)] = PieceType.W_ROOK
-                self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[7][PieceType.W_ROOK - 1]
-                self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[4][PieceType.W_ROOK - 1]
+                self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[7][PieceType.W_ROOK]
+                self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[4][PieceType.W_ROOK]
 
         elif piece_type == PieceType.W_ROOK:
             self.pieces[PieceType.W_ROOK] ^= (from_sq | to_sq)
@@ -483,8 +503,8 @@ because they are being blocked, or will no longer be blocked, by the move."""
                 self.pieces[PieceType.B_ROOK] ^= (0x5 << 56)
                 self.squares[bit_position(H8)] = PieceType.NULL
                 self.squares[bit_position(F8)] = PieceType.B_ROOK
-                self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[56][PieceType.B_ROOK - 1]
-                self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[58][PieceType.B_ROOK - 1]
+                self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[56][PieceType.B_ROOK]
+                self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[58][PieceType.B_ROOK]
 
             elif from_sq == E8 and to_sq == C8:
                 self.position_flags = self.position_flags | (1 << 5)
@@ -495,8 +515,8 @@ because they are being blocked, or will no longer be blocked, by the move."""
                 self.pieces[PieceType.B_ROOK] ^= (0x90 << 56)
                 self.squares[bit_position(A8)] = PieceType.NULL
                 self.squares[bit_position(D8)] = PieceType.B_ROOK
-                self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[63][PieceType.B_ROOK - 1]
-                self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[60][PieceType.B_ROOK - 1]
+                self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[63][PieceType.B_ROOK]
+                self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[60][PieceType.B_ROOK]
 
         elif piece_type == PieceType.B_ROOK:
             self.pieces[PieceType.B_ROOK] ^= (from_sq | to_sq)
@@ -509,22 +529,33 @@ because they are being blocked, or will no longer be blocked, by the move."""
                 self.position_flags = self.position_flags | (1 << 5)
                 self.b_qr_move_ply = this_move_num
                 self.zobrist_hash ^= tt.ZOBRIST_CASTLE[3]
-                
-        # self.attacks[Side.WHITE] = self.get_attacks(Side.WHITE)
-        # self.attacks[Side.BLACK] = self.get_attacks(Side.BLACK)
 
+        # promotions
+        if base_type == PieceType.P and get_rank(to_sq, side) == 7:
+            self.pieces[piece_type] ^= to_sq
+            self.pieces[move.promo_piece] ^= to_sq
+            self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[to_square_ind][piece_type]
+            self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[to_square_ind][move.promo_piece]
+        
         # update piece attacks incrementally
+        updated_attacks_pts = []
         # .. for the sliding pieces
         for pt in self.blocking_change(move):
             base_pt = PieceType.base_type(pt)
             pt_side = Side.WHITE if PieceType.is_white(pt) else Side.BLACK
             self.piece_attacks[pt] = self.get_piece_attacks(base_pt, pt_side)
+            updated_attacks_pts.append(pt)
         # .. and for the moved piece
-        self.piece_attacks[piece_type] = self.get_piece_attacks(PieceType.base_type(piece_type), side)
+        if piece_type not in updated_attacks_pts:
+            self.piece_attacks[piece_type] = self.get_piece_attacks(PieceType.base_type(piece_type), side)
+            updated_attacks_pts.append(piece_type)
         # .. and for any captured piece
         captured = self.squares[to_square_ind]
         if captured:
             self.piece_attacks[captured] = self.get_piece_attacks(PieceType.base_type(captured), side ^ 1)
+        # .. and for promo piece
+        if move.move_type == MoveType.promo and move.promo_piece not in updated_attacks_pts:
+            self.piece_attacks[move.promo_piece] = self.get_piece_attacks(PieceType.base_type(move.promo_piece), side)
 
         # recompute the attacks for each side
         for base_pt in [PieceType.P, PieceType.N, PieceType.B, PieceType.R, PieceType.Q, PieceType.K]:
@@ -534,14 +565,13 @@ because they are being blocked, or will no longer be blocked, by the move."""
                 self.attacks[pt_side] |= self.piece_attacks[pt]
             
         self.squares[bit_position(from_sq)] = PieceType.NULL
-        self.squares[bit_position(to_sq)] = piece_type
+        self.squares[bit_position(to_sq)] = piece_type if not move.move_type == MoveType.promo else move.promo_piece
 
         self.moves.append(move)
 
 def zobrist_pieces(pieces, piece_type):
     zobrist_hash = 0
     for piece in iterate_pieces(pieces):
-        square_ind = int(math.log(piece, 2))
-        piece_ind = piece_type - 1
-        zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[square_ind][piece_ind]
+        square_ind = bit_position(piece)
+        zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[square_ind][piece_type]
     return zobrist_hash

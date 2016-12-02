@@ -1,3 +1,5 @@
+import pprint
+from collections import defaultdict
 from material import MG_PIECES, piece_counts, material_eval
 from psqt import psqt_value
 from move_gen import *
@@ -152,7 +154,7 @@ def pawn_structure(position, side):
         double_triple += count_bits(pawns & pawns >> 8)
         double_triple += count_bits(pawns & pawns >> 16)
         double_triple += count_bits(pawns & pawns >> 24)
-    penalty -= (double_triple * 15)
+    penalty -= (double_triple * 30)
     
     return penalty
     
@@ -267,7 +269,7 @@ def mobility(position, side, pinned):
         attacks &= position.occupied[side] ^ FULL_BOARD
         mobility += count_bits(attacks)
 
-    return mobility * 3
+    return mobility * 5
 
 def attacked_pieces(position, side):
     return position.occupied[side] & position.attacks[side ^ 1]
@@ -399,6 +401,8 @@ def evaluate(position, debug=False):
     if ' '.join(map(str, position.moves)) == "e2-e4 e7-e6 Qd1-f3":
         debug = True
     
+    evals = defaultdict(lambda: [0, 0])
+        
     # Check for mate
     if position.is_mate():
         return -1000000
@@ -423,8 +427,7 @@ def evaluate(position, debug=False):
             
             if base_type is not PieceType.K:
                 value = counts[piece_type] * material_eval(counts, base_type, side)
-                if debug:
-                    print(side_str, "Material", HUMAN_PIECE[piece_type], value)
+                if debug: evals["Material %s" % (HUMAN_PIECE[piece_type])][side] += value
                 evaluations[side] += value
                 
             # Positional bonuses and penalties:
@@ -433,51 +436,44 @@ def evaluate(position, debug=False):
             if base_type == PieceType.R:
                 for rook in iterate_pieces(position.pieces[piece_type]):
                     value = rook_position_bonus(rook, position, side)
-                    if debug:
-                        print(side_str, "Rook Position", HUMAN_PIECE[piece_type], value)
+                    if debug: evals["Rook Position %s" % (HUMAN_PIECE[piece_type])][side] += value
                     evaluations[side] += value
                 
             # ..minor outpost, minor behind pawn
             if base_type in [PieceType.B, PieceType.N]:
                 for minor in iterate_pieces(position.pieces[piece_type]):
                     value = minor_outpost_bonus(base_type, position, side, potentials)
-                    if debug:
-                        print(side_str, "Minor Outpost", HUMAN_PIECE[piece_type], value)
+                    if debug: evals["Minor Outpost %s" % (HUMAN_PIECE[piece_type])][side] += value
                     evaluations[side] += value
 
                     if base_type == PieceType.B:
                         value = bad_bishop_penalty(minor, position, side)
-                        if debug:
-                            print(side_str, "Bad Bishop Penalty", HUMAN_PIECE[piece_type], value)
+                        if debug: evals["Bad Bishop Penalty %s" % (HUMAN_PIECE[piece_type])][side] += value
                         evaluations[side] -= value
                 
                 value = minor_behind_pawn(piece_type, position, side)
-                if debug:
-                    print(side_str, "Minor Behind Pawn", HUMAN_PIECE[piece_type], value)
+                if debug: evals["Minor Behind Pawn %s" % (HUMAN_PIECE[piece_type])][side] += value
                 evaluations[side] += value
             
             # ..pawn structure
             if base_type == PieceType.P:
                 value = pawn_structure(position, side)
-                if debug:
-                    print(side_str, "Pawn Structure", value)
+                if debug: evals["Pawn Structure"][side] += value
                 evaluations[side] += value
 
                 value = pawn_potential_penalty(position, side, potentials)
-                if debug:
-                    print(side_str, "Pawn Potential Penalty", value)
+                if debug: evals["Pawn Potential Penalty"][side] += value
                 evaluations[side] -= value
                 
             # ..piece-square table adjustments
             if base_type in [PieceType.P, PieceType.N, PieceType.B, PieceType.K]:
                 value = psqt_value(piece_type, position, side)
-                if debug:
-                    print(side_str, "PSQT adjustments", HUMAN_PIECE[piece_type], value)
+                if debug: evals["PSQT adjustments"][side] += value
                 evaluations[side] += value
 
         # center attacks bonus
         value = center_attacks_bonus(position, side)
-        if debug: print(side_str, "Center Attack Bonus", value)
+        if debug: evals["Center Attack Bonus"][side] += value
         evaluations[side] += value
                 
         # weak/hanging pieces penalties
@@ -485,8 +481,7 @@ def evaluate(position, debug=False):
             pt, *rest = ep
             bt = PieceType.base_type(pt)
             value = (MG_PIECES[bt] / MG_PIECES[PieceType.P]) * 30
-            if debug:
-                print(side_str, "En-prise penalties", HUMAN_PIECE[bt], value)
+            if debug: evals["En-prise penalties %s" % (HUMAN_PIECE[bt])][side] += value
             evaluations[side] -= value
         
         # pins and discoveries to king
@@ -496,23 +491,19 @@ def evaluate(position, debug=False):
         
         # unprotected
         value = unprotected_penalty(position, side, pinned + q_pinned)
-        if debug:
-            print(side_str, "Weak/Hanging penalties", value)
+        if debug: evals["Weak/Hanging penalties"][side] += value
         evaluations[side] -= value
         
         value = len(pinned) * 15
-        if debug:
-            print(side_str, "Pins to King penalty", value)
+        if debug: evals["Pins to King penalty"][side] += value
         evaluations[side] -= value
         
         value = len(discoverers) * 150
-        if debug:
-            print(side_str, "Discovery threats to King penalty", value)
+        if debug: evals["Discovery threats to King penalty"][side] += value
         evaluations[side] -= value
         
         value = len(q_pinned) * 10
-        if debug:
-            print(side_str, "Pins to Queen penalty", value)
+        if debug: evals["Pins to Queen penalty"][side] += value
         evaluations[side] -= value
         
         value = 0
@@ -520,14 +511,12 @@ def evaluate(position, debug=False):
             # defended discoverers
             if discoverer & position.attacks[side ^ 1]:
                 value += 50
-        if debug:
-            print(side_str, "Discovery threats to Queen penalty", value)
+        if debug: evals["Discovery threats to Queen penalty"][side] += value
         evaluations[side] -= value
 
         # mobility, taking pins to king into account
         value = mobility(position, side, pinned)
-        if debug:
-            print(side_str, "Mobility", value)
+        if debug: evals["Mobility"][side] += value
         evaluations[side] += value
         
         # king safety, castle readiness
@@ -536,18 +525,17 @@ def evaluate(position, debug=False):
             # if preserved_castle_rights(position.position_flags, Side.WHITE):
             #     value -= 15 # need to somehow reward being castled :\
             if white_can_castle_kingside(position.position_flags, position.attacks[Side.BLACK], position.occupied[Side.WHITE]):
-                value += (2 - count_bits(position.occupied[Side.WHITE] & (F1 | G1))) * 8
+                value += (2 - count_bits(position.occupied[Side.WHITE] & (F1 | G1))) * 10
             elif white_can_castle_queenside(position.position_flags, position.attacks[Side.BLACK], position.occupied[Side.WHITE]):
-                value += (3 - count_bits(position.occupied[Side.WHITE] & (D1 | C1 | B1))) * 8
+                value += (3 - count_bits(position.occupied[Side.WHITE] & (D1 | C1 | B1))) * 10
         else:
             # if preserved_castle_rights(position.position_flags, Side.BLACK):
             #     value -= 15
             if black_can_castle_kingside(position.position_flags, position.attacks[Side.WHITE], position.occupied[Side.BLACK] ^ FULL_BOARD):
-                value += (2 - count_bits(position.occupied[Side.BLACK] & (F8 | G8))) * 8
+                value += (2 - count_bits(position.occupied[Side.BLACK] & (F8 | G8))) * 10
             elif black_can_castle_queenside(position.position_flags, position.attacks[Side.WHITE], position.occupied[Side.BLACK] ^ FULL_BOARD):
-                value += (3 - count_bits(position.occupied[Side.BLACK] & (D8 | C8 | B8))) * 8
-        if debug:
-            print(side_str, "King Safety", value)
+                value += (3 - count_bits(position.occupied[Side.BLACK] & (D8 | C8 | B8))) * 10
+        if debug: evals["King Safety"][side] += value
         evaluations[side] += value
 
         king_zone_us = king_safety_squares(position, side)
@@ -555,17 +543,19 @@ def evaluate(position, debug=False):
 
         # .. pawn cover of own king
         value = pawn_cover_bonus(king_zone_us, position, side)
-        if debug:
-            print(side_str, "Pawn Cover", value)
+        if debug: evals["Pawn cover"][side] += value
         evaluations[side] += value
         
         # .. king attack bonuses
-        # white += king_zone_attack_bonus(king_zone_b, position, Side.WHITE)
-        # black += king_zone_attack_bonus(king_zone_w, position, Side.BLACK)
+        value = king_zone_attack_bonus(king_zone_them, position, side)
+        if debug: evals["King Attack"][side] += value
+        evaluations[side] += value
 
+    if debug: pprint.pprint(dict(evals))
+    # pprint.pprint(evals.items())
+        
     res_value = int(evaluations[Side.WHITE] - evaluations[Side.BLACK])
-    if debug:
-        print("EVAL", res_value)
+    if debug: print("EVAL", res_value)
     if position.white_to_move():
         return res_value
     else:

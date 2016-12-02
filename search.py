@@ -44,7 +44,21 @@ def update_counter(side, move, counter):
 def lookup_counter(side, move):
     if move and move.piece_type is not PieceType.NULL:
         return counter_history[side][move.piece_type][bit_position(move.to_sq)]
-    
+
+def make_move(move):
+    for i in range(2):
+        for j in range(13):
+            for k in range(64):
+                entry = move_history[i][j][k] 
+                if entry is not None:
+                    move_history[i][j][k] = History(entry.move, entry.value)
+    # for side in move_history:
+    #     for pc in side:
+    #         for sq in pc:
+    #             if sq is not None:
+    #                 embed()
+    #                 sq.value /= 2
+                
 tb_hits = 0
 node_count = 0
 killer_moves = defaultdict(list)
@@ -155,8 +169,9 @@ def search(node, si, ply, a, b, allowance, pv_node, cut_node):
         
     # if curr_p <= thres_p:
     if allowance <= 1:
-        score = qsearch(node, si, ply, a, b, 9, pv_node, in_check)
         # print(node.moves)
+        # print(" | ", end="")
+        score = qsearch(node, si, ply, a, b, 9, pv_node, in_check)
         return score
     
     if not in_check:
@@ -230,7 +245,7 @@ def search(node, si, ply, a, b, allowance, pv_node, cut_node):
         # singular extension logic pretty much as in stockfish
         if singular_extension_eligible and move == Move.move_uncompacted(tt_entry.move):
             # print("Trying Singular:", ' '.join(map(str,node.moves)), move)
-            rbeta = tt_entry.value - (2 * allowance_to_depth(allowance))
+            rbeta = int(tt_entry.value - (2 * allowance_to_depth(allowance)))
             si[ply].excluded_move = move
             si[ply].singular_search = True
             si[ply].skip_early_pruning = True
@@ -288,9 +303,10 @@ def search(node, si, ply, a, b, allowance, pv_node, cut_node):
                         r -= depth_to_allowance(2)
 
             hist = lookup_history(node.side_to_move(), move)
-            if hist and hist.value > 0:
+            # print("hist", move, hist)
+            if hist and hist.value > 1:
                 r -= depth_to_allowance(1)
-            elif hist and hist.value < 0:
+            elif hist and hist.value < -1:
                 r += depth_to_allowance(1)
 
             if r < 0: r = 0
@@ -343,18 +359,14 @@ def search(node, si, ply, a, b, allowance, pv_node, cut_node):
             update_history(node.side_to_move(), best_move, bonus)
             if prior_move and prior_move.piece_type != PieceType.NULL:
                 update_counter(node.side_to_move() ^ 1, prior_move, best_move)
-                # penalize prior move that allowed this good move
-                # TODO: make sure that move was a quiet move?
-                if len(node.moves) > 1 and node.moves[-1] != PieceType.NULL:
+                # penalize prior quiet move that allowed this good move
+                if len(node.moves) > 1 and node.moves[-1] != PieceType.NULL and not node.moves[-1].is_capture:
                     update_history(node.side_to_move(), node.moves[-2], -(bonus + 4))
     elif allowance_to_depth(allowance) >= 2.5 and not best_move_is_capture:
         assert(best_val <= a)
         # reward the move that caused this node to fail low
-        # TODO: make sure node.moves[-2] was a quiet move?
-        # TODO: maybe don't reward at too shallow depth (less confident of it)
-        # bonus = (depth * depth) + (2 * depth) - 2
         bonus = int(allowance) ** 2
-        if len(node.moves) > 1 and node.moves[-2] != PieceType.NULL:
+        if len(node.moves) > 1 and node.moves[-2] != PieceType.NULL and not node.moves[-2].is_capture:
             update_history(node.side_to_move(), node.moves[-2], bonus)
 
     # if best_val == LOW_BOUND:
@@ -404,6 +416,7 @@ def qsearch(node, si, ply, alpha, beta, allowance, pv_node, in_check):
 
             if alpha >= beta:
                 update_ply_stat(ply)
+                # print(node.moves, tt_entry.value)
                 return tt_entry.value
     
     # to stop search of endless checks, including repetition checks
@@ -412,7 +425,9 @@ def qsearch(node, si, ply, alpha, beta, allowance, pv_node, in_check):
         if allowance <= 1 and num_moves > 3 \
            and node.moves[-3].move_type == MoveType.check:
             update_ply_stat(ply)
-            return evaluate(node)
+            static_eval = evaluate(node)
+            # print(node.moves, static_eval)
+            return static_eval
     
     static_eval = None
     if tt_hit:
@@ -434,6 +449,7 @@ def qsearch(node, si, ply, alpha, beta, allowance, pv_node, in_check):
                                         Move(PieceType.NULL, None, None).compact(),
                                         tt.BoundType.LO_BOUND, best_value, allowance, static_eval))
             update_ply_stat(ply)
+            # print(node.moves, best_value)
             return best_value
 
         if pv_node and best_value > alpha:
@@ -490,19 +506,22 @@ def qsearch(node, si, ply, alpha, beta, allowance, pv_node, in_check):
                         tt.save_tt_entry(tt.TTEntry(node.zobrist_hash, move.compact(),
                                                     tt.BoundType.LO_BOUND, best_value, allowance, static_eval))
                         update_ply_stat(ply)
+                        # print(node.moves, score)
                         return score
         
     if len(moves) == 0:
         if static_eval is None:
             static_eval = evaluate(node)
         best_value = static_eval
-        update_ply_stat(ply)
         assert(not in_check or (best_value == -1000000 or best_value == 0))
 
     if pv_node and best_value > a_orig: bound_type = tt.BoundType.EXACT
     else: bound_type = tt.BoundType.HI_BOUND
     tt.save_tt_entry(tt.TTEntry(node.zobrist_hash, best_move.compact(),
                                 bound_type, best_value, allowance, static_eval))
+
+    update_ply_stat(ply)
+    # print(node.moves, best_value)
     return best_value
 
 def find_pv(root_pos):

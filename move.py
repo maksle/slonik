@@ -8,7 +8,7 @@ class MoveType():
     promo=2
 
 class Move():
-    def __init__(self, piece_type, from_sq=0, to_sq=0, move_type=None, promo_piece=None, position=None, see_score=None):
+    def __init__(self, piece_type, from_sq=0, to_sq=0, move_type=None, promo_piece=None, position=None, see_score=None, is_capture=False):
         self.piece_type = piece_type
         self.from_sq = from_sq
         self.to_sq = to_sq
@@ -16,6 +16,7 @@ class Move():
         self.promo_piece = promo_piece
         self.position = position
         self.see_score = see_score
+        self.is_capture = is_capture
     
     def __str__(self):
         if self.piece_type is None or self.piece_type == PieceType.NULL:

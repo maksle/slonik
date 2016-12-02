@@ -12,11 +12,14 @@ def test_lowest_attacker():
     # print(lowest_attacker(position,E4))
     assert(lowest_attacker(position, E4)[1] == 68719476736)
     
-    position.make_move(Move(PieceType.B_PAWN, D5, E4))
+    move = Move(PieceType.B_PAWN, D5, E4)
+    assert(eval_see(position, move) == 0)
+    position.make_move(move)
     assert(lowest_attacker(position, E4)[1]) == 262144
-    assert(eval_see(position, E4) > 0)
-    position.make_move(Move(PieceType.W_PAWN, F3, E4))
-    assert(eval_see(position, E4) == 0)
+
+    move = Move(PieceType.W_PAWN, F3, E4)
+    assert(eval_see(position, move) > 0)
+    position.make_move(move)
     
 test_lowest_attacker()
     

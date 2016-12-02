@@ -27,7 +27,9 @@ def play(position):
         # print("==== Computer move: ==========")
         # print(chosen)
         # print("==============================")
-        root.make_move(si[0].pv[0])
+        move = si[0].pv[0]
+        root.make_move(move)
+        make_move(move)
         
     while not root.is_mate():
         user_move = get_user_move(root.side_to_move())
@@ -40,12 +42,15 @@ def play(position):
         print(user_move)
         print("===============================")
         root.make_move(user_move)
+        make_move(user_move)
         
         val, si = iterative_deepening(depth, root, si)
         # print("==== Computer move: ==========")
         # print("==============================")
-        root.make_move(si[0].pv[0])
-
+        move = si[0].pv[0]
+        root.make_move(move)
+        make_move(move)
+        
     print("Mate?:", child.is_mate())
     print("Gave over")
         
@@ -72,15 +77,23 @@ pos = Position()
 # pos.make_move(Move(PieceType.K,E1,E2))
 # evaluate(pos, True)
 
-pos = Position.from_fen("rnb1kbnr/pp1ppppp/2p5/q7/3PP3/8/PPP2PPP/RNBQKBNR w KQkq - 1 3")
-pos.make_move(Move(PieceType.N,B1,C3))
+# pos = Position.from_fen("rnbqkb1r/ppp1pp1p/5np1/3p4/3P4/2N2N2/PPP1PPPP/R1BQKB1R w KQkq - 0 4")
+# evaluate(pos, True)
+# pos.make_move(Move(PieceType.R,H1,G1))
+# print()
+# evaluate(pos, True)
+
+# pos = Position.from_fen("5rk1/5ppp/1p2bn2/2b2N2/4P3/8/P2BP1PP/4KB1R w K - 3 26")
+# pos = Position.from_fen("8/5pkp/6p1/8/4K3/8/6PP/n7 w - - 0 42")
+pos = Position.from_fen("5rk1/4bppp/1p2bn2/8/4P3/4N3/P2BP1PP/4KB1R w K - 1 25")
+# pos = Position.from_fen("r4rk1/p3ppbp/5np1/2pp1b2/3P1B2/3BP3/PqP1NPPP/R2QK2R w KQ - 0 13")
 evaluate(pos, True)
 
 # play(pos)
 
 # import time 
 # now = time.time()
-# val, si = iterative_deepening(5, pos)
+# val, si = iterative_deepening(5.5, pos)
 # # val = search(SearchPos(pos), [None] * 64, 0, -10000000, 10000000, 1, .001, True)
 # # print("node count", node_count)
 # print(val / 200)
