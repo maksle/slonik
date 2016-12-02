@@ -182,7 +182,11 @@ def rook_position_bonus(rook, position, side):
 
     rank_fill = east_attack(rook, FULL_BOARD) | west_attack(rook, FULL_BOARD)
     bonus += count_bits(rank_fill & pawns_them) * 8
-    
+
+    # connected rooks, gets bonused once for each rook so halving it
+    if position.piece_attack[PieceType.piece(PieceType.R, side)] & rook:
+        bonus += 15
+        
     return bonus
 
 def minor_outpost_bonus(minor, position, side, potentials):
@@ -522,15 +526,11 @@ def evaluate(position, debug=False):
         # king safety, castle readiness
         value = 0
         if side == Side.WHITE:
-            # if preserved_castle_rights(position.position_flags, Side.WHITE):
-            #     value -= 15 # need to somehow reward being castled :\
             if white_can_castle_kingside(position.position_flags, position.attacks[Side.BLACK], position.occupied[Side.WHITE]):
                 value += (2 - count_bits(position.occupied[Side.WHITE] & (F1 | G1))) * 10
             elif white_can_castle_queenside(position.position_flags, position.attacks[Side.BLACK], position.occupied[Side.WHITE]):
                 value += (3 - count_bits(position.occupied[Side.WHITE] & (D1 | C1 | B1))) * 10
         else:
-            # if preserved_castle_rights(position.position_flags, Side.BLACK):
-            #     value -= 15
             if black_can_castle_kingside(position.position_flags, position.attacks[Side.WHITE], position.occupied[Side.BLACK] ^ FULL_BOARD):
                 value += (2 - count_bits(position.occupied[Side.BLACK] & (F8 | G8))) * 10
             elif black_can_castle_queenside(position.position_flags, position.attacks[Side.WHITE], position.occupied[Side.BLACK] ^ FULL_BOARD):
