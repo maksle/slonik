@@ -1,0 +1,14 @@
+
+>> depth: 0.5 , allowance: 2
+Traceback (most recent call last):
+  File "play.py", line 118, in <module>
+    val, si = iterative_deepening(4.5, pos)
+  File "/home/maksle/share/slonik/search.py", line 111, in iterative_deepening
+    val = search(node, si, 0, alpha, beta, allowance, True, False)
+  File "/home/maksle/share/slonik/search.py", line 360, in search
+    val = -search(child, si, ply+1, -b, -a, int(allowance * move.prob), True, False)
+  File "/home/maksle/share/slonik/search.py", line 173, in search
+    score = qsearch(node, si, ply, a, b, 9, pv_node, in_check)
+  File "/home/maksle/share/slonik/search.py", line 508, in qsearch
+    print("move", move, "counter is", lookup_counter(node.side_to_move(), move).move)
+AttributeError: 'NoneType' object has no attribute 'move'

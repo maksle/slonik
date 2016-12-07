@@ -2,11 +2,11 @@ from bb import *
 
 MG_PIECES = [None for i in range(0, 7)]
 MG_PIECES[PieceType.NULL] = 0
-MG_PIECES[PieceType.P] = 200
-MG_PIECES[PieceType.N] = 650
-MG_PIECES[PieceType.B] = 650
-MG_PIECES[PieceType.R] = 1000
-MG_PIECES[PieceType.Q] = 1950
+MG_PIECES[PieceType.P] = 188
+MG_PIECES[PieceType.N] = 753
+MG_PIECES[PieceType.B] = 826
+MG_PIECES[PieceType.R] = 1285
+MG_PIECES[PieceType.Q] = 2513
 MG_PIECES[PieceType.K] = 0
 
 def material_eval(counts, piece_t, side):

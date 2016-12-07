@@ -19,7 +19,7 @@ def play(position):
     #         pass
 
     si = [None] * 64
-    depth = 5.5
+    depth = 4
     
     if (human_side == "w" and root.side_to_move() == Side.BLACK) or \
        (human_side == "b" and root.side_to_move() == Side.WHITE):
@@ -83,17 +83,38 @@ pos = Position()
 # print()
 # evaluate(pos, True)
 
-# pos = Position.from_fen("5rk1/5ppp/1p2bn2/2b2N2/4P3/8/P2BP1PP/4KB1R w K - 3 26")
-# pos = Position.from_fen("8/5pkp/6p1/8/4K3/8/6PP/n7 w - - 0 42")
-# pos = Position.from_fen("5rk1/4bppp/1p2bn2/8/4P3/4N3/P2BP1PP/4KB1R w K - 1 25")
-# pos = Position.from_fen("r4rk1/p3ppbp/5np1/2pp1b2/3P1B2/3BP3/PqP1NPPP/R2QK2R w KQ - 0 13")
+# pos = Position.from_fen("r1bqk2r/ppp2ppp/8/4n3/2Bp4/7P/PP1N1PP1/R2QR1K1 b kq - 1 12")
+# evaluate(pos, True)
+# print()
+# pos.make_move(Move(PieceType.Q + 6, D8, E7))
+# evaluate(pos, True)
+# print()
+# pos = Position.from_fen("r1bqk2r/ppp2ppp/8/4n3/2Bp4/7P/PP1N1PP1/R2QR1K1 b kq - 1 12")
+# pos.make_move(Move(PieceType.Q + 6, D8, F6))
+# evaluate(pos, True)
+# pos.make_move(Move(PieceType.N, D2, F3))
 # evaluate(pos, True)
 
-play(pos)
+pos = Position.from_fen("r1bqk2r/ppp2ppp/2n5/4P3/2Bp2n1/5N1P/PP1N1PP1/R2Q1RK1 b kq - 1 10")
+# pos = Position.from_fen("r1b1k2r/ppp2ppp/5q2/4n3/2Bp4/5N1P/PP3PP1/R2QR1K1 b kq - 3 13")
+# pos = Position.from_fen("r1bq1k1r/ppp3pp/5p2/4n3/2BN4/7P/PP3PP1/R2QR1K1 b - - 0 14")
+pos = Position.from_fen("r1bqk2r/1pp2ppp/2n5/4P3/p1BN4/7P/PP1Q1PP1/3R1RK1 b kq - 0 15")
+
+pos = Position.from_fen("r1bqk2r/1pp2ppp/8/4n3/p1BN4/7P/PP1Q1PP1/3RR1K1 b kq - 1 16")
+evaluate(pos, True)
+# play(pos)
+
+#Ng4-e5 Re1
+# pos = Position.from_fen("r1bqk2r/ppp2ppp/2n5/4n3/2Bp4/5N1P/PP1N1PP1/R2QR1K1 b kq - 1 11")
+# evaluate(pos, True)
+
+#Ng4-e5 Ne5 Ne5 Re1
+# pos = Position.from_fen("r1bqk2r/ppp2ppp/8/4n3/2Bp4/7P/PP1N1PP1/R2QR1K1 b kq - 1 12")
+# evaluate(pos, True)
 
 # import time 
 # now = time.time()
-# val, si = iterative_deepening(5.5, pos)
+# val, si = iterative_deepening(4, pos)
 # # val = search(SearchPos(pos), [None] * 64, 0, -10000000, 10000000, 1, .001, True)
 # # print("node count", node_count)
 # print(val / 200)

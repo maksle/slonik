@@ -66,7 +66,7 @@ def psqt_value_sq(piece, square, side):
         val = bishop[ind_for_square(square, side)]
     else:
         return 0
-    return val
+    return val / 2
         
 def psqt_value(piece, position, side):
     val = 0

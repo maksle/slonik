@@ -10,13 +10,14 @@ class Position():
     def __init__(self, pos = None):
         if pos is not None:
             self.position_flags = pos.position_flags
-
+            
             self.squares = pos.squares[:]
             self.pieces = pos.pieces[:]
             self.occupied = pos.occupied[:]
             self.piece_attacks = pos.piece_attacks[:]
             self.attacks = pos.attacks[:]
             self.moves = pos.moves[:]
+            self.pinned = pos.pinned[:]
 
             self.w_king_move_ply = pos.w_king_move_ply
             self.w_king_castle_ply = pos.w_king_castle_ply
@@ -48,6 +49,9 @@ class Position():
             self.init_zobrist()
 
             self.moves = []
+
+            # filled during evaluation
+            self.pinned = [0 for i in range(13)]
             
     def init_squares(self):
         self.squares = [PieceType.NULL for i in range(0,64)]
@@ -334,6 +338,15 @@ because they are being blocked, or will no longer be blocked, by the move."""
                 return False
         return True
         
+    def make_null_move(self):
+        self.moves.append(Move(PieceType.NULL))
+        self.toggle_side_to_move()
+
+    def undo_null_move(self):
+        assert(self.moves[-1] == Move(PieceType.NULL))
+        self.moves.pop()
+        self.toggle_side_to_move()
+
     def toggle_side_to_move(self):
         self.position_flags ^= 1 << 6
         self.zobrist_hash ^= tt.ZOBRIST_SIDE[0]
