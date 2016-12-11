@@ -168,7 +168,7 @@ xray attacks."""
     # king flank huddling bonus
     bonus += count_bits(position.attacks[us] & flank) * 4
     # extra bonus for double attacks in flank, not defended by pawn
-    bonus += count_bits(position.attacks[us] & flank & attacked_by_2[us] & invert(position.piece_attacks[Pt.piece(Pt.P, them)])) * 4
+    bonus += count_bits(position.attacks[us] & flank & attacked_by_2[us] & invert(position.piece_attacks[Pt.piece(Pt.P, them)])) * 7
     
     # safe positions to check from
     safe = invert(position.attacks[them] | position.occupied[us])
@@ -199,38 +199,11 @@ xray attacks."""
     safe_q_contact_checks = king_defended & attacked_by_2[us] & position.piece_attacks[Pt.piece(Pt.Q, us)]
     if safe_q_contact_checks: bonus += 35
     
-    # types = 0
-    # for pt in Pt.piece_types(side=side):
-    #     num = count_bits(position.piece_attacks[pt] & king_zones[them])
-    #     if num:
-    #         types += 1
-    #         bonus += num * 10 * types
-    
     # attack more difficult without the queen
     if position.pieces[Pt.piece(Pt.Q, us)] == 0:
         bonus /= 2
 
     return int(bonus)
-
-def pawn_structure(position, side):
-    pt = Pt.piece(Pt.P, side)
-    pawns = position.pieces[pt]
-
-    penalty = 0
-
-    # doubled and tripled pawns
-    double_triple = 0
-    if side == Side.WHITE:
-        double_triple += count_bits(pawns & pawns << 8)
-        double_triple += count_bits(pawns & pawns << 16)
-        double_triple += count_bits(pawns & pawns << 24)
-    else:
-        double_triple += count_bits(pawns & pawns >> 8)
-        double_triple += count_bits(pawns & pawns >> 16)
-        double_triple += count_bits(pawns & pawns >> 24)
-    penalty -= (double_triple * 30)
-    
-    return penalty
     
 def pawn_cover_bonus(king_zones, position, side):
     pawn_type = Pt.piece(Pt.P, side)
@@ -263,25 +236,67 @@ def rook_position_bonus(rook, position, side):
         
     return bonus
 
+def pawns_evaluation(position, side):
+    us, them = side, side ^ 1
+    pawns_us = position.pieces[Pt.piece(Pt.P, us)]
+    pawns_them = position.pieces[Pt.piece(Pt.P, them)]
+
+    score = 0
+    
+    files = set(get_file(p) for p in iterate_pieces(pawns_us))
+    
+    protected = (shift_ne(pawns_us, us) | shift_nw(pawns_us, us)) & pawns_us
+    phalanx = (shift_east(pawns_us, us) | shift_west(pawns_us, us)) & pawns_us
+    connected = protected | phalanx
+    
+    isolated = 0
+    opposed = 0
+    for f in files:
+        fl = 1 if f == 0 else f - 1
+        fr = 6 if f == 7 else f + 1
+        if not (FILES[fl] & pawns_us) | (FILES[fr] & pawns_us):
+            isolated |= FILES[f] & pawns_us
+        if FILES[f] & pawns_them:
+            opposed |= FILES[f] & pawns_us
+        
+    doubled = 0
+    for f in files:
+        doubled |= reset_ls1b(pawns_us & FILES[f])
+
+    score -= count_bits(isolated & opposed) * 30
+    score -= count_bits(isolated ^ opposed) * 40
+    for c in iterate_pieces(connected):
+        val = 2 ** get_rank(c, us)
+        if c & phalanx:
+            val += val - (2 ** (get_rank(c, us) - 1))
+        if c & opposed:
+            val >> 1
+        score += val
+    score -= count_bits(doubled) * 20
+    # TODO: add backward pawns
+    # don't recount these if backward
+    score -= count_bits(pawns_us ^ protected) * 15
+    return score
+    
 def minor_outpost_bonus(minor, position, side, potentials):
     if minor == 0: return 0
     us = side
     them = side ^ 1
     potential_them = potentials[them]
+    potential_us = potentials[us]
     base_type = Pt.base_type(minor)
     pawns_us = position.pieces[Pt.piece(Pt.P, side)]
     outpost_ranks = [RANKS[3] | RANKS[4] | RANKS[5],
                      RANKS[2] | RANKS[3] | RANKS[4]]
-    outpost_squares = outpost_ranks[side] & invert(potential_them)
+    outpost_squares = outpost_ranks[side] & invert(potential_them) & potential_us
     if outpost_squares:
         # reachable squares
-        if base_type == Pt.N: bonus = 25
-        else: bonus = 15
+        if base_type == Pt.N: bonus = 12
+        else: bonus = 7
 
         # successfully outposted
-        if minor & outpost_squares: bonus += 10
-        else: bonus += 5
-
+        if minor & outpost_squares: bonus += 35
+        
         return bonus
     return 0
 
@@ -316,37 +331,7 @@ def mobility(position, side, PINNED):
         for piece_type in lower_wts:
             opp_pt = Pt.piece(piece_type, side ^ 1)
             opp_attacks |= position.piece_attacks[opp_pt]
-        
-        attacks = 0
-        
-        if len(pinned_piece_types) and pt in pinned_piece_types:
-            occupied = position.occupied[Side.WHITE] | position.occupied[Side.BLACK]
-            free = occupied ^ FULL_BOARD
-
-            for p_sq in iterate_pieces(position.pieces[pt]):
-                this_piece_attacks = 0
-                if pt == Pt.P:
-                    this_piece_attacks = pawn_attack(p_sq, side)
-                elif pt == Pt.N:
-                    this_piece_attacks = knight_attack(p_sq)
-                elif pt == Pt.B:
-                    this_piece_attacks = bishop_attack(p_sq, free)
-                elif pt == Pt.R:
-                    this_piece_attacks = rook_attack(p_sq, free)
-                elif pt == Pt.Q:
-                    this_piece_attacks = queen_attack(p_sq, free)
-                elif pt == Pt.K:
-                    this_piece_attacks = king_attack(p_sq)
-
-                # mobility restricted for pinned pieces
-                if p_sq & PINNED[side][Pt.K]:
-                    k_sq = position.pieces[Pt.piece(Pt.K, side)]
-                    this_piece_attacks &= LINE_SQS[bit_position(p_sq)][bit_position(k_sq)]
-                
-                attacks |= this_piece_attacks
-        else:
-            attacks = position.piece_attacks[pt]
-        
+        attacks = position.piece_attacks[pt]
         attacks &= invert(opp_attacks)
         attacks &= invert(position.occupied[side])
         mobility_factor = base_pt if base_pt < Pt.K else 1
@@ -440,6 +425,7 @@ def threats(position, side, PINNED):
     b = (shift_ne(b, us) | shift_nw(b, us)) & invert(position.piece_attacks[Pt.piece(Pt.P, us)])
     b2 = PINNED[them][Pt.K] | PINNED[them][Pt.Q]
     bonus += count_bits(b & b2 & position.occupied[them]) * 70 + count_bits(b & invert(b2) & position.occupied[them]) * 20
+             
     return bonus
         
 def unprotected_penalty(position, side, pins):
@@ -495,6 +481,59 @@ def unprotected_penalty(position, side, pins):
     
     return int(penalty * 1 / 4)
 
+def pawn_potential_penalty(position, side, potentials):
+    potential = potentials[side]
+    potential ^= FULL_BOARD
+    potential &= (RANKS[2] | RANKS[3] | RANKS[4] | RANKS[5])
+    return count_bits(potential) * 2
+    
+def pawn_attack_potential(p, side):
+    """Returns the squares on either side of pawn, ahead of the pawn. Those
+    squares can be attacked potentially."""
+    p_file, p_rank = get_file(p), get_rank(p)
+    left_file = max(p_file - 1, 0)
+    right_file = min(p_file + 1, 7)
+    above = (p - 1)
+    if side == Side.WHITE:
+        above = above ^ FULL_BOARD
+    above &= (RANKS[p_rank] ^ FULL_BOARD)
+    above &= (FILES[left_file] | FILES[right_file])
+    return above
+
+def all_pawn_attack_potentials(position, side):
+    """Return attack potentials of pawns of side `side`"""
+    pawns = position.pieces[Pt.piece(Pt.P, side)]
+    potential = 0
+    for pawn in iterate_pieces(pawns):
+        potential |= pawn_attack_potential(pawn, side)
+    return potential
+    
+def center_attacks_bonus(position, side):
+    bonus = 0
+    for pt in Pt.piece_types(side=side):
+        value = count_bits(position.piece_attacks[pt] & (E4 | E5 | D4 | D5))
+        if Pt.base_type(pt) == Pt.P:
+            value *= 2
+        bonus += value
+    return bonus * 5
+
+def fix_attacks(position, side, PINNED):
+    pinned_types = [position.squares[bit_position(p)] for p in iterate_pieces(PINNED[side][Pt.K])]
+    ksq = position.pieces[Pt.piece(Pt.K, side)]
+    free = position.occupied[side] | position.occupied[side ^ 1]
+    for pt in pinned_types:
+        position.piece_attacks[pt] = 0
+        for p in iterate_pieces(position.pieces[pt]):
+            attacks = piece_attacks(pt, p, free)
+            if p & PINNED[side][Pt.K]:
+                attacks &= LINE_SQS[bit_position(p)][bit_position(ksq)]
+            position.piece_attacks[pt] |= attacks
+
+    if PINNED[side][Pt.K]:
+        position.attacks[side] = 0
+        for pt in PieceType.piece_types(side=side):
+            position.attacks[side] |= position.piece_attacks[pt]
+
 def discoveries_and_pins(position, side, target_piece_type=Pt.K):
     """Return squares of singular pieces between sliders and the king of side
     `side`. Blockers of opposite side can move and cause discovered check, and
@@ -534,42 +573,6 @@ def discoveries_and_pins(position, side, target_piece_type=Pt.K):
                 
     return (discoverers, pinned)
 
-def pawn_potential_penalty(position, side, potentials):
-    potential = potentials[side]
-    potential ^= FULL_BOARD
-    potential &= (RANKS[2] | RANKS[3] | RANKS[4] | RANKS[5])
-    return count_bits(potential) * 2
-    
-def pawn_attack_potential(p, side):
-    """Returns the squares on either side of pawn, ahead of the pawn. Those
-    squares can be attacked potentially."""
-    p_file, p_rank = get_file(p), get_rank(p)
-    left_file = max(p_file - 1, 0)
-    right_file = min(p_file + 1, 7)
-    above = (p - 1)
-    if side == Side.WHITE:
-        above = above ^ FULL_BOARD
-    above &= (RANKS[p_rank] ^ FULL_BOARD)
-    above &= (FILES[left_file] | FILES[right_file])
-    return above
-
-def all_pawn_attack_potentials(position, side):
-    """Return attack potentials of pawns of side `side`"""
-    pawns = position.pieces[Pt.piece(Pt.P, side)]
-    potential = 0
-    for pawn in iterate_pieces(pawns):
-        potential |= pawn_attack_potential(pawn, side)
-    return potential
-    
-def center_attacks_bonus(position, side):
-    bonus = 0
-    for pt in Pt.piece_types(side=side):
-        value = count_bits(position.piece_attacks[pt] & (E4 | E5 | D4 | D5))
-        if Pt.base_type(pt) == Pt.P:
-            value *= 2
-        bonus += value
-    return bonus * 5
-
 def evaluate(position, debug=False):
     if ' '.join(map(str, position.moves)) == "e2-e4 e7-e6 Qd1-f3":
         debug = True
@@ -592,13 +595,17 @@ def evaluate(position, debug=False):
 
     PINNED = [[0 for bt in range(7)] for i in range(2)]
     DISCOVERERS = [[0 for bt in range(7)] for i in range(2)]
-
+    
     for side in [Side.WHITE, Side.BLACK]:
         for bt in [Pt.K, Pt.Q]:
             discoverers, pinned = discoveries_and_pins(position, side, bt)
             DISCOVERERS[side ^ 1][bt] = discoverers
             PINNED[side][bt] = pinned
-    
+
+    # TODO: Perhaps incremental attacks is not worth it
+    fix_attacks(position, Side.WHITE, PINNED)
+    fix_attacks(position, Side.BLACK, PINNED)
+            
     for side in [Side.WHITE, Side.BLACK]:
 
         side_str = "WHITE" if side == Side.WHITE else "BLACK"
@@ -640,7 +647,7 @@ def evaluate(position, debug=False):
             
             # ..pawn structure
             if base_type == Pt.P:
-                value = pawn_structure(position, side)
+                value = pawns_evaluation(position, side)
                 if debug: evals["Pawn Structure"][side] += value
                 evaluations[side] += value
 
@@ -702,14 +709,14 @@ def evaluate(position, debug=False):
         value = 0
         if side == Side.WHITE:
             if white_can_castle_kingside(position.position_flags, position.attacks[Side.BLACK], position.occupied[Side.WHITE]):
-                value += (2 - count_bits(position.occupied[Side.WHITE] & (F1 | G1))) * 10
+                value += (2 - count_bits(position.occupied[Side.WHITE] & (F1 | G1))) * 4
             elif white_can_castle_queenside(position.position_flags, position.attacks[Side.BLACK], position.occupied[Side.WHITE]):
-                value += (3 - count_bits(position.occupied[Side.WHITE] & (D1 | C1 | B1))) * 10
+                value += (3 - count_bits(position.occupied[Side.WHITE] & (D1 | C1 | B1))) * 4
         else:
             if black_can_castle_kingside(position.position_flags, position.attacks[Side.WHITE], position.occupied[Side.BLACK] ^ FULL_BOARD):
-                value += (2 - count_bits(position.occupied[Side.BLACK] & (F8 | G8))) * 10
+                value += (2 - count_bits(position.occupied[Side.BLACK] & (F8 | G8))) * 4
             elif black_can_castle_queenside(position.position_flags, position.attacks[Side.WHITE], position.occupied[Side.BLACK] ^ FULL_BOARD):
-                value += (3 - count_bits(position.occupied[Side.BLACK] & (D8 | C8 | B8))) * 10
+                value += (3 - count_bits(position.occupied[Side.BLACK] & (D8 | C8 | B8))) * 4
         if debug: evals["Castling readiness"][side] += value
         evaluations[side] += value
         

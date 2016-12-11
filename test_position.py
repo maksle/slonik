@@ -114,6 +114,43 @@ def test_promotion2():
     assert(position.squares[bit_position(F1)] == PieceType.B_QUEEN)
     assert(position.piece_attacks[PieceType.B_QUEEN] == 18232691494221090331)
     assert(position.pieces[PieceType.B_QUEEN] == (F1 | G8))
+
+def test_fix_attacks_for_pins():
+    pos = Position.from_fen("r1bqk2r/1pp2ppp/8/4n3/p1BN4/7P/PP1Q1PP1/3RR1K1 b kq - 1 16")
+    before = pos.attacks[1]
+    before_w = pos.attacks[0]
+    
+    PINNED = [[0 for bt in range(7)] for i in range(2)]
+    for side in [Side.WHITE, Side.BLACK]:
+        for bt in [Pt.K, Pt.Q]:
+            discoverers, pinned = discoveries_and_pins(pos, side, bt)
+            PINNED[side][bt] = pinned
+    
+    fix_attacks(pos, Side.BLACK, PINNED)
+    after = pos.attacks[1]
+    after_w = pos.attacks[0]
+    
+    assert(before ^ after == 538181632)
+    assert(before_w == after_w)
+
+def test_fix_attacks_for_pins_2():
+    pos = Position.from_fen("r1bqk2r/1pp2ppp/8/4n3/p1BN4/7P/PP1Q1PP1/3RR1K1 b kq - 1 16")
+    before = pos.attacks[1]
+    before_w = pos.attacks[0]
+    
+    PINNED = [[0 for bt in range(7)] for i in range(2)]
+    for side in [Side.WHITE, Side.BLACK]:
+        for bt in [Pt.K, Pt.Q]:
+            discoverers, pinned = discoveries_and_pins(pos, side, bt)
+            PINNED[side][bt] = pinned
+    
+    fix_attacks(pos, Side.WHITE, PINNED)
+    fix_attacks(pos, Side.BLACK, PINNED)
+    after = pos.attacks[1]
+    after_w = pos.attacks[0]
+    
+    assert(before ^ after == 538181632)
+    assert(before_w == after_w)
     
 if __name__ == "__main__":
     import sys

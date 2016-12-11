@@ -1,5 +1,6 @@
 from IPython import embed
 import time 
+import pprint
 from collections import namedtuple
 from position import *
 from constants import *
@@ -34,7 +35,7 @@ def update_history(side, move, value):
 def lookup_history(side, move):
     if move and move.piece_type is not PieceType.NULL:
         return move_history[side][move.piece_type][bit_position(move.to_sq)]
-    
+
 # counter moves
 Counter = namedtuple('Counter', ['move'])
 counter_history = [[[None for i in range(64)] for i in range(13)] for i in range(2)]
@@ -130,6 +131,8 @@ def iterative_deepening(target_depth, node, si=None):
         then = time.time()
         print(then-now, 's')
     
+    # pprint.pprint(move_history)
+        
     return val, si
     
 def search(node, si, ply, a, b, allowance, pv_node, cut_node):
@@ -236,8 +239,8 @@ def search(node, si, ply, a, b, allowance, pv_node, cut_node):
     
     for move in moves:
         
-        # if ' '.join(map(str,node.moves)) == "Ng4-e5 Nf3-e5 Nc6-e5 Rf1-e1 Qd8-f6" and str(move)=="Nd2-f3":
-        #     print("debug")
+        if ' '.join(map(str,node.moves)) == "Ng4-e5 Nf3-e5 Nc6-e5 Rf1-e1 f7-f6 f2-f4" and str(move) == "f6-f5":
+            print("debug")
     
         if counter is not None and counter.move == move:
             move.prob *= 1.25
@@ -337,9 +340,9 @@ def search(node, si, ply, a, b, allowance, pv_node, cut_node):
 
             hist = lookup_history(node.side_to_move(), move)
             # print("hist", move, hist)
-            if hist and hist.value > 1:
+            if hist and hist.value > 20:
                 r -= depth_to_allowance(1)
-            elif hist and hist.value < -1:
+            elif hist and hist.value < -20:
                 r += depth_to_allowance(1)
 
             if r < 0: r = 0
@@ -364,30 +367,26 @@ def search(node, si, ply, a, b, allowance, pv_node, cut_node):
             #     print("movecount", move_count, move, list(map(str,node.moves)))
             best_move_is_capture = is_capture
             if pv_node:
-                if is_root:
-                    print("new best move", move, "val:", val, "alpha", a_orig, "beta", b)
+                print("local best move", node.moves, move, "val:", val, "alpha", a_orig, "beta", b)
+                # if is_root:
+                #     print("new best move", move, "val:", val, "alpha", a_orig, "beta", b)
                 if val > a:
                     # next_move_prob = None
                     si[ply].pv = [move] + si[ply+1].pv
                     si[ply+1].pv = []
                     if is_root:
                         print_moves(si[ply].pv)
-                        print("new best move (>a)", move, "val:", val, "alpha", a_orig, "beta", b)
+                        print("new best move (root,>a)", move, "val:", val, "alpha", a_orig, "beta", b)
                 
         a = max(a, val)
         if a >= b:
             print("fail-high", node.moves, "\"", best_move, "\"", val, a_orig, b)
-            # if is_root:
-            #     print("fail-high", node.moves, "\"", best_move, "\"", val, a_orig, b)
             if best_move: 
                 add_killer(ply, best_move)
             break
-        else:
+        elif a <= a_orig:
             print("fail-low", node.moves, "\"", move, "\"", val, a_orig, b)
-            # if is_root:
-            #     print("fail-low", node.moves, "\"", move, "\"", val, a_orig, b)
-            pass
-
+        
     prior_move = node.last_move()
     if len(moves) == 0:
         # mate or statemate
@@ -736,5 +735,4 @@ def evaluate_moves(position):
         pos.make_move(move)
         scores.append(evaluate(pos))
     res = list(sorted(zip(map(str,moves), scores), key=lambda x: x[1]))
-    import pprint
     return pprint.pprint(res)

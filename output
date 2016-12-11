@@ -1,188 +1,2304 @@
 
 >> depth: 0.5 , allowance: 2
-new best move Ng4-e5 val: 502 alpha -18 beta 18
-Ng4-e5
-new best move (>a) Ng4-e5 val: 502 alpha -18 beta 18
-fail-high [] " Ng4-e5 " 502 -18 18
-node_count: 9 avg ply: 3.4285714285714284 max ply: 5 alpha 502 beta 18 val 502
-pv: [Ng4-e5]
+new best move Nc6-a5 val: 54 alpha -18 beta 18
+Nc6-a5
+new best move (>a) Nc6-a5 val: 54 alpha -18 beta 18
+fail-high [] " Nc6-a5 " 54 -18 18
+node_count: 7 avg ply: 2.2 max ply: 3 alpha 54 beta 18 val 54
+pv: [Nc6-a5]
 
-failhigh a -18 b 18 val 502 factor 18
-new best move Ng4-e5 val: 502 alpha -18 beta 520
-Ng4-e5 Nf3-e5 Nc6-e5
-new best move (>a) Ng4-e5 val: 502 alpha -18 beta 520
-node_count: 94 avg ply: 1.6538461538461537 max ply: 5 alpha 502 beta 520 val 502
-REAL PV: [Ng4-e5, Nf3-e5, Nc6-e5]
+failhigh a -18 b 18 val 54 factor 18
+new best move Nc6-a5 val: 86 alpha -18 beta 72
+Nc6-a5
+new best move (>a) Nc6-a5 val: 86 alpha -18 beta 72
+fail-high [] " Nc6-a5 " 86 -18 72
+node_count: 17 avg ply: 2.3846153846153846 max ply: 3 alpha 86 beta 72 val 86
+pv: [Nc6-a5]
 
-0.3263990879058838 s
+failhigh a -18 b 72 val 86 factor 30
+new best move Nc6-a5 val: 86 alpha -18 beta 116
+Nc6-a5 Qd1-a4+ c7-c6
+new best move (>a) Nc6-a5 val: 86 alpha -18 beta 116
+fail-low [] " Nc6-a5 " 86 -18 116
+new best move d4-d3 val: 145 alpha -18 beta 116
+d4-d3
+new best move (>a) d4-d3 val: 145 alpha -18 beta 116
+fail-high [] " d4-d3 " 145 -18 116
+node_count: 33 avg ply: 2.36 max ply: 3 alpha 145 beta 116 val 145
+pv: [d4-d3]
+
+failhigh a -18 b 116 val 145 factor 46
+new best move d4-d3 val: 145 alpha -18 beta 191
+d4-d3
+new best move (>a) d4-d3 val: 145 alpha -18 beta 191
+fail-low [] " d4-d3 " 145 -18 191
+fail-low [] " Nc6-a5 " 130 -18 191
+fail-low [] " g7-g5 " 124 -18 191
+fail-low [] " g7-g6 " 88 -18 191
+fail-low [] " f7-f5 " 89 -18 191
+fail-low [] " f7-f6 " 118 -18 191
+fail-low [] " b7-b6 " 103 -18 191
+fail-low [] " a7-a5 " 140 -18 191
+new best move a7-a6 val: 160 alpha -18 beta 191
+a7-a6
+new best move (>a) a7-a6 val: 160 alpha -18 beta 191
+fail-low [] " a7-a6 " 160 -18 191
+fail-low [] " Nh6-f5 " 123 -18 191
+fail-low [] " Nh6-g8 " 93 -18 191
+fail-low [] " Nc6-b4 " 100 -18 191
+fail-low [] " Nc6-e7 " 103 -18 191
+fail-low [] " Nc6-b8 " 77 -18 191
+new best move Bc8-f5 val: 178 alpha -18 beta 191
+Bc8-f5
+new best move (>a) Bc8-f5 val: 178 alpha -18 beta 191
+fail-low [] " Bc8-f5 " 178 -18 191
+new best move Bc8-e6 val: 181 alpha -18 beta 191
+Bc8-e6 Bc4-e6 f7-e6
+new best move (>a) Bc8-e6 val: 181 alpha -18 beta 191
+fail-low [] " Bc8-e6 " 181 -18 191
+fail-low [] " Bc8-d7 " 131 -18 191
+fail-low [] " Rh8-g8 " 130 -18 191
+fail-low [] " Rh8-f8 " 124 -18 191
+fail-low [] " Ra8-b8 " 138 -18 191
+fail-low [] " Qd8-e7 " 154 -18 191
+fail-low [] " Qd8-d7 " 110 -18 191
+fail-low [] " Ke8-g8 " 58 -18 191
+fail-low [] " Ke8-e7 " 112 -18 191
+fail-low [] " Ke8-d7 " 67 -18 191
+fail-low [] " Ke8-f8 " 135 -18 191
+fail-low [] " b7-b5 " -126 -18 191
+fail-low [] " Nh6-g4 " 0 -18 191
+fail-low [] " Bc8-g4 " 58 -18 191
+fail-low [] " Qd8-f6 " -57 -18 191
+fail-low [] " Qd8-d6 " -33 -18 191
+fail-low [] " Qd8-h4 " 21 -18 191
+fail-low [] " Qd8-g5 " 84 -18 191
+fail-low [] " Qd8-d5 " 78 -18 191
+fail-low [] " Nc6-e5 " -632 -18 191
+fail-low [] " Bc8-h3 " 169 -18 191
+node_count: 118 avg ply: 1.6 max ply: 3 alpha 181 beta 191 val 181
+REAL PV: [Bc8-e6, Bc4-e6, f7-e6]
+
+0.6552300453186035 s
 
 >> depth: 1.0 , allowance: 4
-new best move Ng4-e5 val: 473 alpha 484 beta 520
-node_count: 238 avg ply: 4.026845637583893 max ply: 12 alpha 484 beta 520 val 473
-pv: []
+fail-low [Bc8-e6] " Bc4-e6 " -181 -199 -163
+fail-low [Bc8-e6] " Nd2-e4 " -246 -199 -163
+fail-low [Bc8-e6] " Nd2-b3 " -246 -199 -163
+fail-low [Bc8-e6] " Bc4-b5 " -179 -199 -163
+fail-low [Bc8-e6] " Bc4-e2 " -254 -199 -163
+fail-low [Bc8-e6] " Bc4-b3 " -210 -199 -163
+fail-low [Bc8-e6] " g2-g4 " -196 -199 -163
+fail-low [Bc8-e6] " Re1-f1 " -216 -199 -163
+fail-low [Bc8-e6] " Re1-e2 " -190 -199 -163
+fail-low [Bc8-e6] " Re1-e4 " -189 -199 -163
+fail-low [Bc8-e6] " Ra1-c1 " -177 -199 -163
+fail-low [Bc8-e6] " Ra1-b1 " -202 -199 -163
+fail-low [Bc8-e6] " Qd1-c1 " -206 -199 -163
+fail-low [Bc8-e6] " Nf3-d4 " -200 -199 -163
+new best move Bc8-e6 val: 177 alpha 163 beta 199
+Bc8-e6 Ra1-c1
+new best move (>a) Bc8-e6 val: 177 alpha 163 beta 199
+fail-low [] " Bc8-e6 " 177 163 199
+fail-high [d4-d3] " Ra1-c1 " -127 -178 -177
+fail-low [] " d4-d3 " 127 163 199
+fail-high [Nc6-a5] " Qd1-a4+ " -86 -178 -177
+fail-low [] " Nc6-a5 " 86 163 199
+fail-high [g7-g5] " Ra1-c1 " -106 -178 -177
+fail-low [] " g7-g5 " 106 163 199
+fail-high [g7-g6] " Ra1-c1 " -70 -178 -177
+fail-low [] " g7-g6 " 70 163 199
+fail-high [f7-f5] " e5-f6+ " 101 -178 -177
+fail-low [] " f7-f5 " -101 163 199
+fail-low [] " f7-f6 " 118 163 199
+fail-low [] " b7-b6 " 103 163 199
+fail-low [] " a7-a5 " 140 163 199
+fail-low [] " a7-a6 " 160 163 199
+fail-low [] " Nh6-f5 " 123 163 199
+fail-low [] " Nh6-g8 " 93 163 199
+fail-low [] " Nc6-b4 " 100 163 199
+fail-low [] " Nc6-e7 " 103 163 199
+fail-low [] " Nc6-b8 " 77 163 199
+new best move Bc8-f5 val: 178 alpha 163 beta 199
+Bc8-f5
+new best move (>a) Bc8-f5 val: 178 alpha 163 beta 199
+fail-low [] " Bc8-f5 " 178 163 199
+fail-low [] " Bc8-d7 " 131 163 199
+fail-low [] " Rh8-g8 " 130 163 199
+fail-low [] " Rh8-f8 " 124 163 199
+fail-low [] " Ra8-b8 " 138 163 199
+fail-low [] " Qd8-e7 " 154 163 199
+fail-low [] " Qd8-d7 " 110 163 199
+fail-low [] " Ke8-g8 " 58 163 199
+fail-low [] " Ke8-e7 " 112 163 199
+fail-low [] " Ke8-d7 " 67 163 199
+fail-low [] " Ke8-f8 " 135 163 199
+fail-low [] " b7-b5 " -126 163 199
+fail-low [] " Nh6-g4 " 0 163 199
+fail-low [] " Bc8-g4 " 58 163 199
+fail-low [] " Qd8-f6 " -57 163 199
+fail-low [] " Qd8-d6 " -33 163 199
+fail-low [] " Qd8-h4 " 21 163 199
+fail-low [] " Qd8-g5 " 84 163 199
+fail-low [] " Qd8-d5 " 78 163 199
+fail-low [] " Nc6-e5 " -632 163 199
+fail-low [] " Bc8-h3 " 169 163 199
+node_count: 250 avg ply: 1.7762237762237763 max ply: 5 alpha 178 beta 199 val 178
+REAL PV: [Bc8-f5]
 
-faillow a 484 b 520 val 473 factor 18
-new best move Ng4-e5 val: 454 alpha 455 beta 520
-node_count: 386 avg ply: 4.534136546184739 max ply: 12 alpha 455 beta 520 val 454
-pv: []
-
-faillow a 455 b 520 val 454 factor 30
-new best move Ng4-e5 val: 276 alpha 424 beta 520
-new best move Ng4-e3 val: 326 alpha 424 beta 520
-new best move Ng4-f2 val: 419 alpha 424 beta 520
-node_count: 495 avg ply: 4.226537216828479 max ply: 12 alpha 424 beta 520 val 419
-pv: []
-
-faillow a 424 b 520 val 419 factor 46
-new best move Ng4-e5 val: 276 alpha 373 beta 520
-new best move Ng4-e3 val: 326 alpha 373 beta 520
-node_count: 583 avg ply: 3.8917378917378915 max ply: 12 alpha 373 beta 520 val 326
-pv: []
-
-faillow a 373 b 520 val 326 factor 67
-new best move Ng4-e5 val: 276 alpha 259 beta 520
-Ng4-e5 Nf3-e5 Nc6-e5 Rf1-e1
-new best move (>a) Ng4-e5 val: 276 alpha 259 beta 520
-node_count: 727 avg ply: 3.6875 max ply: 12 alpha 276 beta 520 val 276
-REAL PV: [Ng4-e5, Nf3-e5, Nc6-e5, Rf1-e1]
-
-1.9743022918701172 s
+0.3574528694152832 s
 
 >> depth: 1.5 , allowance: 6
-new best move Ng4-e5 val: 254 alpha 258 beta 294
-node_count: 899 avg ply: 3.653409090909091 max ply: 12 alpha 258 beta 294 val 254
+fail-high [Bc8-f5] " Ra1-c1 " -159 -196 -160
+new best move Bc8-f5 val: 159 alpha 160 beta 196
+fail-low [] " Bc8-f5 " 159 160 196
+fail-low [d4-d3, Ra1-c1] " Nc6-a5 " 115 160 161
+fail-low [d4-d3, Ra1-c1] " Bc8-f5 " 145 160 161
+fail-low [d4-d3, Ra1-c1] " Bc8-e6 " 152 160 161
+fail-low [d4-d3, Ra1-c1] " g7-g5 " 111 160 161
+fail-low [d4-d3, Ra1-c1] " g7-g6 " 76 160 161
+fail-low [d4-d3, Ra1-c1] " f7-f6 " 105 160 161
+fail-low [d4-d3, Ra1-c1] " b7-b6 " 91 160 161
+fail-low [d4-d3, Ra1-c1] " a7-a5 " 127 160 161
+fail-low [d4-d3, Ra1-c1] " a7-a6 " 147 160 161
+fail-low [d4-d3, Ra1-c1] " Nh6-f5 " 118 160 161
+fail-low [d4-d3, Ra1-c1] " Nc6-e5 " -642 160 161
+fail-low [d4-d3, Ra1-c1] " Bc8-h3 " 156 160 161
+fail-high [d4-d3] " Ra1-c1 " -156 -161 -160
+fail-low [] " d4-d3 " 156 160 196
+fail-low [Nc6-a5, Qd1-a4+] " Na5-c6 " 54 160 161
+fail-low [Nc6-a5, Qd1-a4+] " Bc8-d7 " -94 160 161
+fail-low [Nc6-a5, Qd1-a4+] " Qd8-d7 " -126 160 161
+fail-low [Nc6-a5, Qd1-a4+] " c7-c6 " 86 160 161
+fail-low [Nc6-a5, Qd1-a4+] " Ke8-e7 " 5 160 161
+fail-low [Nc6-a5, Qd1-a4+] " Ke8-f8 " 37 160 161
+fail-high [Nc6-a5] " Qd1-a4+ " -86 -161 -160
+fail-low [] " Nc6-a5 " 86 160 196
+fail-high [Bc8-e6, Ra1-c1] " Be6-c4 " 170 160 161
+fail-low [Bc8-e6] " Ra1-c1 " -170 -161 -160
+fail-low [Bc8-e6] " Bc4-e6 " -181 -161 -160
+fail-high [Bc8-e6] " Qd1-a4 " -137 -161 -160
+fail-low [] " Bc8-e6 " 137 160 196
+fail-high [g7-g5] " Ra1-c1 " -106 -161 -160
+fail-low [] " g7-g5 " 106 160 196
+fail-high [g7-g6] " Ra1-c1 " -70 -161 -160
+fail-low [] " g7-g6 " 70 160 196
+fail-high [f7-f5] " e5-f6+ " 101 -161 -160
+fail-low [] " f7-f5 " -101 160 196
+fail-high [f7-f6] " e5-f6+ " 123 -161 -160
+fail-low [] " f7-f6 " -123 160 196
+fail-low [] " b7-b6 " 103 160 196
+fail-low [] " a7-a5 " 140 160 196
+new best move a7-a6 val: 160 alpha 160 beta 196
+fail-low [] " a7-a6 " 160 160 196
+fail-low [] " Nh6-f5 " 123 160 196
+fail-low [] " Nh6-g8 " 93 160 196
+fail-low [] " Nc6-b4 " 100 160 196
+fail-low [] " Nc6-e7 " 103 160 196
+fail-low [] " Nc6-b8 " 77 160 196
+fail-low [] " Bc8-d7 " 131 160 196
+fail-low [] " Rh8-g8 " 130 160 196
+fail-low [] " Rh8-f8 " 124 160 196
+fail-low [] " Ra8-b8 " 138 160 196
+fail-low [] " Qd8-e7 " 154 160 196
+fail-low [] " Qd8-d7 " 110 160 196
+fail-low [] " Ke8-g8 " 58 160 196
+fail-low [] " Ke8-e7 " 112 160 196
+fail-low [] " Ke8-d7 " 67 160 196
+fail-low [] " Ke8-f8 " 135 160 196
+fail-low [] " b7-b5 " -126 160 196
+fail-low [] " Nh6-g4 " 0 160 196
+fail-low [] " Bc8-g4 " 58 160 196
+fail-low [] " Qd8-f6 " -57 160 196
+fail-low [] " Qd8-d6 " -33 160 196
+fail-low [] " Qd8-h4 " 21 160 196
+fail-low [] " Qd8-g5 " 84 160 196
+fail-low [] " Qd8-d5 " 78 160 196
+fail-low [] " Nc6-e5 " -632 160 196
+fail-low [] " Bc8-h3 " -461 160 196
+node_count: 385 avg ply: 1.8962264150943395 max ply: 5 alpha 160 beta 196 val 160
 pv: []
 
-faillow a 258 b 294 val 254 factor 18
-new best move Ng4-e5 val: 288 alpha 236 beta 294
-Ng4-e5 Nf3-e5 Nc6-e5 Rf1-e1 f7-f6
-new best move (>a) Ng4-e5 val: 288 alpha 236 beta 294
-node_count: 1135 avg ply: 3.746646795827124 max ply: 12 alpha 288 beta 294 val 288
-REAL PV: [Ng4-e5, Nf3-e5, Nc6-e5, Rf1-e1, f7-f6]
+fail-low [d4-d3, Ra1-c1] " Nc6-a5 " 115 142 196
+fail-low [d4-d3, Ra1-c1] " a7-a6 " 147 142 196
+fail-low [d4-d3, Ra1-c1] " Bc8-f5 " 145 142 196
+fail-low [d4-d3, Ra1-c1] " Bc8-e6 " 152 142 196
+fail-low [d4-d3, Ra1-c1] " g7-g5 " 111 142 196
+fail-low [d4-d3, Ra1-c1] " f7-f5 " 76 142 196
+fail-low [d4-d3, Ra1-c1] " f7-f6 " 105 142 196
+fail-low [d4-d3, Ra1-c1] " b7-b6 " 91 142 196
+fail-low [d4-d3, Ra1-c1] " a7-a5 " 127 142 196
+fail-low [d4-d3, Ra1-c1] " Nh6-f5 " 118 142 196
+fail-low [d4-d3, Ra1-c1] " Nh6-g8 " 80 142 196
+fail-low [d4-d3, Ra1-c1] " Nc6-e5 " -642 142 196
+fail-low [d4-d3, Ra1-c1] " Bc8-h3 " -466 142 196
+fail-low [d4-d3] " Ra1-c1 " -152 -196 -142
+fail-high [d4-d3] " Qd1-a4 " -52 -196 -142
+new best move d4-d3 val: 52 alpha 142 beta 196
+fail-low [] " d4-d3 " 52 142 196
+fail-low [Nc6-a5, Qd1-a4+] " c7-c6 " 86 142 143
+fail-low [Nc6-a5, Qd1-a4+] " Na5-c6 " 54 142 143
+fail-low [Nc6-a5, Qd1-a4+] " Bc8-d7 " -94 142 143
+fail-low [Nc6-a5, Qd1-a4+] " Qd8-d7 " -126 142 143
+fail-low [Nc6-a5, Qd1-a4+] " Ke8-e7 " 5 142 143
+fail-low [Nc6-a5, Qd1-a4+] " Ke8-f8 " 37 142 143
+fail-high [Nc6-a5] " Qd1-a4+ " -86 -143 -142
+new best move Nc6-a5 val: 86 alpha 142 beta 196
+fail-low [] " Nc6-a5 " 86 142 196
+fail-high [a7-a6] " Ra1-c1 " -142 -143 -142
+new best move a7-a6 val: 142 alpha 142 beta 196
+fail-low [] " a7-a6 " 142 142 196
+fail-low [Bc8-f5, Ra1-c1] " Nc6-a5 " 107 142 143
+fail-high [Bc8-f5, Ra1-c1] " a7-a6 " 179 142 143
+fail-low [Bc8-f5] " Ra1-c1 " -179 -143 -142
+fail-high [Bc8-f5] " Qd1-a4 " -87 -143 -142
+fail-low [] " Bc8-f5 " 87 142 196
+fail-high [Bc8-e6] " Qd1-a4 " -137 -143 -142
+fail-low [] " Bc8-e6 " 137 142 196
+fail-high [g7-g5] " Ra1-c1 " -106 -143 -142
+fail-low [] " g7-g5 " 106 142 196
+fail-high [g7-g6] " Ra1-c1 " -70 -143 -142
+fail-low [] " g7-g6 " 70 142 196
+fail-high [f7-f5] " e5-f6+ " 101 -143 -142
+fail-low [] " f7-f5 " -101 142 196
+fail-low [] " f7-f6 " 118 142 196
+fail-low [] " b7-b6 " 103 142 196
+fail-low [] " a7-a5 " 140 142 196
+fail-low [] " Nh6-f5 " 123 142 196
+fail-low [] " Nh6-g8 " 93 142 196
+fail-low [] " Nc6-b4 " 100 142 196
+fail-low [] " Nc6-e7 " 103 142 196
+fail-low [] " Nc6-b8 " 77 142 196
+fail-low [] " Bc8-d7 " 131 142 196
+fail-low [] " Rh8-g8 " 130 142 196
+fail-low [] " Rh8-f8 " 124 142 196
+fail-low [] " Ra8-b8 " 138 142 196
+new best move Qd8-e7 val: 154 alpha 142 beta 196
+Qd8-e7
+new best move (>a) Qd8-e7 val: 154 alpha 142 beta 196
+fail-low [] " Qd8-e7 " 154 142 196
+fail-low [] " Qd8-d7 " 110 142 196
+fail-low [] " Ke8-g8 " 58 142 196
+fail-low [] " Ke8-e7 " 112 142 196
+fail-low [] " Ke8-d7 " 67 142 196
+fail-low [] " Ke8-f8 " 135 142 196
+fail-low [] " b7-b5 " -126 142 196
+fail-low [] " Nh6-g4 " 0 142 196
+fail-low [] " Bc8-g4 " 58 142 196
+fail-low [] " Qd8-f6 " -57 142 196
+fail-low [] " Qd8-d6 " -33 142 196
+fail-low [] " Qd8-h4 " 21 142 196
+fail-low [] " Qd8-g5 " 84 142 196
+fail-low [] " Qd8-d5 " 78 142 196
+fail-low [] " Nc6-e5 " -632 142 196
+fail-low [] " Bc8-h3 " -461 142 196
+node_count: 535 avg ply: 2.0378006872852232 max ply: 5 alpha 154 beta 196 val 154
+REAL PV: [Qd8-e7]
 
-1.0263431072235107 s
+0.916388750076294 s
 
 >> depth: 2.0 , allowance: 9
-new best move f7-f6 val: -307 alpha 270 beta 306
-new best move Ng4-e5 val: 288 alpha 270 beta 306
-Ng4-e5 Nf3-e5 Nc6-e5 Rf1-e1 f7-f6
-new best move (>a) Ng4-e5 val: 288 alpha 270 beta 306
-node_count: 1462 avg ply: 4.056976744186047 max ply: 12 alpha 288 beta 306 val 288
-REAL PV: [Ng4-e5, Nf3-e5, Nc6-e5, Rf1-e1, f7-f6]
+fail-low [Qd8-e7, Ra1-c1] " a7-a6 " 156 136 172
+fail-low [Qd8-e7, Ra1-c1] " Nc6-a5 " 102 136 172
+fail-low [Qd8-e7, Ra1-c1] " Bc8-f5 " 167 136 172
+fail-high [Qd8-e7, Ra1-c1] " Bc8-e6 " 176 136 172
+fail-low [Qd8-e7] " Ra1-c1 " -176 -172 -136
+fail-low [Qd8-e7, Qd1-a4] " a7-a6 " 59 171 172
+fail-low [Qd8-e7, Qd1-a4] " Bc8-e6 " 56 171 172
+fail-low [Qd8-e7, Qd1-a4] " Qe7-b4 " 77 171 172
+fail-low [Qd8-e7, Qd1-a4] " Bc8-f5 " 43 171 172
+fail-low [Qd8-e7, Qd1-a4] " g7-g5 " 0 171 172
+fail-low [Qd8-e7, Qd1-a4] " f7-f5 " -35 171 172
+fail-low [Qd8-e7, Qd1-a4] " f7-f6 " -6 171 172
+fail-low [Qd8-e7, Qd1-a4] " Bc8-h3 " 39 171 172
+fail-low [Qd8-e7, Qd1-a4] " Qe7-e5 " -43 171 172
+fail-high [Qd8-e7] " Qd1-a4 " -77 -172 -136
+new best move Qd8-e7 val: 77 alpha 136 beta 172
+fail-low [] " Qd8-e7 " 77 136 172
+fail-high [d4-d3, NULL] " a7-a6 " 165 136 137
+fail-low [d4-d3, Qd1-a4] " a7-a6 " 95 136 137
+fail-low [d4-d3, Qd1-a4] " Bc8-e6 " 107 136 137
+fail-low [d4-d3, Qd1-a4] " Qd8-e7 " 26 136 137
+fail-low [d4-d3, Qd1-a4] " Bc8-f5 " 70 136 137
+fail-low [d4-d3, Qd1-a4] " g7-g5 " 36 136 137
+fail-low [d4-d3, Qd1-a4] " f7-f5 " 1 136 137
+fail-low [d4-d3, Qd1-a4] " f7-f6 " 34 136 137
+fail-low [d4-d3, Qd1-a4] " b7-b6 " -28 136 137
+fail-low [d4-d3, Qd1-a4] " a7-a5 " 42 136 137
+fail-low [d4-d3, Qd1-a4] " Bc8-h3 " 81 136 137
+fail-high [d4-d3] " Qd1-a4 " -107 -137 -136
+new best move d4-d3 val: 107 alpha 136 beta 172
+fail-low [] " d4-d3 " 107 136 172
+fail-low [Nc6-a5, NULL] " Na5-c4 " 124 136 137
+fail-low [Nc6-a5, NULL] " a7-a6 " 97 136 137
+fail-low [Nc6-a5, NULL] " Bc8-e6 " 120 136 137
+fail-low [Nc6-a5, NULL] " Qd8-e7 " 120 136 137
+fail-low [Nc6-a5, NULL] " Bc8-f5 " 127 136 137
+fail-high [Nc6-a5, NULL] " c7-c6 " 137 136 137
+fail-low [Nc6-a5, Qd1-a4+] " c7-c6 " 86 136 137
+fail-low [Nc6-a5, Qd1-a4+] " Na5-c6 " 54 136 137
+fail-low [Nc6-a5, Qd1-a4+] " Bc8-d7 " -94 136 137
+fail-low [Nc6-a5, Qd1-a4+] " Qd8-d7 " -126 136 137
+fail-low [Nc6-a5, Qd1-a4+] " Ke8-e7 " 5 136 137
+fail-low [Nc6-a5, Qd1-a4+] " Ke8-f8 " 37 136 137
+fail-high [Nc6-a5] " Qd1-a4+ " -86 -137 -136
+fail-low [] " Nc6-a5 " 86 136 172
+fail-high [a7-a6, Ra1-c1] " Bc8-e6 " 152 136 137
+fail-low [a7-a6] " Ra1-c1 " -152 -137 -136
+fail-low [a7-a6, Qd1-a4] " Bc8-e6 " 104 136 137
+fail-high [a7-a6, Qd1-a4] " b7-b5 " 425 136 137
+fail-low [a7-a6] " Qd1-a4 " -425 -137 -136
+fail-high [a7-a6, Nd2-e4] " b7-b5 " 282 136 137
+fail-low [a7-a6] " Nd2-e4 " -282 -137 -136
+fail-low [a7-a6] " e5-e6 " -160 -137 -136
+fail-low [a7-a6] " Nd2-b3 " -164 -137 -136
+fail-low [a7-a6] " Bc4-e2 " -219 -137 -136
+fail-low [a7-a6] " Bc4-b3 " -152 -137 -136
+fail-low [a7-a6] " g2-g4 " -161 -137 -136
+fail-low [a7-a6] " Re1-f1 " -181 -137 -136
+fail-low [a7-a6] " Re1-e2 " -155 -137 -136
+fail-low [a7-a6] " Re1-e4 " -154 -137 -136
+fail-low [a7-a6] " Qd1-c1 " -171 -137 -136
+fail-low [a7-a6] " Qd1-b1 " -158 -137 -136
+fail-low [a7-a6] " Qd1-e2 " -138 -137 -136
+fail-high [a7-a6] " Qd1-c2 " -108 -137 -136
+new best move a7-a6 val: 108 alpha 136 beta 172
+fail-low [] " a7-a6 " 108 136 172
+fail-low [] " Bc8-f5 " 87 136 172
+fail-low [Bc8-e6, Qd1-a4] " Be6-c4 " 96 136 137
+fail-low [Bc8-e6, Qd1-a4] " a7-a6 " 104 136 137
+fail-low [Bc8-e6, Qd1-a4] " Qd8-e7 " 56 136 137
+fail-low [Bc8-e6, Qd1-a4] " Be6-f5 " 87 136 137
+fail-low [Bc8-e6, Qd1-a4] " g7-g5 " 93 136 137
+fail-low [Bc8-e6, Qd1-a4] " g7-g6 " 57 136 137
+fail-low [Bc8-e6, Qd1-a4] " f7-f5 " 13 136 137
+fail-low [Bc8-e6, Qd1-a4] " f7-f6 " 46 136 137
+fail-low [Bc8-e6, Qd1-a4] " b7-b6 " 17 136 137
+fail-low [Bc8-e6, Qd1-a4] " Be6-h3 " 83 136 137
+fail-high [Bc8-e6] " Qd1-a4 " -104 -137 -136
+fail-low [] " Bc8-e6 " 104 136 172
+fail-low [] " g7-g5 " 106 136 172
+fail-low [] " g7-g6 " 70 136 172
+fail-low [] " f7-f5 " -101 136 172
+fail-low [] " f7-f6 " -123 136 172
+fail-low [] " b7-b6 " 103 136 172
+new best move a7-a5 val: 140 alpha 136 beta 172
+a7-a5
+new best move (>a) a7-a5 val: 140 alpha 136 beta 172
+fail-low [] " a7-a5 " 140 136 172
+fail-low [] " Nh6-f5 " 123 136 172
+fail-low [] " Nh6-g8 " 93 136 172
+fail-low [] " Nc6-b4 " 100 136 172
+fail-low [] " Nc6-e7 " 103 136 172
+fail-low [] " Nc6-b8 " 77 136 172
+fail-low [] " Bc8-d7 " 131 136 172
+fail-low [] " Rh8-g8 " 130 136 172
+fail-low [] " Rh8-f8 " 124 136 172
+fail-low [] " Ra8-b8 " 138 136 172
+fail-low [] " Qd8-d7 " 110 136 172
+fail-low [] " Ke8-g8 " 58 136 172
+fail-low [] " Ke8-e7 " 112 136 172
+fail-low [] " Ke8-d7 " 67 136 172
+fail-low [] " Ke8-f8 " 135 136 172
+fail-low [] " b7-b5 " -126 136 172
+fail-low [] " Nh6-g4 " 0 136 172
+fail-low [] " Bc8-g4 " 58 136 172
+fail-low [] " Qd8-f6 " -57 136 172
+fail-low [] " Qd8-d6 " -33 136 172
+fail-low [] " Qd8-h4 " 21 136 172
+fail-low [] " Qd8-g5 " 84 136 172
+fail-low [] " Qd8-d5 " 78 136 172
+fail-low [] " Nc6-e5 " -632 136 172
+fail-low [] " Bc8-h3 " -461 136 172
+node_count: 766 avg ply: 2.5036674816625917 max ply: 7 alpha 140 beta 172 val 140
+REAL PV: [a7-a5]
 
-1.1274325847625732 s
+0.9101529121398926 s
 
 >> depth: 2.5 , allowance: 12
-new best move f7-f6 val: -307 alpha 270 beta 306
-new best move Ng4-e5 val: 269 alpha 270 beta 306
-node_count: 1677 avg ply: 4.148914167528439 max ply: 12 alpha 270 beta 306 val 269
-pv: []
+fail-low [a7-a5, Ra1-c1] " Bc8-e6 " 151 122 158
+fail-low [a7-a5, Ra1-c1] " Qd8-e7 " 136 122 158
+fail-high [a7-a5, Ra1-c1] " Bc8-f5 " 159 122 158
+fail-low [a7-a5] " Ra1-c1 " -159 -158 -122
+fail-low [a7-a5, Qd1-a4] " Bc8-f5 " 77 157 158
+fail-low [a7-a5, Qd1-a4] " Qd8-e7 " 6 157 158
+fail-low [a7-a5, Qd1-a4] " Bc8-e6 " 99 157 158
+fail-low [a7-a5, Qd1-a4] " d4-d3 " 42 157 158
+fail-low [a7-a5, Qd1-a4] " g7-g5 " 20 157 158
+fail-low [a7-a5, Qd1-a4] " f7-f5 " -15 157 158
+fail-low [a7-a5, Qd1-a4] " f7-f6 " 18 157 158
+fail-low [a7-a5, Qd1-a4] " b7-b6 " -52 157 158
+fail-low [a7-a5, Qd1-a4] " Bc8-h3 " 73 157 158
+fail-high [a7-a5] " Qd1-a4 " -99 -158 -122
+new best move a7-a5 val: 99 alpha 122 beta 158
+fail-low [] " a7-a5 " 99 122 158
+new best move d4-d3 val: 107 alpha 122 beta 158
+fail-low [] " d4-d3 " 107 122 158
+fail-low [Nc6-a5, NULL, c7-c6] " b2-b4 " -205 -123 -122
+fail-low [Nc6-a5, NULL, c7-c6] " Bc4-e2 " -137 -123 -122
+fail-high [Nc6-a5, NULL, c7-c6] " Bc4-d3 " -91 -123 -122
+fail-low [Nc6-a5, NULL] " c7-c6 " 91 122 123
+fail-high [Nc6-a5, NULL, Na5-c4] " Qd1-a4+ " -74 -123 -122
+fail-low [Nc6-a5, NULL] " Na5-c4 " 74 122 123
+fail-high [Nc6-a5, NULL, a7-a6] " Qd1-a4+ " -97 -123 -122
+fail-low [Nc6-a5, NULL] " a7-a6 " 97 122 123
+fail-low [Nc6-a5, NULL, Bc8-f5] " Qd1-a4+ " -127 -123 -122
+fail-low [Nc6-a5, NULL, Bc8-f5] " Bc4-b5+ " -302 -123 -122
+fail-high [Nc6-a5, NULL, Bc8-f5] " g2-g4 " -114 -123 -122
+fail-low [Nc6-a5, NULL] " Bc8-f5 " 114 122 123
+fail-low [Nc6-a5, NULL] " Qd8-e7 " 120 122 123
+fail-low [Nc6-a5, NULL] " Bc8-e6 " 120 122 123
+fail-low [Nc6-a5, NULL] " d4-d3 " 84 122 123
+fail-low [Nc6-a5, NULL] " g7-g5 " 114 122 123
+fail-low [Nc6-a5, NULL] " g7-g6 " 78 122 123
+fail-low [Nc6-a5, NULL] " f7-f5 " 79 122 123
+fail-low [Nc6-a5, NULL] " f7-f6 " 112 122 123
+fail-low [Nc6-a5, NULL] " c7-c5 " 60 122 123
+fail-low [Nc6-a5, NULL] " b7-b6 " 93 122 123
+fail-low [Nc6-a5, NULL] " Nh6-f5 " 120 122 123
+fail-low [Nc6-a5, NULL] " Nh6-g8 " 85 122 123
+fail-low [Nc6-a5, NULL] " Bc8-d7 " 119 122 123
+fail-low [Nc6-a5, NULL] " Bc8-h3 " -428 122 123
+new best move Nc6-a5 val: 120 alpha 122 beta 158
+fail-low [] " Nc6-a5 " 120 122 158
+fail-low [Qd8-e7, NULL, a7-a6] " g2-g4 " -175 -123 -122
+fail-low [Qd8-e7, NULL, a7-a6] " Bc4-d3 " -187 -123 -122
+fail-high [Qd8-e7, NULL, a7-a6] " Qd1-c2 " -122 -123 -122
+fail-low [Qd8-e7, NULL] " a7-a6 " 122 122 123
+fail-high [Qd8-e7, NULL, Bc8-f5] " g2-g4 " -46 -123 -122
+fail-low [Qd8-e7, NULL] " Bc8-f5 " 46 122 123
+fail-high [Qd8-e7, NULL, Nc6-a5] " Nf3-d4 " 28 -123 -122
+fail-low [Qd8-e7, NULL] " Nc6-a5 " -28 122 123
+fail-high [Qd8-e7, NULL] " a7-a5 " 154 122 123
+fail-high [Qd8-e7, Qd1-a4, Bc8-e6] " Bc4-e6 " -69 -123 -122
+fail-low [Qd8-e7, Qd1-a4] " Bc8-e6 " 69 122 123
+fail-low [Qd8-e7, Qd1-a4] " a7-a5 " 6 122 123
+fail-low [Qd8-e7, Qd1-a4] " a7-a6 " 59 122 123
+fail-low [Qd8-e7, Qd1-a4] " Qe7-b4 " 77 122 123
+fail-low [Qd8-e7, Qd1-a4] " Bc8-f5 " 43 122 123
+fail-low [Qd8-e7, Qd1-a4] " g7-g5 " 0 122 123
+fail-low [Qd8-e7, Qd1-a4] " g7-g6 " -24 122 123
+fail-low [Qd8-e7, Qd1-a4] " f7-f5 " -35 122 123
+fail-low [Qd8-e7, Qd1-a4] " b7-b6 " -53 122 123
+fail-low [Qd8-e7, Qd1-a4] " Nh6-f5 " 68 122 123
+fail-low [Qd8-e7, Qd1-a4] " Nh6-g8 " -3 122 123
+fail-low [Qd8-e7, Qd1-a4] " Bc8-h3 " 39 122 123
+fail-low [Qd8-e7, Qd1-a4] " Qe7-e5 " -43 122 123
+fail-high [Qd8-e7] " Qd1-a4 " -77 -123 -122
+fail-low [] " Qd8-e7 " 77 122 158
+fail-high [Bc8-f5, NULL] " a7-a5 " 178 122 123
+fail-low [Bc8-f5, Qd1-a4] " a7-a5 " 77 122 123
+fail-high [Bc8-f5, Qd1-a4] " a7-a6 " 130 122 123
+fail-low [Bc8-f5] " Qd1-a4 " -130 -123 -122
+fail-low [Bc8-f5, g2-g4] " a7-a5 " 38 122 123
+fail-low [Bc8-f5, g2-g4] " a7-a6 " 58 122 123
+fail-high [Bc8-f5, g2-g4] " Bf5-e6 " 173 122 123
+fail-low [Bc8-f5] " g2-g4 " -173 -123 -122
+fail-high [Bc8-f5, Ra1-c1] " a7-a6 " 179 122 123
+fail-low [Bc8-f5] " Ra1-c1 " -179 -123 -122
+fail-low [Bc8-f5] " Nd2-e4 " -151 -123 -122
+fail-low [Bc8-f5] " e5-e6 " -186 -123 -122
+fail-low [Bc8-f5] " Nd2-b3 " -193 -123 -122
+fail-low [Bc8-f5] " Bc4-b5 " -182 -123 -122
+fail-low [Bc8-f5] " Bc4-e2 " -273 -123 -122
+fail-low [Bc8-f5] " Bc4-b3 " -193 -123 -122
+fail-low [Bc8-f5] " Re1-f1 " -195 -123 -122
+fail-low [Bc8-f5] " Re1-e2 " -193 -123 -122
+fail-low [Bc8-f5] " Qd1-e2 " -172 -123 -122
+fail-high [Bc8-f5] " Qd1-b3 " -97 -123 -122
+fail-low [] " Bc8-f5 " 97 122 158
+fail-low [] " a7-a6 " 108 122 158
+fail-low [] " Bc8-e6 " 104 122 158
+fail-low [] " g7-g5 " 106 122 158
+fail-low [] " g7-g6 " 70 122 158
+fail-low [] " f7-f5 " -101 122 158
+fail-low [] " f7-f6 " -123 122 158
+fail-low [] " b7-b6 " 103 122 158
+new best move Nh6-f5 val: 123 alpha 122 beta 158
+Nh6-f5
+new best move (>a) Nh6-f5 val: 123 alpha 122 beta 158
+fail-low [] " Nh6-f5 " 123 122 158
+fail-low [] " Nh6-g8 " 93 122 158
+fail-low [] " Nc6-b4 " 100 122 158
+fail-low [] " Nc6-e7 " 103 122 158
+fail-low [] " Nc6-b8 " 77 122 158
+new best move Bc8-d7 val: 131 alpha 122 beta 158
+Bc8-d7
+new best move (>a) Bc8-d7 val: 131 alpha 122 beta 158
+fail-low [] " Bc8-d7 " 131 122 158
+fail-low [] " Rh8-g8 " 130 122 158
+fail-low [] " Rh8-f8 " 124 122 158
+new best move Ra8-b8 val: 138 alpha 122 beta 158
+Ra8-b8
+new best move (>a) Ra8-b8 val: 138 alpha 122 beta 158
+fail-low [] " Ra8-b8 " 138 122 158
+fail-low [] " Qd8-d7 " 110 122 158
+fail-low [] " Ke8-g8 " 58 122 158
+fail-low [] " Ke8-e7 " 112 122 158
+fail-low [] " Ke8-d7 " 67 122 158
+fail-low [] " Ke8-f8 " 135 122 158
+fail-low [] " b7-b5 " -126 122 158
+fail-low [] " Nh6-g4 " 0 122 158
+fail-low [] " Bc8-g4 " 58 122 158
+fail-low [] " Qd8-f6 " -57 122 158
+fail-low [] " Qd8-d6 " -33 122 158
+fail-low [] " Qd8-h4 " 21 122 158
+fail-low [] " Qd8-g5 " 84 122 158
+fail-low [] " Qd8-d5 " 78 122 158
+fail-low [] " Nc6-e5 " -632 122 158
+fail-low [] " Bc8-h3 " -461 122 158
+node_count: 1039 avg ply: 2.8442028985507246 max ply: 7 alpha 138 beta 158 val 138
+REAL PV: [Ra8-b8]
 
-faillow a 270 b 306 val 269 factor 18
-new best move Ng4-e5 val: 288 alpha 251 beta 306
-Ng4-e5 Nf3-e5 Nc6-e5 Rf1-e1 f7-f6
-new best move (>a) Ng4-e5 val: 288 alpha 251 beta 306
-node_count: 1957 avg ply: 4.289544235924933 max ply: 12 alpha 288 beta 306 val 288
-REAL PV: [Ng4-e5, Nf3-e5, Nc6-e5, Rf1-e1, f7-f6]
-
-1.874603033065796 s
+0.9575314521789551 s
 
 >> depth: 3.0 , allowance: 19
-new best move f7-f6 val: -307 alpha 270 beta 306
-new best move Ng4-e5 val: 222 alpha 270 beta 306
-new best move Ng4-h6 val: 251 alpha 270 beta 306
-new best move Nc6-a5 val: 256 alpha 270 beta 306
-new best move h7-h5 val: 269 alpha 270 beta 306
-node_count: 2368 avg ply: 4.416102332580888 max ply: 12 alpha 270 beta 306 val 269
-pv: []
+fail-high [Ra8-b8, Ra1-c1, a7-a6] " Qd1-c2 " -87 -156 -120
+fail-low [Ra8-b8, Ra1-c1] " a7-a6 " 87 120 156
+fail-high [Ra8-b8, Ra1-c1] " b7-b5 " 231 120 156
+fail-low [Ra8-b8] " Ra1-c1 " -231 -156 -120
+fail-low [Ra8-b8, Qd1-b3] " a7-a6 " 127 155 156
+fail-low [Ra8-b8, Qd1-b3] " Nc6-a5 " 86 155 156
+fail-low [Ra8-b8, Qd1-b3] " a7-a5 " 102 155 156
+fail-low [Ra8-b8, Qd1-b3] " Qd8-e7 " 120 155 156
+fail-low [Ra8-b8, Qd1-b3] " Bc8-f5 " 139 155 156
+fail-low [Ra8-b8, Qd1-b3] " Bc8-e6 " 72 155 156
+fail-low [Ra8-b8, Qd1-b3] " g7-g5 " 90 155 156
+fail-low [Ra8-b8, Qd1-b3] " f7-f5 " 55 155 156
+fail-low [Ra8-b8, Qd1-b3] " f7-f6 " 84 155 156
+fail-low [Ra8-b8, Qd1-b3] " b7-b6 " 73 155 156
+fail-low [Ra8-b8, Qd1-b3] " Nh6-f5 " 89 155 156
+fail-low [Ra8-b8, Qd1-b3] " Nc6-e5 " 147 155 156
+fail-low [Ra8-b8, Qd1-b3] " Bc8-h3 " 130 155 156
+fail-low [Ra8-b8, Qd1-b3] " a7-a6 " 127 120 156
+fail-low [Ra8-b8, Qd1-b3] " Nc6-a5 " 86 120 156
+fail-low [Ra8-b8, Qd1-b3] " a7-a5 " 102 120 156
+fail-low [Ra8-b8, Qd1-b3] " Qd8-e7 " 120 120 156
+fail-low [Ra8-b8, Qd1-b3] " Bc8-f5 " 139 120 156
+fail-low [Ra8-b8, Qd1-b3] " Bc8-e6 " 72 120 156
+fail-low [Ra8-b8, Qd1-b3] " g7-g5 " 90 120 156
+fail-low [Ra8-b8, Qd1-b3] " f7-f5 " 55 120 156
+fail-low [Ra8-b8, Qd1-b3] " f7-f6 " 84 120 156
+fail-low [Ra8-b8, Qd1-b3] " b7-b6 " 73 120 156
+fail-low [Ra8-b8, Qd1-b3] " Nh6-f5 " 89 120 156
+fail-low [Ra8-b8, Qd1-b3] " Nc6-e5 " -669 120 156
+fail-low [Ra8-b8, Qd1-b3] " Bc8-h3 " 130 120 156
+fail-low [Ra8-b8] " Qd1-b3 " -139 -156 -120
+fail-high [Ra8-b8, Qd1-c2] " b7-b5 " 197 138 139
+fail-low [Ra8-b8] " Qd1-c2 " -197 -156 -120
+fail-high [Ra8-b8, Qd1-a4, a7-a6] " Bc4-d3 " -83 -139 -138
+fail-low [Ra8-b8, Qd1-a4] " a7-a6 " 83 138 139
+fail-low [Ra8-b8, Qd1-a4] " a7-a5 " -17 138 139
+fail-low [Ra8-b8, Qd1-a4] " Qd8-e7 " -33 138 139
+fail-low [Ra8-b8, Qd1-a4] " Bc8-f5 " 33 138 139
+fail-low [Ra8-b8, Qd1-a4] " Bc8-e6 " 55 138 139
+fail-low [Ra8-b8, Qd1-a4] " d4-d3 " -5 138 139
+fail-low [Ra8-b8, Qd1-a4] " g7-g5 " -19 138 139
+fail-low [Ra8-b8, Qd1-a4] " g7-g6 " -55 138 139
+fail-low [Ra8-b8, Qd1-a4] " f7-f5 " -54 138 139
+fail-low [Ra8-b8, Qd1-a4] " Bc8-h3 " 29 138 139
+fail-high [Ra8-b8] " Qd1-a4 " -83 -156 -120
+new best move Ra8-b8 val: 83 alpha 120 beta 156
+fail-low [] " Ra8-b8 " 83 120 156
+fail-high [d4-d3, NULL, a7-a6] " Qd1-a4 " -95 -121 -120
+fail-low [d4-d3, NULL] " a7-a6 " 95 120 121
+fail-high [d4-d3, NULL, Nc6-a5] " Qd1-a4+ " -84 -121 -120
+fail-low [d4-d3, NULL] " Nc6-a5 " 84 120 121
+fail-high [d4-d3, NULL, Ra8-b8] " Qd1-a4 " -3 -121 -120
+fail-low [d4-d3, NULL] " Ra8-b8 " 3 120 121
+fail-high [d4-d3, NULL] " a7-a5 " 145 120 121
+fail-low [d4-d3, Qd1-a4, a7-a6] " Qa4-b3 " -128 -121 -120
+fail-high [d4-d3, Qd1-a4, a7-a6] " g2-g4 " -96 -121 -120
+fail-low [d4-d3, Qd1-a4] " a7-a6 " 96 120 121
+fail-low [d4-d3, Qd1-a4] " a7-a5 " 42 120 121
+fail-low [d4-d3, Qd1-a4] " Ra8-b8 " -5 120 121
+fail-low [d4-d3, Qd1-a4] " Qd8-e7 " 26 120 121
+fail-low [d4-d3, Qd1-a4] " Bc8-f5 " 70 120 121
+fail-low [d4-d3, Qd1-a4] " Bc8-e6 " 107 120 121
+fail-low [d4-d3, Qd1-a4] " g7-g5 " 36 120 121
+fail-low [d4-d3, Qd1-a4] " g7-g6 " 1 120 121
+fail-low [d4-d3, Qd1-a4] " f7-f5 " 1 120 121
+fail-low [d4-d3, Qd1-a4] " f7-f6 " 34 120 121
+fail-low [d4-d3, Qd1-a4] " b7-b6 " -28 120 121
+fail-low [d4-d3, Qd1-a4] " Nh6-f5 " 52 120 121
+fail-low [d4-d3, Qd1-a4] " Bc8-h3 " 81 120 121
+fail-high [d4-d3] " Qd1-a4 " -107 -121 -120
+new best move d4-d3 val: 107 alpha 120 beta 156
+fail-low [] " d4-d3 " 107 120 156
+fail-low [Nc6-a5, NULL, Na5-c4, Qd1-a4+] " Bc8-d7 " -8 120 121
+fail-low [Nc6-a5, NULL, Na5-c4, Qd1-a4+] " Qd8-d7 " -105 120 121
+fail-low [Nc6-a5, NULL, Na5-c4, Qd1-a4+] " c7-c6 " 73 120 121
+fail-low [Nc6-a5, NULL, Na5-c4, Qd1-a4+] " Ke8-e7 " 37 120 121
+fail-low [Nc6-a5, NULL, Na5-c4, Qd1-a4+] " Ke8-f8 " 74 120 121
+fail-high [Nc6-a5, NULL, Na5-c4] " Qd1-a4+ " -74 -121 -120
+fail-low [Nc6-a5, NULL] " Na5-c4 " 74 120 121
+fail-high [Nc6-a5, NULL, a7-a6] " Qd1-a4+ " -97 -121 -120
+fail-low [Nc6-a5, NULL] " a7-a6 " 97 120 121
+fail-high [Nc6-a5, NULL, Ra8-b8] " Qd1-a4+ " -86 -121 -120
+fail-low [Nc6-a5, NULL] " Ra8-b8 " 86 120 121
+fail-high [Nc6-a5, NULL, Qd8-e7] " Nf3-d4 " 28 -121 -120
+fail-low [Nc6-a5, NULL] " Qd8-e7 " -28 120 121
+fail-high [Nc6-a5, NULL, Bc8-f5] " g2-g4 " -114 -121 -120
+fail-low [Nc6-a5, NULL] " Bc8-f5 " 114 120 121
+fail-high [Nc6-a5, NULL, Bc8-e6] " Bc4-e6 " -120 -121 -120
+fail-low [Nc6-a5, NULL] " Bc8-e6 " 120 120 121
+fail-high [Nc6-a5, NULL, c7-c6] " Bc4-d3 " -91 -121 -120
+fail-low [Nc6-a5, NULL] " c7-c6 " 91 120 121
+fail-low [Nc6-a5, NULL] " g7-g5 " 114 120 121
+fail-low [Nc6-a5, NULL] " g7-g6 " 78 120 121
+fail-low [Nc6-a5, NULL] " f7-f5 " 79 120 121
+fail-low [Nc6-a5, NULL] " f7-f6 " 112 120 121
+fail-low [Nc6-a5, NULL] " c7-c5 " 60 120 121
+fail-low [Nc6-a5, NULL] " Nh6-f5 " 120 120 121
+fail-low [Nc6-a5, NULL] " Nh6-g8 " 85 120 121
+fail-low [Nc6-a5, NULL] " Bc8-d7 " 119 120 121
+fail-low [Nc6-a5, NULL] " Rh8-g8 " 120 120 121
+fail-low [Nc6-a5, NULL] " Bc8-h3 " -428 120 121
+new best move Nc6-a5 val: 120 alpha 120 beta 156
+fail-low [] " Nc6-a5 " 120 120 156
+fail-low [a7-a5, NULL, Ra8-b8] " Bc4-d3 " -167 -121 -120
+fail-high [a7-a5, NULL, Ra8-b8] " Qd1-b3 " -102 -121 -120
+fail-low [a7-a5, NULL] " Ra8-b8 " 102 120 121
+fail-high [a7-a5, NULL, Qd8-e7] " Qd1-a4 " -18 -121 -120
+fail-low [a7-a5, NULL] " Qd8-e7 " 18 120 121
+fail-low [a7-a5, NULL, Bc8-e6] " Bc4-e6 " -185 -121 -120
+fail-high [a7-a5, NULL, Bc8-e6] " Qd1-a4 " -99 -121 -120
+fail-low [a7-a5, NULL] " Bc8-e6 " 99 120 121
+fail-high [a7-a5, NULL, Bc8-f5] " g2-g4 " -38 -121 -120
+fail-low [a7-a5, NULL] " Bc8-f5 " 38 120 121
+fail-low [a7-a5, NULL, Ke8-f8] " g2-g4 " -132 -121 -120
+fail-low [a7-a5, NULL, Ke8-f8] " Bc4-d3 " -160 -121 -120
+fail-high [a7-a5, NULL, Ke8-f8] " Qd1-b3 " -107 -121 -120
+fail-low [a7-a5, NULL] " Ke8-f8 " 107 120 121
+fail-low [a7-a5, NULL, a5-a4] " Bc4-d3 " -163 -121 -120
+fail-high [a7-a5, NULL, a5-a4] " Qd1-c2 " -81 -121 -120
+fail-low [a7-a5, NULL] " a5-a4 " 81 120 121
+fail-high [a7-a5, NULL] " g7-g5 " 124 120 121
+fail-high [a7-a5, Qd1-a4, Ke8-f8] " Qa4-a3+ " -69 -121 -120
+fail-low [a7-a5, Qd1-a4] " Ke8-f8 " 69 120 121
+fail-low [a7-a5, Qd1-a4] " g7-g5 " 20 120 121
+fail-low [a7-a5, Qd1-a4] " Ra8-b8 " -17 120 121
+fail-low [a7-a5, Qd1-a4] " Qd8-e7 " 6 120 121
+fail-low [a7-a5, Qd1-a4] " Bc8-e6 " 99 120 121
+fail-low [a7-a5, Qd1-a4] " Bc8-f5 " 77 120 121
+fail-low [a7-a5, Qd1-a4] " g7-g6 " -7 120 121
+fail-low [a7-a5, Qd1-a4] " f7-f5 " -15 120 121
+fail-low [a7-a5, Qd1-a4] " f7-f6 " 18 120 121
+fail-low [a7-a5, Qd1-a4] " Nh6-f5 " 34 120 121
+fail-low [a7-a5, Qd1-a4] " Nh6-g8 " -1 120 121
+fail-high [a7-a5, Qd1-a4] " Bc8-d7 " 174 120 121
+fail-low [a7-a5] " Qd1-a4 " -174 -121 -120
+fail-high [a7-a5, Ra1-c1] " Bc8-f5 " 159 120 121
+fail-low [a7-a5] " Ra1-c1 " -159 -121 -120
+fail-high [a7-a5, Qd1-b3, Bc8-f5] " Qb3-b7 " 170 -121 -120
+fail-low [a7-a5, Qd1-b3] " Bc8-f5 " -170 120 121
+fail-high [a7-a5, Qd1-b3] " a5-a4 " 311 120 121
+fail-low [a7-a5] " Qd1-b3 " -311 -121 -120
+fail-low [a7-a5, Qd1-c2] " a5-a4 " 81 120 121
+fail-high [a7-a5, Qd1-c2] " Bc8-f5 " 282 120 121
+fail-low [a7-a5] " Qd1-c2 " -282 -121 -120
+fail-high [a7-a5, g2-g4] " Ra8-b8 " 135 120 121
+fail-low [a7-a5] " g2-g4 " -135 -121 -120
+fail-high [a7-a5, Bc4-d3] " Ra8-b8 " 167 120 121
+fail-low [a7-a5] " Bc4-d3 " -167 -121 -120
+fail-high [a7-a5, Nd2-e4] " Ra8-b8 " 138 120 121
+fail-low [a7-a5] " Nd2-e4 " -138 -121 -120
+fail-low [a7-a5, e5-e6] " Bc8-e6 " 113 120 121
+fail-low [a7-a5, e5-e6] " f7-e6 " 113 120 121
+fail-low [a7-a5, e5-e6] " Ra8-b8 " -148 120 121
+fail-low [a7-a5, e5-e6] " g7-g5 " -132 120 121
+fail-low [a7-a5, e5-e6] " Qd8-e7 " 0 120 121
+fail-low [a7-a5, e5-e6] " a5-a4 " -149 120 121
+fail-low [a7-a5, e5-e6] " Ke8-f8 " 46 120 121
+fail-low [a7-a5, e5-e6] " g7-g6 " 89 120 121
+fail-low [a7-a5, e5-e6] " f7-f5 " 105 120 121
+fail-high [a7-a5, e5-e6] " f7-f6 " 124 120 121
+fail-low [a7-a5] " e5-e6 " -124 -121 -120
+fail-low [a7-a5] " Nd2-b3 " -164 -121 -120
+fail-low [a7-a5] " Bc4-b5 " -124 -121 -120
+fail-low [a7-a5] " Bc4-e2 " -219 -121 -120
+fail-low [a7-a5] " Bc4-b3 " -159 -121 -120
+fail-low [a7-a5] " Re1-f1 " -161 -121 -120
+fail-low [a7-a5] " Re1-e2 " -135 -121 -120
+fail-low [a7-a5] " Re1-e4 " -134 -121 -120
+fail-low [a7-a5] " Ra1-b1 " -147 -121 -120
+fail-low [a7-a5] " Qd1-c1 " -151 -121 -120
+fail-low [a7-a5] " Nf3-d4 " -656 -121 -120
+fail-low [a7-a5] " Bc4-f7+ " -783 -121 -120
+fail-low [a7-a5, e5-e6, f7-f6] " Bc4-d3 " -133 -156 -120
+fail-high [a7-a5, e5-e6, f7-f6] " Qd1-b3 " -92 -156 -120
+fail-low [a7-a5, e5-e6] " f7-f6 " 92 120 156
+fail-low [a7-a5, e5-e6, Bc8-e6, Bc4-e6, f7-e6, Re1-e6+] " Ke8-f7 " 113 120 156
+fail-low [a7-a5, e5-e6, Bc8-e6, Bc4-e6, f7-e6, Re1-e6+] " Ke8-d7 " 99 120 156
+fail-low [a7-a5, e5-e6, Bc8-e6, Bc4-e6, f7-e6, Re1-e6+] " Ke8-f8 " 75 120 156
+fail-low [a7-a5, e5-e6, Bc8-e6, Bc4-e6, f7-e6, Re1-e6+] " Nc6-e7 " 4 120 156
+fail-high [a7-a5, e5-e6, Bc8-e6, Bc4-e6, f7-e6] " Re1-e6+ " -113 -156 -120
+fail-low [a7-a5, e5-e6, Bc8-e6, Bc4-e6] " f7-e6 " 113 120 156
+fail-high [a7-a5, e5-e6, Bc8-e6] " Bc4-e6 " -113 -156 -120
+fail-low [a7-a5, e5-e6] " Bc8-e6 " 113 120 156
+fail-low [a7-a5, e5-e6, f7-e6, Bc4-e6, Bc8-e6, Re1-e6+] " Ke8-f7 " 113 120 121
+fail-low [a7-a5, e5-e6, f7-e6, Bc4-e6, Bc8-e6, Re1-e6+] " Ke8-d7 " 99 120 121
+fail-low [a7-a5, e5-e6, f7-e6, Bc4-e6, Bc8-e6, Re1-e6+] " Ke8-f8 " 75 120 121
+fail-low [a7-a5, e5-e6, f7-e6, Bc4-e6, Bc8-e6, Re1-e6+] " Nc6-e7 " 4 120 121
+fail-high [a7-a5, e5-e6, f7-e6, Bc4-e6, Bc8-e6] " Re1-e6+ " -113 -121 -120
+fail-low [a7-a5, e5-e6, f7-e6, Bc4-e6] " Bc8-e6 " 113 120 121
+fail-low [a7-a5, e5-e6, f7-e6, Bc4-e6] " Ra8-b8 " -98 120 121
+fail-low [a7-a5, e5-e6, f7-e6, Bc4-e6] " g7-g5 " -72 120 121
+fail-low [a7-a5, e5-e6, f7-e6, Bc4-e6] " Qd8-e7 " -33 120 121
+fail-low [a7-a5, e5-e6, f7-e6, Bc4-e6] " Bc8-d7 " -70 120 121
+fail-high [a7-a5, e5-e6, f7-e6] " Bc4-e6 " -113 -121 -120
+fail-low [a7-a5, e5-e6] " f7-e6 " 113 120 156
+fail-high [a7-a5, e5-e6, Ra8-b8] " e6-f7+ " 148 -121 -120
+fail-low [a7-a5, e5-e6] " Ra8-b8 " -148 120 156
+fail-low [a7-a5, e5-e6] " g7-g5 " -132 120 156
+fail-low [a7-a5, e5-e6] " Qd8-e7 " 0 120 156
+fail-low [a7-a5, e5-e6] " a5-a4 " -149 120 156
+fail-low [a7-a5, e5-e6] " Ke8-f8 " 46 120 156
+fail-low [a7-a5, e5-e6] " g7-g6 " 89 120 156
+fail-low [a7-a5, e5-e6] " f7-f5 " 105 120 156
+fail-low [a7-a5, e5-e6] " b7-b6 " 101 120 156
+fail-low [a7-a5, e5-e6] " Nh6-f5 " -146 120 156
+fail-low [a7-a5, e5-e6] " Nh6-g8 " 94 120 156
+fail-low [a7-a5, e5-e6] " Nc6-b4 " 95 120 156
+fail-low [a7-a5, e5-e6] " Nc6-e7 " 94 120 156
+fail-high [a7-a5] " e5-e6 " -113 -156 -120
+fail-low [] " a7-a5 " 113 120 156
+fail-low [Qd8-e7] " Ra1-c1 " -136 -83 -82
+fail-low [Qd8-e7] " Qd1-c2 " -102 -83 -82
+fail-low [Qd8-e7] " Qd1-b3 " -122 -83 -82
+fail-low [Qd8-e7] " g2-g4 " -155 -83 -82
+fail-low [Qd8-e7] " Bc4-d3 " -187 -83 -82
+fail-low [Qd8-e7] " Nd2-b3 " -153 -83 -82
+fail-low [Qd8-e7] " Bc4-b5 " -118 -83 -82
+fail-low [Qd8-e7] " Bc4-e2 " -233 -83 -82
+fail-low [Qd8-e7] " Bc4-b3 " -169 -83 -82
+fail-low [Qd8-e7] " Nf3-d4 " -676 -83 -82
+fail-low [Qd8-e7] " Bc4-f7+ " -680 -83 -82
+fail-low [Qd8-e7, Qd1-a4, Bc8-d7] " Bc4-d3 " -255 -121 -120
+fail-high [Qd8-e7, Qd1-a4, Bc8-d7] " Qa4-b3 " -68 -121 -120
+fail-low [Qd8-e7, Qd1-a4] " Bc8-d7 " 68 120 121
+fail-high [Qd8-e7, Qd1-a4, f7-f6] " e5-f6 " 569 -121 -120
+fail-low [Qd8-e7, Qd1-a4] " f7-f6 " -569 120 121
+fail-high [Qd8-e7, Qd1-a4, a7-a6] " Bc4-d3 " -69 -121 -120
+fail-low [Qd8-e7, Qd1-a4] " a7-a6 " 69 120 121
+fail-high [Qd8-e7, Qd1-a4, Qe7-b4] " Qa4-b4 " 79 -121 -120
+fail-low [Qd8-e7, Qd1-a4] " Qe7-b4 " -79 120 121
+fail-high [Qd8-e7, Qd1-a4, Ra8-b8] " Bc4-d3 " 3 -121 -120
+fail-low [Qd8-e7, Qd1-a4] " Ra8-b8 " -3 120 121
+fail-low [Qd8-e7, Qd1-a4] " g7-g5 " 0 120 121
+fail-low [Qd8-e7, Qd1-a4] " Bc8-e6 " 56 120 121
+fail-low [Qd8-e7, Qd1-a4] " Bc8-f5 " 43 120 121
+fail-low [Qd8-e7, Qd1-a4] " Ke8-f8 " 115 120 121
+fail-low [Qd8-e7, Qd1-a4] " a7-a5 " 6 120 121
+fail-low [Qd8-e7, Qd1-a4] " g7-g6 " -24 120 121
+fail-low [Qd8-e7, Qd1-a4] " f7-f5 " -35 120 121
+fail-low [Qd8-e7, Qd1-a4] " b7-b6 " -53 120 121
+fail-low [Qd8-e7, Qd1-a4] " Nh6-f5 " 68 120 121
+fail-low [Qd8-e7, Qd1-a4] " Bc8-h3 " 39 120 121
+fail-low [Qd8-e7, Qd1-a4] " Qe7-e5 " -43 120 121
+fail-high [Qd8-e7] " Qd1-a4 " -115 -121 -120
+fail-low [] " Qd8-e7 " 115 120 156
+fail-high [a7-a6, NULL, f7-f6] " e5-f6+ " 103 -121 -120
+fail-low [a7-a6, NULL] " f7-f6 " -103 120 121
+fail-low [a7-a6, NULL, b7-b5] " Bc4-d3 " -126 -121 -120
+fail-low [a7-a6, NULL, b7-b5] " Bc4-e2 " -172 -121 -120
+fail-high [a7-a6, NULL, b7-b5] " Bc4-b3 " -103 -121 -120
+fail-low [a7-a6, NULL] " b7-b5 " 103 120 121
+fail-high [a7-a6, NULL, Nc6-a5] " Qd1-a4+ " -97 -121 -120
+fail-low [a7-a6, NULL] " Nc6-a5 " 97 120 121
+fail-low [a7-a6, NULL, Ra8-b8] " Bc4-d3 " -167 -121 -120
+fail-low [a7-a6, NULL, Ra8-b8] " Bc4-b3 " -146 -121 -120
+fail-low [a7-a6, NULL, Ra8-b8] " e5-e6 " -154 -121 -120
+fail-low [a7-a6, NULL, Ra8-b8] " Qd1-b3 " -127 -121 -120
+fail-high [a7-a6, NULL, Ra8-b8] " Qd1-c2 " -102 -121 -120
+fail-low [a7-a6, NULL] " Ra8-b8 " 102 120 121
+fail-high [a7-a6, NULL] " g7-g5 " 144 120 121
+fail-high [a7-a6, Qd1-c2] " Bc8-f5 " 302 120 121
+fail-low [a7-a6] " Qd1-c2 " -302 -121 -120
+fail-high [a7-a6, Bc4-d3] " Ra8-b8 " 167 120 121
+fail-low [a7-a6] " Bc4-d3 " -167 -121 -120
+fail-high [a7-a6, Ra1-c1] " Bc8-e6 " 152 120 121
+fail-low [a7-a6] " Ra1-c1 " -152 -121 -120
+fail-high [a7-a6, Qd1-a4] " b7-b5 " 425 120 121
+fail-low [a7-a6] " Qd1-a4 " -425 -121 -120
+fail-low [a7-a6, e5-e6] " Bc8-e6 " 106 120 121
+fail-low [a7-a6, e5-e6] " f7-e6 " 106 120 121
+fail-high [a7-a6, e5-e6] " f7-f6 " 144 120 121
+fail-low [a7-a6] " e5-e6 " -144 -121 -120
+fail-low [a7-a6, Qd1-b3] " f7-f6 " 111 120 121
+fail-low [a7-a6, Qd1-b3] " Nc6-a5 " 97 120 121
+fail-high [a7-a6, Qd1-b3] " b7-b5 " 211 120 121
+fail-low [a7-a6] " Qd1-b3 " -211 -121 -120
+fail-low [a7-a6] " Bc4-b3 " -152 -121 -120
+fail-low [a7-a6] " g2-g4 " -161 -121 -120
+fail-low [a7-a6] " Nd2-e4 " -164 -121 -120
+fail-low [a7-a6] " Nd2-b3 " -164 -121 -120
+fail-low [a7-a6] " Bc4-e2 " -219 -121 -120
+fail-low [a7-a6] " Re1-f1 " -181 -121 -120
+fail-low [a7-a6] " Re1-e4 " -154 -121 -120
+fail-low [a7-a6] " Ra1-b1 " -167 -121 -120
+fail-low [a7-a6] " Qd1-c1 " -171 -121 -120
+fail-low [a7-a6] " Nf3-d4 " -661 -121 -120
+fail-low [a7-a6] " Bc4-f7+ " -660 -121 -120
+fail-low [a7-a6] " Bc4-a6 " -265 -121 -120
+fail-high [a7-a6, e5-e6, f7-f6] " Qd1-b3 " -117 -156 -120
+fail-low [a7-a6, e5-e6] " f7-f6 " 117 120 156
+fail-low [a7-a6, e5-e6] " Bc8-e6 " 106 120 156
+fail-low [a7-a6, e5-e6] " f7-e6 " 106 120 156
+fail-low [a7-a6, e5-e6] " b7-b5 " -16 120 156
+fail-low [a7-a6, e5-e6] " Nc6-a5 " -134 120 156
+fail-low [a7-a6, e5-e6] " Ra8-b8 " -128 120 156
+fail-low [a7-a6, e5-e6] " g7-g5 " -112 120 156
+fail-low [a7-a6, e5-e6] " Ke8-f8 " 66 120 156
+fail-low [a7-a6, e5-e6] " Qd8-e7 " 20 120 156
+fail-low [a7-a6, e5-e6] " g7-g6 " 109 120 156
+fail-low [a7-a6, e5-e6] " f7-f5 " 125 120 156
+fail-low [a7-a6, e5-e6] " b7-b6 " 120 120 156
+fail-low [a7-a6, e5-e6] " Nh6-f5 " -126 120 156
+fail-low [a7-a6, e5-e6] " Nh6-g8 " 114 120 156
+fail-low [a7-a6] " e5-e6 " -125 -156 -120
+fail-high [a7-a6, Ra1-c1] " Bc8-e6 " 152 124 125
+fail-low [a7-a6] " Ra1-c1 " -152 -156 -120
+fail-high [a7-a6, Qd1-a4] " b7-b5 " 425 124 125
+fail-low [a7-a6] " Qd1-a4 " -425 -156 -120
+fail-high [a7-a6, Qd1-b3] " b7-b5 " 211 124 125
+fail-low [a7-a6] " Qd1-b3 " -211 -156 -120
+fail-high [a7-a6, Qd1-c2] " Bc8-f5 " 302 124 125
+fail-low [a7-a6] " Qd1-c2 " -302 -156 -120
+fail-high [a7-a6, Bc4-b3] " Bc8-f5 " 190 124 125
+fail-low [a7-a6] " Bc4-b3 " -190 -156 -120
+fail-low [a7-a6] " g2-g4 " -161 -156 -120
+fail-low [a7-a6] " Bc4-d3 " -173 -156 -120
+fail-low [a7-a6] " Nd2-e4 " -164 -156 -120
+fail-low [a7-a6] " Nd2-b3 " -164 -156 -120
+fail-low [a7-a6] " Bc4-e2 " -219 -156 -120
+fail-low [a7-a6] " Re1-f1 " -181 -156 -120
+fail-low [a7-a6] " Re1-e4 " -154 -156 -120
+fail-low [a7-a6] " Ra1-b1 " -167 -156 -120
+fail-low [a7-a6] " Qd1-c1 " -171 -156 -120
+fail-low [a7-a6] " Nf3-d4 " -661 -156 -120
+fail-low [a7-a6] " Bc4-f7+ " -660 -156 -120
+fail-low [a7-a6] " Bc4-a6 " -265 -156 -120
+new best move a7-a6 val: 125 alpha 120 beta 156
+a7-a6 e5-e6 f7-f5
+new best move (>a) a7-a6 val: 125 alpha 120 beta 156
+fail-low [] " a7-a6 " 125 120 156
+fail-high [Bc8-f5, NULL, a7-a5] " g2-g4 " -38 -126 -125
+fail-low [Bc8-f5, NULL] " a7-a5 " 38 125 126
+fail-low [Bc8-f5, NULL, a7-a6] " e5-e6 " -206 -126 -125
+fail-high [Bc8-f5, NULL, a7-a6] " g2-g4 " -58 -126 -125
+fail-low [Bc8-f5, NULL] " a7-a6 " 58 125 126
+fail-high [Bc8-f5, NULL, Nc6-a5] " g2-g4 " -114 -126 -125
+fail-low [Bc8-f5, NULL] " Nc6-a5 " 114 125 126
+fail-high [Bc8-f5, NULL] " Ra8-b8 " 171 125 126
+fail-low [Bc8-f5, Qd1-b3] " a7-a6 " 122 125 126
+fail-high [Bc8-f5, Qd1-b3] " Ra8-b8 " 139 125 126
+fail-low [Bc8-f5] " Qd1-b3 " -139 -126 -125
+fail-high [Bc8-f5, g2-g4] " Bf5-e6 " 173 125 126
+fail-low [Bc8-f5] " g2-g4 " -173 -126 -125
+fail-high [Bc8-f5, Ra1-c1] " a7-a6 " 179 125 126
+fail-low [Bc8-f5] " Ra1-c1 " -179 -126 -125
+fail-high [Bc8-f5, Qd1-a4] " a7-a6 " 130 125 126
+fail-low [Bc8-f5] " Qd1-a4 " -130 -126 -125
+fail-low [Bc8-f5, e5-e6] " Bf5-e6 " 109 125 126
+fail-low [Bc8-f5, e5-e6] " f7-e6 " 109 125 126
+fail-low [Bc8-f5, e5-e6] " a7-a6 " -84 125 126
+fail-low [Bc8-f5, e5-e6] " Nc6-a5 " -114 125 126
+fail-low [Bc8-f5, e5-e6] " Ra8-b8 " -111 125 126
+fail-low [Bc8-f5, e5-e6] " g7-g5 " -94 125 126
+fail-low [Bc8-f5, e5-e6] " Ke8-f8 " 86 125 126
+fail-high [Bc8-f5, e5-e6] " f7-f6 " 170 125 126
+fail-low [Bc8-f5] " e5-e6 " -170 -126 -125
+fail-low [Bc8-f5, Bc4-b3] " f7-f6 " -66 125 126
+fail-high [Bc8-f5, Bc4-b3] " a7-a6 " 190 125 126
+fail-low [Bc8-f5] " Bc4-b3 " -190 -126 -125
+fail-low [Bc8-f5] " Nd2-e4 " -151 -126 -125
+fail-low [Bc8-f5] " Nd2-b3 " -193 -126 -125
+fail-low [Bc8-f5] " Bc4-b5 " -182 -126 -125
+fail-low [Bc8-f5] " Bc4-e2 " -273 -126 -125
+fail-low [Bc8-f5] " Re1-f1 " -195 -126 -125
+fail-low [Bc8-f5] " Re1-e2 " -193 -126 -125
+fail-low [Bc8-f5] " Qd1-e2 " -172 -126 -125
+fail-low [Bc8-f5] " Kg1-h1 " -162 -126 -125
+fail-low [Bc8-f5] " Kg1-f1 " -183 -126 -125
+fail-low [Bc8-f5] " Nf3-d4 " -666 -126 -125
+fail-low [Bc8-f5] " Bc4-f7+ " -658 -126 -125
+fail-high [Bc8-f5, Qd1-a4, a7-a6] " g2-g4 " 10 -156 -125
+fail-low [Bc8-f5, Qd1-a4] " a7-a6 " -10 125 156
+fail-low [Bc8-f5, Qd1-a4] " f7-f6 " 69 125 156
+fail-low [Bc8-f5, Qd1-a4] " Ra8-b8 " 33 125 156
+fail-low [Bc8-f5, Qd1-a4] " g7-g5 " 71 125 156
+fail-high [Bc8-f5, Qd1-a4] " Bf5-d7 " 194 125 156
+fail-low [Bc8-f5] " Qd1-a4 " -194 -156 -125
+fail-high [Bc8-f5, Ra1-c1] " a7-a6 " 179 155 156
+fail-low [Bc8-f5] " Ra1-c1 " -179 -156 -125
+fail-high [Bc8-f5, g2-g4] " Bf5-e6 " 173 155 156
+fail-low [Bc8-f5] " g2-g4 " -173 -156 -125
+fail-high [Bc8-f5, e5-e6] " f7-f6 " 170 155 156
+fail-low [Bc8-f5] " e5-e6 " -170 -156 -125
+fail-low [Bc8-f5, Qd1-b3] " Ra8-b8 " 139 155 156
+fail-low [Bc8-f5, Qd1-b3] " f7-f6 " 75 155 156
+fail-low [Bc8-f5, Qd1-b3] " a7-a6 " 122 155 156
+fail-low [Bc8-f5, Qd1-b3] " Nc6-a5 " 127 155 156
+fail-low [Bc8-f5, Qd1-b3] " g7-g5 " 81 155 156
+fail-low [Bc8-f5, Qd1-b3] " Ke8-f8 " 96 155 156
+fail-low [Bc8-f5, Qd1-b3] " Qd8-e7 " 105 155 156
+fail-low [Bc8-f5, Qd1-b3] " Bf5-e6 " 124 155 156
+fail-low [Bc8-f5, Qd1-b3] " a7-a5 " 97 155 156
+fail-low [Bc8-f5, Qd1-b3] " g7-g6 " 41 155 156
+fail-low [Bc8-f5, Qd1-b3] " Nc6-e5 " 144 155 156
+fail-low [Bc8-f5, Qd1-b3] " Bf5-h3 " 88 155 156
+fail-low [Bc8-f5, Qd1-b3] " Ra8-b8 " 139 125 156
+fail-low [Bc8-f5, Qd1-b3] " f7-f6 " 75 125 156
+fail-low [Bc8-f5, Qd1-b3] " a7-a6 " 122 125 156
+fail-low [Bc8-f5, Qd1-b3] " Nc6-a5 " 127 125 156
+fail-low [Bc8-f5, Qd1-b3] " g7-g5 " 81 125 156
+fail-low [Bc8-f5, Qd1-b3] " Ke8-f8 " 96 125 156
+fail-low [Bc8-f5, Qd1-b3] " Qd8-e7 " 105 125 156
+fail-low [Bc8-f5, Qd1-b3] " Bf5-e6 " 124 125 156
+fail-low [Bc8-f5, Qd1-b3] " a7-a5 " 97 125 156
+fail-low [Bc8-f5, Qd1-b3] " g7-g6 " 41 125 156
+fail-low [Bc8-f5, Qd1-b3] " b7-b6 " 103 125 156
+fail-low [Bc8-f5, Qd1-b3] " Nc6-e5 " -678 125 156
+fail-low [Bc8-f5, Qd1-b3] " Bf5-h3 " 88 125 156
+fail-low [Bc8-f5] " Qd1-b3 " -139 -156 -125
+fail-high [Bc8-f5, Bc4-b3] " a7-a6 " 190 138 139
+fail-low [Bc8-f5] " Bc4-b3 " -190 -156 -125
+fail-low [Bc8-f5] " Nd2-e4 " -151 -156 -125
+fail-low [Bc8-f5] " Nd2-b3 " -193 -156 -125
+fail-low [Bc8-f5] " Bc4-b5 " -182 -156 -125
+fail-low [Bc8-f5] " Bc4-e2 " -273 -156 -125
+fail-low [Bc8-f5] " Re1-f1 " -195 -156 -125
+fail-low [Bc8-f5] " Re1-e2 " -193 -156 -125
+fail-low [Bc8-f5] " Qd1-e2 " -172 -156 -125
+fail-low [Bc8-f5] " Kg1-h1 " -162 -156 -125
+fail-low [Bc8-f5] " Kg1-f1 " -183 -156 -125
+fail-low [Bc8-f5] " Nf3-d4 " -666 -156 -125
+fail-low [Bc8-f5] " Bc4-f7+ " -658 -156 -125
+new best move Bc8-f5 val: 139 alpha 120 beta 156
+Bc8-f5 Qd1-b3 Ra8-b8
+new best move (>a) Bc8-f5 val: 139 alpha 120 beta 156
+fail-low [] " Bc8-f5 " 139 120 156
+fail-high [Bc8-e6, NULL] " Be6-c4 " 224 139 140
+fail-low [Bc8-e6, Qd1-a4] " Be6-c4 " 137 139 140
+fail-low [Bc8-e6, Qd1-a4] " f7-f6 " 46 139 140
+fail-low [Bc8-e6, Qd1-a4] " a7-a6 " 104 139 140
+fail-low [Bc8-e6, Qd1-a4] " g7-g5 " 93 139 140
+fail-low [Bc8-e6, Qd1-a4] " Ra8-b8 " 55 139 140
+fail-low [Bc8-e6, Qd1-a4] " Ke8-f8 " 133 139 140
+fail-low [Bc8-e6, Qd1-a4] " Qd8-e7 " 56 139 140
+fail-low [Bc8-e6, Qd1-a4] " f7-f5 " 13 139 140
+fail-low [Bc8-e6, Qd1-a4] " a7-a5 " 99 139 140
+fail-low [Bc8-e6, Qd1-a4] " g7-g6 " 57 139 140
+fail-low [Bc8-e6, Qd1-a4] " Be6-h3 " 83 139 140
+fail-high [Bc8-e6] " Qd1-a4 " -137 -140 -139
+fail-low [] " Bc8-e6 " 137 120 156
+fail-low [g7-g5, NULL] " f7-f6 " 137 139 140
+fail-high [g7-g5, NULL] " a7-a6 " 144 139 140
+fail-low [g7-g5, Ra1-c1] " a7-a6 " 126 139 140
+fail-low [g7-g5, Ra1-c1] " f7-f6 " 119 139 140
+fail-low [g7-g5, Ra1-c1] " Nc6-a5 " 96 139 140
+fail-low [g7-g5, Ra1-c1] " g5-g4 " 139 139 140
+fail-low [g7-g5, Ra1-c1] " Ra8-b8 " 104 139 140
+fail-low [g7-g5, Ra1-c1] " Ke8-f8 " 99 139 140
+fail-low [g7-g5, Ra1-c1] " Qd8-e7 " 120 139 140
+fail-low [g7-g5, Ra1-c1] " f7-f5 " 87 139 140
+fail-high [g7-g5, Ra1-c1] " Bc8-e6 " 161 139 140
+fail-low [g7-g5] " Ra1-c1 " -161 -140 -139
+fail-high [g7-g5] " Qd1-a4 " -38 -140 -139
+fail-low [] " g7-g5 " 38 120 156
+fail-low [] " g7-g6 " 70 120 156
+fail-low [] " f7-f5 " -101 120 156
+fail-low [] " f7-f6 " -123 120 156
+fail-low [] " b7-b6 " 103 120 156
+fail-low [] " Nh6-f5 " 123 120 156
+fail-low [] " Nh6-g8 " 93 120 156
+fail-low [] " Nc6-b4 " 100 120 156
+fail-low [] " Nc6-e7 " 103 120 156
+fail-low [] " Nc6-b8 " 77 120 156
+fail-low [] " Bc8-d7 " 131 120 156
+fail-low [] " Rh8-g8 " 130 120 156
+fail-low [] " Rh8-f8 " 124 120 156
+fail-low [] " Qd8-d7 " 110 120 156
+fail-low [] " Ke8-g8 " 58 120 156
+fail-low [] " Ke8-e7 " 112 120 156
+fail-low [] " Ke8-d7 " 67 120 156
+fail-low [] " Ke8-f8 " 135 120 156
+fail-low [] " b7-b5 " -126 120 156
+fail-low [] " Nh6-g4 " 0 120 156
+fail-low [] " Bc8-g4 " 58 120 156
+fail-low [] " Qd8-f6 " -57 120 156
+fail-low [] " Qd8-d6 " -33 120 156
+fail-low [] " Qd8-h4 " 21 120 156
+fail-low [] " Qd8-g5 " 84 120 156
+fail-low [] " Qd8-d5 " 78 120 156
+fail-low [] " Nc6-e5 " -632 120 156
+fail-low [] " Bc8-h3 " -461 120 156
+node_count: 2182 avg ply: 3.453488372093023 max ply: 7 alpha 139 beta 156 val 139
+REAL PV: [Bc8-f5, Qd1-b3, Ra8-b8]
 
-faillow a 270 b 306 val 269 factor 18
-new best move Ng4-e5 val: 250 alpha 251 beta 306
-new best move Ng4-h6 val: 251 alpha 251 beta 306
-node_count: 2793 avg ply: 4.5200777202072535 max ply: 12 alpha 251 beta 306 val 251
-pv: []
-
-new best move Ng4-e5 val: 222 alpha 221 beta 306
-Ng4-e5 Nf3-e5 Nc6-e5 Rf1-e1 f7-f6 f2-f4
-new best move (>a) Ng4-e5 val: 222 alpha 221 beta 306
-node_count: 3435 avg ply: 4.864216436957632 max ply: 12 alpha 222 beta 306 val 222
-REAL PV: [Ng4-e5, Nf3-e5, Nc6-e5, Rf1-e1, f7-f6, f2-f4]
-
-5.762798547744751 s
+4.844910144805908 s
 
 >> depth: 3.5 , allowance: 29
-new best move Ng4-e5 val: 222 alpha 204 beta 240
-Ng4-e5 Nf3-e5 Nc6-e5 Rf1-e1 f7-f6 f2-f4
-new best move (>a) Ng4-e5 val: 222 alpha 204 beta 240
-node_count: 4376 avg ply: 5.173636001592991 max ply: 12 alpha 222 beta 240 val 222
-REAL PV: [Ng4-e5, Nf3-e5, Nc6-e5, Rf1-e1, f7-f6, f2-f4]
+fail-low [Bc8-f5] " Qd1-b3 " -139 -122 -121
+fail-low [Bc8-f5] " Ra1-c1 " -179 -122 -121
+fail-low [Bc8-f5] " Qd1-a4 " -194 -122 -121
+fail-low [Bc8-f5] " g2-g4 " -173 -122 -121
+fail-low [Bc8-f5] " e5-e6 " -170 -122 -121
+fail-low [Bc8-f5] " Bc4-b3 " -190 -122 -121
+fail-low [Bc8-f5] " Nd2-e4 " -151 -122 -121
+fail-low [Bc8-f5] " Nd2-b3 " -193 -122 -121
+fail-low [Bc8-f5] " Bc4-b5 " -182 -122 -121
+fail-low [Bc8-f5] " Bc4-e2 " -273 -122 -121
+fail-low [Bc8-f5] " Re1-f1 " -195 -122 -121
+fail-low [Bc8-f5] " Re1-e2 " -193 -122 -121
+fail-low [Bc8-f5] " Qd1-c1 " -189 -122 -121
+fail-low [Bc8-f5] " Qd1-e2 " -172 -122 -121
+fail-low [Bc8-f5] " Kg1-h1 " -162 -122 -121
+fail-low [Bc8-f5] " Kg1-h2 " -184 -122 -121
+fail-low [Bc8-f5] " a2-a3 " -165 -122 -121
+fail-low [Bc8-f5] " Nf3-d4 " -666 -122 -121
+fail-low [Bc8-f5] " Bc4-f7+ " -658 -122 -121
+fail-high [Bc8-f5, Qd1-b3, Ra8-b8] " g2-g4 " 1 -157 -156
+fail-low [Bc8-f5, Qd1-b3] " Ra8-b8 " -1 156 157
+fail-high [Bc8-f5, Qd1-b3, a7-a6] " Qb3-b7 " 142 -157 -156
+fail-low [Bc8-f5, Qd1-b3] " a7-a6 " -142 156 157
+fail-high [Bc8-f5, Qd1-b3, Nc6-a5] " Qb3-a4+ " -127 -157 -156
+fail-low [Bc8-f5, Qd1-b3] " Nc6-a5 " 127 156 157
+fail-high [Bc8-f5, Qd1-b3, g7-g5] " Qb3-b7 " 135 -157 -156
+fail-low [Bc8-f5, Qd1-b3] " g7-g5 " -135 156 157
+fail-high [Bc8-f5, Qd1-b3, Bf5-d7] " Qb3-b7 " 139 -157 -156
+fail-low [Bc8-f5, Qd1-b3] " Bf5-d7 " -139 156 157
+fail-low [Bc8-f5, Qd1-b3] " Ke8-f8 " 96 156 157
+fail-low [Bc8-f5, Qd1-b3] " Qd8-e7 " 105 156 157
+fail-low [Bc8-f5, Qd1-b3] " Bf5-e6 " 124 156 157
+fail-low [Bc8-f5, Qd1-b3] " f7-f6 " 75 156 157
+fail-low [Bc8-f5, Qd1-b3] " a7-a5 " 97 156 157
+fail-low [Bc8-f5, Qd1-b3] " g7-g6 " 41 156 157
+fail-low [Bc8-f5, Qd1-b3] " b7-b6 " 103 156 157
+fail-low [Bc8-f5, Qd1-b3] " Nc6-e7 " 65 156 157
+fail-low [Bc8-f5, Qd1-b3] " Nc6-b8 " 20 156 157
+fail-low [Bc8-f5, Qd1-b3] " Bf5-g6 " 114 156 157
+fail-low [Bc8-f5, Qd1-b3] " Nc6-e5 " 144 156 157
+fail-low [Bc8-f5, Qd1-b3] " Bf5-h3 " 88 156 157
+fail-high [Bc8-f5, Qd1-b3, Ra8-b8] " g2-g4 " 1 -157 -121
+fail-low [Bc8-f5, Qd1-b3] " Ra8-b8 " -1 121 157
+fail-high [Bc8-f5, Qd1-b3, a7-a6] " Qb3-b7 " 142 -122 -121
+fail-low [Bc8-f5, Qd1-b3] " a7-a6 " -142 121 157
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " Qb3-a4+ " -127 -122 -121
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " Bc4-b5+ " -292 -122 -121
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " Qb3-b5+ " -264 -122 -121
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " Bc4-d3 " -173 -122 -121
+fail-high [Bc8-f5, Qd1-b3, Nc6-a5] " Qb3-a3 " -119 -122 -121
+fail-low [Bc8-f5, Qd1-b3] " Nc6-a5 " 119 121 157
+fail-high [Bc8-f5, Qd1-b3, g7-g5] " Qb3-b7 " 135 -122 -121
+fail-low [Bc8-f5, Qd1-b3] " g7-g5 " -135 121 157
+fail-high [Bc8-f5, Qd1-b3, Bf5-d7] " Qb3-b7 " 139 -122 -121
+fail-low [Bc8-f5, Qd1-b3] " Bf5-d7 " -139 121 157
+fail-low [Bc8-f5, Qd1-b3] " Ke8-f8 " 96 121 157
+fail-low [Bc8-f5, Qd1-b3] " Qd8-e7 " 105 121 157
+fail-low [Bc8-f5, Qd1-b3] " Bf5-e6 " 30 121 157
+fail-low [Bc8-f5, Qd1-b3] " f7-f6 " 75 121 157
+fail-low [Bc8-f5, Qd1-b3] " a7-a5 " 97 121 157
+fail-low [Bc8-f5, Qd1-b3] " g7-g6 " 41 121 157
+fail-low [Bc8-f5, Qd1-b3] " b7-b6 " 103 121 157
+fail-low [Bc8-f5, Qd1-b3] " Nc6-e7 " 65 121 157
+fail-low [Bc8-f5, Qd1-b3] " Nc6-b8 " 20 121 157
+fail-low [Bc8-f5, Qd1-b3] " Bf5-g6 " 114 121 157
+fail-low [Bc8-f5, Qd1-b3] " Bf5-c8 " 108 121 157
+fail-low [Bc8-f5, Qd1-b3] " Nc6-e5 " -678 121 157
+fail-low [Bc8-f5, Qd1-b3] " Bf5-h3 " 88 121 157
+fail-high [Bc8-f5] " Qd1-b3 " -119 -157 -121
+new best move Bc8-f5 val: 119 alpha 121 beta 157
+fail-low [] " Bc8-f5 " 119 121 157
+fail-high [Ra8-b8, NULL, a7-a6] " Qd1-c2 " -102 -122 -121
+fail-low [Ra8-b8, NULL] " a7-a6 " 102 121 122
+fail-low [Ra8-b8, NULL, Bc8-e6] " Bc4-e6 " -174 -122 -121
+fail-low [Ra8-b8, NULL, Bc8-e6, Qd1-a4] " Be6-c4 " 83 121 122
+fail-low [Ra8-b8, NULL, Bc8-e6, Qd1-a4] " Be6-f5 " 33 121 122
+fail-low [Ra8-b8, NULL, Bc8-e6, Qd1-a4] " g7-g5 " 39 121 122
+fail-low [Ra8-b8, NULL, Bc8-e6, Qd1-a4] " Be6-d7 " 62 121 122
+fail-low [Ra8-b8, NULL, Bc8-e6, Qd1-a4] " Ke8-f8 " 73 121 122
+fail-low [Ra8-b8, NULL, Bc8-e6, Qd1-a4] " f7-f5 " -41 121 122
+fail-low [Ra8-b8, NULL, Bc8-e6, Qd1-a4] " f7-f6 " -8 121 122
+fail-low [Ra8-b8, NULL, Bc8-e6, Qd1-a4] " a7-a5 " 41 121 122
+fail-low [Ra8-b8, NULL, Bc8-e6, Qd1-a4] " g7-g6 " 3 121 122
+fail-low [Ra8-b8, NULL, Bc8-e6, Qd1-a4] " Be6-h3 " 29 121 122
+fail-high [Ra8-b8, NULL, Bc8-e6] " Qd1-a4 " -83 -122 -121
+fail-low [Ra8-b8, NULL] " Bc8-e6 " 83 121 122
+fail-high [Ra8-b8, NULL, Nc6-a5] " Qd1-a4+ " -86 -122 -121
+fail-low [Ra8-b8, NULL] " Nc6-a5 " 86 121 122
+fail-low [Ra8-b8, NULL, b7-b5, Bc4-b3] " a7-a6 " 105 121 122
+fail-high [Ra8-b8, NULL, b7-b5, Bc4-b3] " Nc6-a5 " 122 121 122
+fail-low [Ra8-b8, NULL, b7-b5] " Bc4-b3 " -122 -122 -121
+fail-low [Ra8-b8, NULL, b7-b5] " Bc4-d3 " -137 -122 -121
+fail-low [Ra8-b8, NULL, b7-b5] " Bc4-e2 " -183 -122 -121
+fail-low [Ra8-b8, NULL, b7-b5] " Bc4-f1 " -162 -122 -121
+fail-low [Ra8-b8, NULL, b7-b5] " Qd1-b3 " -222 -122 -121
+fail-low [Ra8-b8, NULL, b7-b5] " e5-e6 " -245 -122 -121
+fail-low [Ra8-b8, NULL, b7-b5] " Qd1-c2 " -197 -122 -121
+fail-low [Ra8-b8, NULL, b7-b5] " g2-g4 " -246 -122 -121
+fail-low [Ra8-b8, NULL, b7-b5] " Ra1-c1 " -231 -122 -121
+fail-low [Ra8-b8, NULL, b7-b5] " Nd2-e4 " -293 -122 -121
+fail-low [Ra8-b8, NULL, b7-b5] " Nd2-b3 " -308 -122 -121
+fail-low [Ra8-b8, NULL, b7-b5] " Nf3-d4 " -874 -122 -121
+fail-low [Ra8-b8, NULL, b7-b5] " Bc4-b5 " -862 -122 -121
+fail-low [Ra8-b8, NULL, b7-b5] " Bc4-f7+ " -695 -122 -121
+fail-high [Ra8-b8, NULL] " b7-b5 " 122 121 122
+fail-high [Ra8-b8, Qd1-a4, a7-a6] " Bc4-d3 " -83 -122 -121
+fail-low [Ra8-b8, Qd1-a4] " a7-a6 " 83 121 122
+fail-high [Ra8-b8, Qd1-a4, Bc8-f5] " g2-g4 " 107 -122 -121
+fail-low [Ra8-b8, Qd1-a4] " Bc8-f5 " -107 121 122
+fail-high [Ra8-b8, Qd1-a4, g7-g5] " g2-g4 " 30 -122 -121
+fail-low [Ra8-b8, Qd1-a4] " g7-g5 " -30 121 122
+fail-low [Ra8-b8, Qd1-a4] " Bc8-d7 " 62 121 122
+fail-low [Ra8-b8, Qd1-a4] " Ke8-f8 " 104 121 122
+fail-low [Ra8-b8, Qd1-a4] " Qd8-e7 " -33 121 122
+fail-low [Ra8-b8, Qd1-a4] " f7-f5 " -54 121 122
+fail-low [Ra8-b8, Qd1-a4] " Bc8-e6 " 55 121 122
+fail-low [Ra8-b8, Qd1-a4] " f7-f6 " -13 121 122
+fail-low [Ra8-b8, Qd1-a4] " g7-g6 " -55 121 122
+fail-low [Ra8-b8, Qd1-a4] " b7-b6 " -72 121 122
+fail-low [Ra8-b8, Qd1-a4] " Bc8-h3 " 29 121 122
+fail-high [Ra8-b8] " Qd1-a4 " -104 -122 -121
+fail-low [] " Ra8-b8 " 104 121 157
+fail-low [d4-d3, NULL, a7-a5, g2-g4] " g7-g5 " 111 121 122
+fail-low [d4-d3, NULL, a7-a5, g2-g4] " Bc8-d7 " 93 121 122
+fail-high [d4-d3, NULL, a7-a5, g2-g4] " Ke8-f8 " 137 121 122
+fail-low [d4-d3, NULL, a7-a5] " g2-g4 " -137 -122 -121
+fail-high [d4-d3, NULL, a7-a5] " Qd1-b3 " -103 -122 -121
+fail-low [d4-d3, NULL] " a7-a5 " 103 121 122
+fail-high [d4-d3, NULL, a7-a6] " Qd1-a4 " -95 -122 -121
+fail-low [d4-d3, NULL] " a7-a6 " 95 121 122
+fail-low [d4-d3, NULL, Nc6-a5, Qd1-a4+] " Ke8-f8 " 35 121 122
+fail-low [d4-d3, NULL, Nc6-a5, Qd1-a4+] " Na5-c6 " 52 121 122
+fail-low [d4-d3, NULL, Nc6-a5, Qd1-a4+] " Bc8-d7 " -96 121 122
+fail-low [d4-d3, NULL, Nc6-a5, Qd1-a4+] " Qd8-d7 " -128 121 122
+fail-low [d4-d3, NULL, Nc6-a5, Qd1-a4+] " c7-c6 " 84 121 122
+fail-low [d4-d3, NULL, Nc6-a5, Qd1-a4+] " Ke8-e7 " 3 121 122
+fail-high [d4-d3, NULL, Nc6-a5] " Qd1-a4+ " -84 -122 -121
+fail-low [d4-d3, NULL] " Nc6-a5 " 84 121 122
+fail-high [d4-d3, NULL, Bc8-f5] " g2-g4 " -23 -122 -121
+fail-low [d4-d3, NULL] " Bc8-f5 " 23 121 122
+fail-high [d4-d3, NULL, g7-g5] " g2-g4 " -110 -122 -121
+fail-low [d4-d3, NULL] " g7-g5 " 110 121 122
+fail-high [d4-d3, NULL, Bc8-d7] " Bc4-d3 " 32 -122 -121
+fail-low [d4-d3, NULL] " Bc8-d7 " -32 121 122
+fail-low [d4-d3, NULL, Ke8-f8] " g2-g4 " -137 -122 -121
+fail-high [d4-d3, NULL, Ke8-f8] " Qd1-b3 " -102 -122 -121
+fail-low [d4-d3, NULL] " Ke8-f8 " 102 121 122
+fail-high [d4-d3, NULL] " Ra8-b8 " 143 121 122
+fail-high [d4-d3, Qd1-a4, a7-a6] " g2-g4 " -96 -122 -121
+fail-low [d4-d3, Qd1-a4] " a7-a6 " 96 121 122
+fail-high [d4-d3, Qd1-a4, Ra8-b8] " g2-g4 " -4 -122 -121
+fail-low [d4-d3, Qd1-a4] " Ra8-b8 " 4 121 122
+fail-high [d4-d3, Qd1-a4, Bc8-f5] " g2-g4 " 70 -122 -121
+fail-low [d4-d3, Qd1-a4] " Bc8-f5 " -70 121 122
+fail-high [d4-d3, Qd1-a4, g7-g5] " g2-g4 " -17 -122 -121
+fail-low [d4-d3, Qd1-a4] " g7-g5 " 17 121 122
+fail-low [d4-d3, Qd1-a4] " Bc8-d7 " -3 121 122
+fail-low [d4-d3, Qd1-a4] " Ke8-f8 " 106 121 122
+fail-low [d4-d3, Qd1-a4] " Qd8-e7 " 26 121 122
+fail-low [d4-d3, Qd1-a4] " f7-f5 " 1 121 122
+fail-low [d4-d3, Qd1-a4] " Bc8-e6 " 107 121 122
+fail-low [d4-d3, Qd1-a4] " f7-f6 " 34 121 122
+fail-low [d4-d3, Qd1-a4] " b7-b6 " -28 121 122
+fail-low [d4-d3, Qd1-a4] " Nh6-f5 " 52 121 122
+fail-low [d4-d3, Qd1-a4] " Bc8-h3 " 81 121 122
+fail-high [d4-d3] " Qd1-a4 " -107 -122 -121
+fail-low [] " d4-d3 " 107 121 157
+fail-low [Nc6-a5, NULL, Na5-c4, Qd1-a4+] " Ke8-f8 " 74 121 122
+fail-low [Nc6-a5, NULL, Na5-c4, Qd1-a4+] " Bc8-d7 " -8 121 122
+fail-low [Nc6-a5, NULL, Na5-c4, Qd1-a4+] " Qd8-d7 " -105 121 122
+fail-low [Nc6-a5, NULL, Na5-c4, Qd1-a4+] " c7-c6 " 73 121 122
+fail-low [Nc6-a5, NULL, Na5-c4, Qd1-a4+] " Ke8-e7 " 37 121 122
+fail-high [Nc6-a5, NULL, Na5-c4] " Qd1-a4+ " -74 -122 -121
+fail-low [Nc6-a5, NULL] " Na5-c4 " 74 121 122
+fail-high [Nc6-a5, NULL, a7-a6] " Qd1-a4+ " -97 -122 -121
+fail-low [Nc6-a5, NULL] " a7-a6 " 97 121 122
+fail-high [Nc6-a5, NULL, Ra8-b8] " Qd1-a4+ " -86 -122 -121
+fail-low [Nc6-a5, NULL] " Ra8-b8 " 86 121 122
+fail-low [Nc6-a5, NULL, Bc8-f5, g2-g4] " Na5-c4 " 114 121 122
+fail-low [Nc6-a5, NULL, Bc8-f5, g2-g4] " Ke8-f8 " 27 121 122
+fail-low [Nc6-a5, NULL, Bc8-f5, g2-g4] " Bf5-d7 " 120 121 122
+fail-low [Nc6-a5, NULL, Bc8-f5, g2-g4] " Bf5-e6 " 112 121 122
+fail-high [Nc6-a5, NULL, Bc8-f5, g2-g4] " Bf5-g6 " 146 121 122
+fail-low [Nc6-a5, NULL, Bc8-f5] " g2-g4 " -146 -122 -121
+fail-low [Nc6-a5, NULL, Bc8-f5] " Qd1-a4+ " -127 -122 -121
+fail-low [Nc6-a5, NULL, Bc8-f5] " Bc4-b5+ " -302 -122 -121
+fail-low [Nc6-a5, NULL, Bc8-f5] " Nd2-b3 " -198 -122 -121
+fail-low [Nc6-a5, NULL, Bc8-f5] " b2-b4 " -259 -122 -121
+fail-low [Nc6-a5, NULL, Bc8-f5] " Bc4-e2 " -215 -122 -121
+fail-low [Nc6-a5, NULL, Bc8-f5] " Bc4-f1 " -178 -122 -121
+fail-low [Nc6-a5, NULL, Bc8-f5] " e5-e6 " -180 -122 -121
+fail-low [Nc6-a5, NULL, Bc8-f5] " Ra1-c1 " -157 -122 -121
+fail-low [Nc6-a5, NULL, Bc8-f5] " Nd2-e4 " -188 -122 -121
+fail-low [Nc6-a5, NULL, Bc8-f5] " Re1-f1 " -193 -122 -121
+fail-low [Nc6-a5, NULL, Bc8-f5] " Re1-e2 " -191 -122 -121
+fail-low [Nc6-a5, NULL, Bc8-f5] " Nf3-d4 " -764 -122 -121
+fail-low [Nc6-a5, NULL, Bc8-f5] " Bc4-f7+ " -751 -122 -121
+fail-high [Nc6-a5, NULL] " Bc8-f5 " 127 121 122
+fail-high [Nc6-a5, Qd1-a4+, Ke8-f8] " Qa4-a5 " 719 -122 -121
+fail-low [Nc6-a5, Qd1-a4+] " Ke8-f8 " -719 121 122
+fail-high [Nc6-a5, Qd1-a4+, Na5-c6] " Bc4-d3 " -72 -122 -121
+fail-low [Nc6-a5, Qd1-a4+] " Na5-c6 " 72 121 122
+fail-low [Nc6-a5, Qd1-a4+] " Bc8-d7 " -94 121 122
+fail-low [Nc6-a5, Qd1-a4+] " Qd8-d7 " -126 121 122
+fail-low [Nc6-a5, Qd1-a4+] " c7-c6 " 86 121 122
+fail-low [Nc6-a5, Qd1-a4+] " Ke8-e7 " 5 121 122
+fail-high [Nc6-a5] " Qd1-a4+ " -86 -122 -121
+fail-low [] " Nc6-a5 " 86 121 157
+fail-low [g7-g5, NULL, a7-a6] " Bc4-d3 " -157 -122 -121
+fail-high [g7-g5, NULL, a7-a6] " Qd1-a4 " -81 -122 -121
+fail-low [g7-g5, NULL] " a7-a6 " 81 121 122
+fail-high [g7-g5, NULL, Bc8-f5] " Qd1-a4 " -71 -122 -121
+fail-low [g7-g5, NULL] " Bc8-f5 " 71 121 122
+fail-low [g7-g5, NULL, Nc6-a5, Qd1-a4+] " c7-c6 " 101 121 122
+fail-low [g7-g5, NULL, Nc6-a5, Qd1-a4+] " Ke8-f8 " 15 121 122
+fail-low [g7-g5, NULL, Nc6-a5, Qd1-a4+] " Na5-c6 " 38 121 122
+fail-low [g7-g5, NULL, Nc6-a5, Qd1-a4+] " Bc8-d7 " -110 121 122
+fail-low [g7-g5, NULL, Nc6-a5, Qd1-a4+] " Qd8-d7 " -202 121 122
+fail-low [g7-g5, NULL, Nc6-a5, Qd1-a4+] " Ke8-e7 " -51 121 122
+fail-high [g7-g5, NULL, Nc6-a5] " Qd1-a4+ " -101 -122 -121
+fail-low [g7-g5, NULL] " Nc6-a5 " 101 121 122
+fail-low [g7-g5, NULL, g5-g4] " h3-g4 " -157 -122 -121
+fail-low [g7-g5, NULL, g5-g4] " Bc4-d3 " -269 -122 -121
+fail-low [g7-g5, NULL, g5-g4] " Qd1-a4 " -150 -122 -121
+fail-low [g7-g5, NULL, g5-g4] " Nf3-h2 " -184 -122 -121
+fail-low [g7-g5, NULL, g5-g4] " Qd1-b3 " -204 -122 -121
+fail-low [g7-g5, NULL, g5-g4] " e5-e6 " -240 -122 -121
+fail-low [g7-g5, NULL, g5-g4] " Qd1-c2 " -184 -122 -121
+fail-low [g7-g5, NULL, g5-g4] " Bc4-b3 " -251 -122 -121
+fail-low [g7-g5, NULL, g5-g4] " Ra1-c1 " -218 -122 -121
+fail-low [g7-g5, NULL, g5-g4] " Nd2-e4 " -238 -122 -121
+fail-low [g7-g5, NULL, g5-g4] " Nd2-b3 " -240 -122 -121
+fail-low [g7-g5, NULL, g5-g4] " Bc4-b5 " -240 -122 -121
+fail-low [g7-g5, NULL, g5-g4] " Nf3-d4 " -627 -122 -121
+fail-low [g7-g5, NULL, g5-g4] " Bc4-f7+ " -810 -122 -121
+fail-high [g7-g5, NULL] " g5-g4 " 150 121 122
+fail-low [g7-g5, Qd1-a4] " g5-g4 " 61 121 122
+fail-low [g7-g5, Qd1-a4] " a7-a6 " 81 121 122
+fail-low [g7-g5, Qd1-a4] " Bc8-f5 " 71 121 122
+fail-low [g7-g5, Qd1-a4] " Ra8-b8 " -19 121 122
+fail-high [g7-g5, Qd1-a4] " Bc8-d7 " 178 121 122
+fail-low [g7-g5] " Qd1-a4 " -178 -122 -121
+fail-high [g7-g5, g2-g4] " a7-a6 " 125 121 122
+fail-low [g7-g5] " g2-g4 " -125 -122 -121
+fail-low [g7-g5, Ra1-c1, Bc8-e6] " Bc4-e6 " -165 -122 -121
+fail-high [g7-g5, Ra1-c1, Bc8-e6] " Qd1-a4 " -100 -122 -121
+fail-low [g7-g5, Ra1-c1] " Bc8-e6 " 100 121 122
+fail-high [g7-g5, Ra1-c1] " a7-a6 " 126 121 122
+fail-low [g7-g5] " Ra1-c1 " -126 -122 -121
+fail-high [g7-g5, Qd1-b3, Nc6-a5] " Qb3-a4+ " -101 -122 -121
+fail-low [g7-g5, Qd1-b3] " Nc6-a5 " 101 121 122
+fail-low [g7-g5, Qd1-b3] " a7-a6 " 117 121 122
+fail-low [g7-g5, Qd1-b3] " Bc8-d7 " 34 121 122
+fail-low [g7-g5, Qd1-b3] " g5-g4 " 66 121 122
+fail-low [g7-g5, Qd1-b3] " Bc8-f5 " 81 121 122
+fail-low [g7-g5, Qd1-b3] " Ra8-b8 " 90 121 122
+fail-low [g7-g5, Qd1-b3] " Ke8-f8 " 85 121 122
+fail-low [g7-g5, Qd1-b3] " Bc8-e6 " 108 121 122
+fail-low [g7-g5, Qd1-b3] " f7-f5 " 73 121 122
+fail-low [g7-g5, Qd1-b3] " f7-f6 " 105 121 122
+fail-low [g7-g5, Qd1-b3] " b7-b6 " 87 121 122
+fail-low [g7-g5, Qd1-b3] " Nh6-f5 " 32 121 122
+fail-low [g7-g5, Qd1-b3] " Nc6-e5 " -697 121 122
+fail-low [g7-g5, Qd1-b3] " Bc8-h3 " 72 121 122
+fail-high [g7-g5] " Qd1-b3 " -117 -122 -121
+fail-low [] " g7-g5 " 117 121 157
+fail-low [Bc8-d7, Ra1-c1, a7-a6] " Qd1-a4 " -215 -157 -121
+fail-low [Bc8-d7, Ra1-c1, a7-a6] " Bc4-d3 " -149 -157 -121
+fail-high [Bc8-d7, Ra1-c1, a7-a6] " e5-e6 " -84 -157 -121
+fail-low [Bc8-d7, Ra1-c1] " a7-a6 " 84 121 157
+fail-low [Bc8-d7, Ra1-c1] " Nc6-a5 " 101 121 157
+fail-high [Bc8-d7, Ra1-c1] " Bd7-f5 " 159 121 157
+fail-low [Bc8-d7] " Ra1-c1 " -159 -157 -121
+fail-high [Bc8-d7, Qd1-b3, a7-a6] " Qb3-b7 " 130 -157 -156
+fail-low [Bc8-d7, Qd1-b3] " a7-a6 " -130 156 157
+fail-low [Bc8-d7, Qd1-b3] " Bd7-f5 " 97 156 157
+fail-high [Bc8-d7, Qd1-b3] " Nc6-a5 " 195 156 157
+fail-low [Bc8-d7] " Qd1-b3 " -195 -157 -121
+fail-low [Bc8-d7, e5-e6] " Bd7-e6 " 109 156 157
+fail-low [Bc8-d7, e5-e6] " f7-e6 " 109 156 157
+fail-low [Bc8-d7, e5-e6] " f7-f6 " -12 156 157
+fail-low [Bc8-d7, e5-e6] " a7-a6 " 24 156 157
+fail-low [Bc8-d7, e5-e6] " Nc6-a5 " -12 156 157
+fail-low [Bc8-d7, e5-e6] " Bd7-c8 " 140 156 157
+fail-low [Bc8-d7, e5-e6] " Ra8-b8 " -3 156 157
+fail-low [Bc8-d7, e5-e6] " Ke8-f8 " 6 156 157
+fail-low [Bc8-d7, e5-e6] " f7-f5 " -31 156 157
+fail-low [Bc8-d7, e5-e6] " Bd7-e6 " 109 121 157
+fail-low [Bc8-d7, e5-e6] " f7-e6 " 109 121 157
+fail-low [Bc8-d7, e5-e6] " Bd7-c8 " -142 121 157
+fail-low [Bc8-d7, e5-e6] " a7-a6 " 24 121 157
+fail-low [Bc8-d7, e5-e6] " Nc6-a5 " -12 121 157
+fail-low [Bc8-d7, e5-e6] " Ra8-b8 " -3 121 157
+fail-low [Bc8-d7, e5-e6] " Ke8-f8 " 6 121 157
+fail-low [Bc8-d7, e5-e6] " Qd8-e7 " 18 121 157
+fail-low [Bc8-d7, e5-e6] " f7-f6 " -12 121 157
+fail-low [Bc8-d7, e5-e6] " g7-g6 " -48 121 157
+fail-high [Bc8-d7] " e5-e6 " -109 -157 -121
+fail-low [] " Bc8-d7 " 109 121 157
+fail-high [Ke8-f8, Qd1-b3, Nc6-a5] " Qb3-a3+ " -20 -122 -121
+fail-low [Ke8-f8, Qd1-b3] " Nc6-a5 " 20 121 122
+fail-low [Ke8-f8, Qd1-b3] " a7-a6 " 109 121 122
+fail-low [Ke8-f8, Qd1-b3] " Bc8-f5 " 96 121 122
+fail-low [Ke8-f8, Qd1-b3] " Ra8-b8 " 105 121 122
+fail-low [Ke8-f8, Qd1-b3] " Bc8-e6 " 29 121 122
+fail-low [Ke8-f8, Qd1-b3] " Qd8-e7 " 116 121 122
+fail-low [Ke8-f8, Qd1-b3] " f7-f5 " 56 121 122
+fail-low [Ke8-f8, Qd1-b3] " f7-f6 " 85 121 122
+fail-low [Ke8-f8, Qd1-b3] " Bc8-d7 " 52 121 122
+fail-low [Ke8-f8, Qd1-b3] " g7-g6 " 55 121 122
+fail-low [Ke8-f8, Qd1-b3] " b7-b6 " 70 121 122
+fail-low [Ke8-f8, Qd1-b3] " Nh6-f5 " 98 121 122
+fail-low [Ke8-f8, Qd1-b3] " Nh6-g8 " 80 121 122
+fail-low [Ke8-f8, Qd1-b3] " Nc6-e7 " 73 121 122
+fail-low [Ke8-f8, Qd1-b3] " Nc6-e5 " -504 121 122
+fail-low [Ke8-f8, Qd1-b3] " Bc8-h3 " 91 121 122
+fail-high [Ke8-f8] " Qd1-b3 " -116 -122 -121
+fail-low [] " Ke8-f8 " 116 121 157
+fail-low [] " Qd8-e7 " 115 121 157
+fail-low [f7-f5, NULL] " a7-a6 " 109 121 122
+fail-low [f7-f5, NULL] " Nc6-a5 " 79 121 122
+fail-low [f7-f5, NULL] " Ra8-b8 " 87 121 122
+fail-low [f7-f5, NULL] " Qd8-e7 " 103 121 122
+fail-low [f7-f5, NULL] " Ke8-f8 " 84 121 122
+fail-low [f7-f5, NULL] " Bc8-d7 " 80 121 122
+fail-low [f7-f5, NULL] " f5-f4 " 88 121 122
+fail-low [f7-f5, NULL] " g7-g6 " 68 121 122
+fail-low [f7-f5, NULL] " b7-b6 " 84 121 122
+fail-low [f7-f5, NULL] " Nh6-f7 " 74 121 122
+fail-low [f7-f5, NULL] " Nh6-g8 " 41 121 122
+fail-low [f7-f5, NULL] " Nc6-b4 " 49 121 122
+fail-low [f7-f5, NULL] " Nc6-e7 " 52 121 122
+fail-low [f7-f5, NULL] " Nc6-e5 " -701 121 122
+fail-low [] " f7-f5 " 109 121 157
+fail-low [Bc8-e6, Qd1-a4] " Be6-c4 " 96 121 122
+fail-low [Bc8-e6, Qd1-a4] " a7-a6 " 104 121 122
+fail-low [Bc8-e6, Qd1-a4] " Be6-f5 " 87 121 122
+fail-low [Bc8-e6, Qd1-a4] " Ra8-b8 " 55 121 122
+fail-low [Bc8-e6, Qd1-a4] " Qd8-e7 " 56 121 122
+fail-low [Bc8-e6, Qd1-a4] " Be6-c8 " 54 121 122
+fail-high [Bc8-e6, Qd1-a4] " Ke8-f8 " 123 121 122
+fail-low [Bc8-e6] " Qd1-a4 " -123 -122 -121
+fail-high [Bc8-e6, Bc4-e6, f7-e6] " Qd1-b3 " -30 -122 -121
+fail-low [Bc8-e6, Bc4-e6] " f7-e6 " 30 121 122
+fail-low [Bc8-e6, Bc4-e6] " Nc6-e5 " -398 121 122
+fail-high [Bc8-e6] " Bc4-e6 " -30 -122 -121
+fail-low [] " Bc8-e6 " 30 121 157
+fail-low [] " f7-f6 " -123 121 157
+fail-low [] " a7-a5 " 113 121 157
+fail-low [] " g7-g6 " 70 121 157
+fail-low [] " b7-b6 " 103 121 157
+new best move Nh6-f5 val: 123 alpha 121 beta 157
+Nh6-f5
+new best move (>a) Nh6-f5 val: 123 alpha 121 beta 157
+fail-low [] " Nh6-f5 " 123 121 157
+fail-low [] " Nh6-g8 " 93 121 157
+fail-low [] " Nc6-b4 " 100 121 157
+fail-low [] " Nc6-e7 " 103 121 157
+fail-low [] " Nc6-b8 " 77 121 157
+new best move Rh8-g8 val: 130 alpha 121 beta 157
+Rh8-g8
+new best move (>a) Rh8-g8 val: 130 alpha 121 beta 157
+fail-low [] " Rh8-g8 " 130 121 157
+fail-low [] " Rh8-f8 " 124 121 157
+fail-low [] " Qd8-d7 " 110 121 157
+fail-low [] " Ke8-g8 " 58 121 157
+fail-low [] " Ke8-e7 " 112 121 157
+fail-low [] " Ke8-d7 " 67 121 157
+fail-low [] " a7-a6 " 125 121 157
+fail-low [] " b7-b5 " -126 121 157
+fail-low [] " Nh6-g4 " 0 121 157
+fail-low [] " Bc8-g4 " 58 121 157
+fail-low [] " Qd8-f6 " -57 121 157
+fail-low [] " Qd8-d6 " -33 121 157
+fail-low [] " Qd8-h4 " 21 121 157
+fail-low [] " Qd8-g5 " 84 121 157
+fail-low [] " Qd8-d5 " 78 121 157
+fail-low [] " Nc6-e5 " -632 121 157
+fail-low [] " Bc8-h3 " -461 121 157
+node_count: 3056 avg ply: 3.769094138543517 max ply: 9 alpha 130 beta 157 val 130
+REAL PV: [Rh8-g8]
 
-3.717928647994995 s
+3.6248741149902344 s
 
 >> depth: 4.0 , allowance: 47
-new best move f7-f6 val: -307 alpha 204 beta 240
-new best move Ng4-e5 val: 191 alpha 204 beta 240
-new best move Ng4-h6 val: 201 alpha 204 beta 240
-new best move Nc6-a5 val: 204 alpha 204 beta 240
-node_count: 5583 avg ply: 5.575532900834106 max ply: 14 alpha 204 beta 240 val 204
-pv: []
+fail-low [Rh8-g8, Ra1-c1, a7-a6, e5-e6] " Bc8-e6 " 85 112 113
+fail-low [Rh8-g8, Ra1-c1, a7-a6, e5-e6] " f7-e6 " 85 112 113
+fail-low [Rh8-g8, Ra1-c1, a7-a6, e5-e6] " Nc6-a5 " -336 112 113
+fail-low [Rh8-g8, Ra1-c1, a7-a6, e5-e6] " Ke8-f8 " -324 112 113
+fail-low [Rh8-g8, Ra1-c1, a7-a6, e5-e6] " b7-b5 " -218 112 113
+fail-low [Rh8-g8, Ra1-c1, a7-a6, e5-e6] " Ra8-b8 " -330 112 113
+fail-low [Rh8-g8, Ra1-c1, a7-a6, e5-e6] " f7-f5 " 97 112 113
+fail-high [Rh8-g8, Ra1-c1, a7-a6, e5-e6] " f7-f6 " 116 112 113
+fail-low [Rh8-g8, Ra1-c1, a7-a6] " e5-e6 " -116 -113 -112
+fail-high [Rh8-g8, Ra1-c1, a7-a6] " Bc4-d3 " -89 -113 -112
+fail-low [Rh8-g8, Ra1-c1] " a7-a6 " 89 112 113
+fail-low [Rh8-g8, Ra1-c1, Ke8-f8, Qd1-b3] " Qd8-e7 " 98 112 113
+fail-low [Rh8-g8, Ra1-c1, Ke8-f8, Qd1-b3] " f7-f6 " 15 112 113
+fail-low [Rh8-g8, Ra1-c1, Ke8-f8, Qd1-b3] " Nc6-a5 " -10 112 113
+fail-low [Rh8-g8, Ra1-c1, Ke8-f8, Qd1-b3] " Bc8-f5 " 82 112 113
+fail-low [Rh8-g8, Ra1-c1, Ke8-f8, Qd1-b3] " Ra8-b8 " 87 112 113
+fail-low [Rh8-g8, Ra1-c1, Ke8-f8, Qd1-b3] " a7-a6 " 79 112 113
+fail-low [Rh8-g8, Ra1-c1, Ke8-f8, Qd1-b3] " Bc8-d7 " 34 112 113
+fail-low [Rh8-g8, Ra1-c1, Ke8-f8, Qd1-b3] " g7-g6 " 41 112 113
+fail-low [Rh8-g8, Ra1-c1, Ke8-f8, Qd1-b3] " b7-b6 " 52 112 113
+fail-low [Rh8-g8, Ra1-c1, Ke8-f8, Qd1-b3] " Nh6-f5 " 66 112 113
+fail-low [Rh8-g8, Ra1-c1, Ke8-f8, Qd1-b3] " Nc6-e5 " -522 112 113
+fail-low [Rh8-g8, Ra1-c1, Ke8-f8, Qd1-b3] " Bc8-h3 " 68 112 113
+fail-high [Rh8-g8, Ra1-c1, Ke8-f8] " Qd1-b3 " -98 -113 -112
+fail-low [Rh8-g8, Ra1-c1] " Ke8-f8 " 98 112 113
+fail-high [Rh8-g8, Ra1-c1, Nc6-a5] " Qd1-a4+ " -52 -113 -112
+fail-low [Rh8-g8, Ra1-c1] " Nc6-a5 " 52 112 113
+fail-high [Rh8-g8, Ra1-c1, Bc8-f5] " Qd1-a4 " -57 -113 -112
+fail-low [Rh8-g8, Ra1-c1] " Bc8-f5 " 57 112 113
+fail-high [Rh8-g8, Ra1-c1, Ra8-b8] " Bc4-d3 " -87 -113 -112
+fail-low [Rh8-g8, Ra1-c1] " Ra8-b8 " 87 112 113
+fail-high [Rh8-g8, Ra1-c1, Qd8-e7] " Qd1-a4 " 6 -113 -112
+fail-low [Rh8-g8, Ra1-c1] " Qd8-e7 " -6 112 113
+fail-low [Rh8-g8, Ra1-c1, Bc8-e6] " Bc4-e6 " -137 -113 -112
+fail-high [Rh8-g8, Ra1-c1, Bc8-e6] " Qd1-a4 " -99 -113 -112
+fail-low [Rh8-g8, Ra1-c1] " Bc8-e6 " 99 112 113
+fail-low [Rh8-g8, Ra1-c1] " Bc8-d7 " 103 112 113
+fail-low [Rh8-g8, Ra1-c1] " g7-g6 " 64 112 113
+fail-low [Rh8-g8, Ra1-c1] " b7-b6 " 75 112 113
+fail-low [Rh8-g8, Ra1-c1] " Nh6-f5 " 97 112 113
+fail-low [Rh8-g8, Ra1-c1] " Nc6-b4 " 76 112 113
+fail-low [Rh8-g8, Ra1-c1] " Nc6-b8 " 49 112 113
+fail-high [Rh8-g8, Ra1-c1] " Rg8-h8 " 114 112 113
+fail-low [Rh8-g8] " Ra1-c1 " -114 -113 -112
+fail-low [Rh8-g8] " e5-e6 " -130 -113 -112
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " Ra8-b8 " 54 112 113
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " f7-f6 " 54 112 113
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " Nc6-a5 " 57 112 113
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " Ke8-f8 " 58 112 113
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " Bc8-e6 " -215 112 113
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " Rg8-h8 " 102 112 113
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " Bc8-f5 " 81 112 113
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " f7-f5 " 75 112 113
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " Qe7-b4 " 29 112 113
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " a7-a6 " 61 112 113
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " Nc6-e5 " -659 112 113
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " Bc8-h3 " 37 112 113
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " Qe7-e5 " 45 112 113
+fail-high [Rh8-g8, Qd1-b3, Qd8-e7] " Bc4-d3 " -102 -113 -112
+fail-low [Rh8-g8, Qd1-b3] " Qd8-e7 " 102 112 113
+fail-high [Rh8-g8, Qd1-b3, a7-a6] " Bc4-d3 " -47 -113 -112
+fail-low [Rh8-g8, Qd1-b3] " a7-a6 " 47 112 113
+fail-high [Rh8-g8, Qd1-b3, Rg8-h8] " Bc4-d3 " -88 -113 -112
+fail-low [Rh8-g8, Qd1-b3] " Rg8-h8 " 88 112 113
+fail-high [Rh8-g8, Qd1-b3, Nc6-a5] " Qb3-a4+ " -76 -113 -112
+fail-low [Rh8-g8, Qd1-b3] " Nc6-a5 " 76 112 113
+fail-high [Rh8-g8, Qd1-b3, Bc8-f5] " Qb3-b7 " 161 -113 -112
+fail-low [Rh8-g8, Qd1-b3] " Bc8-f5 " -161 112 113
+fail-high [Rh8-g8, Qd1-b3, Ra8-b8] " Bc4-d3 " -40 -113 -112
+fail-low [Rh8-g8, Qd1-b3] " Ra8-b8 " 40 112 113
+fail-low [Rh8-g8, Qd1-b3] " Bc8-e6 " 20 112 113
+fail-low [Rh8-g8, Qd1-b3] " Bc8-d7 " 40 112 113
+fail-low [Rh8-g8, Qd1-b3] " Ke8-f8 " 87 112 113
+fail-low [Rh8-g8, Qd1-b3] " g7-g6 " 50 112 113
+fail-low [Rh8-g8, Qd1-b3] " b7-b6 " 61 112 113
+fail-low [Rh8-g8, Qd1-b3] " Nh6-f5 " 83 112 113
+fail-low [Rh8-g8, Qd1-b3] " Nc6-e7 " 56 112 113
+fail-low [Rh8-g8, Qd1-b3] " Nc6-b8 " 30 112 113
+fail-low [Rh8-g8, Qd1-b3] " Rg8-f8 " 92 112 113
+fail-low [Rh8-g8, Qd1-b3] " Qd8-d7 " 68 112 113
+fail-low [Rh8-g8, Qd1-b3] " Nc6-e5 " -679 112 113
+fail-low [Rh8-g8, Qd1-b3] " Bc8-h3 " 73 112 113
+fail-high [Rh8-g8] " Qd1-b3 " -102 -113 -112
+fail-low [Rh8-g8, Ra1-c1, Rg8-h8] " Bc4-d3 " -135 -110 -109
+fail-high [Rh8-g8, Ra1-c1, Rg8-h8] " Qd1-b3 " -76 -110 -109
+fail-low [Rh8-g8, Ra1-c1] " Rg8-h8 " 76 109 110
+fail-high [Rh8-g8, Ra1-c1] " a7-a6 " 132 109 110
+fail-low [Rh8-g8] " Ra1-c1 " -132 -110 -109
+fail-low [Rh8-g8, e5-e6] " Bc8-e6 " 88 109 110
+fail-low [Rh8-g8, e5-e6] " f7-e6 " 88 109 110
+fail-high [Rh8-g8, e5-e6] " f7-f6 " 114 109 110
+fail-low [Rh8-g8] " e5-e6 " -114 -110 -109
+fail-low [Rh8-g8, Qd1-c2, Bc8-f5] " Bc4-d3 " -156 -110 -109
+fail-low [Rh8-g8, Qd1-c2, Bc8-f5] " g2-g4 " -136 -110 -109
+fail-high [Rh8-g8, Qd1-c2, Bc8-f5] " Qc2-b3 " -87 -110 -109
+fail-low [Rh8-g8, Qd1-c2] " Bc8-f5 " 87 109 110
+fail-low [Rh8-g8, Qd1-c2] " f7-f6 " -37 109 110
+fail-low [Rh8-g8, Qd1-c2] " a7-a6 " 49 109 110
+fail-low [Rh8-g8, Qd1-c2] " Nc6-b4 " -113 109 110
+fail-low [Rh8-g8, Qd1-c2] " Nc6-a5 " 19 109 110
+fail-low [Rh8-g8, Qd1-c2] " Rg8-h8 " 80 109 110
+fail-low [Rh8-g8, Qd1-c2] " Ra8-b8 " 27 109 110
+fail-low [Rh8-g8, Qd1-c2] " Qd8-e7 " 43 109 110
+fail-low [Rh8-g8, Qd1-c2] " Bc8-d7 " 20 109 110
+fail-low [Rh8-g8, Qd1-c2] " Ke8-f8 " 36 109 110
+fail-low [Rh8-g8, Qd1-c2] " g7-g6 " 30 109 110
+fail-low [Rh8-g8, Qd1-c2] " Nc6-e5 " 73 109 110
+fail-low [Rh8-g8, Qd1-c2] " Bc8-h3 " 53 109 110
+fail-high [Rh8-g8] " Qd1-c2 " -87 -110 -109
+fail-low [Rh8-g8, Qd1-b3] " Qd8-e7 " 102 147 148
+fail-low [Rh8-g8, Qd1-b3] " f7-f6 " 32 147 148
+fail-low [Rh8-g8, Qd1-b3] " a7-a6 " 47 147 148
+fail-low [Rh8-g8, Qd1-b3] " Nc6-a5 " 76 147 148
+fail-low [Rh8-g8, Qd1-b3] " Rg8-h8 " 88 147 148
+fail-low [Rh8-g8, Qd1-b3] " Bc8-f5 " -161 147 148
+fail-low [Rh8-g8, Qd1-b3] " Ra8-b8 " 40 147 148
+fail-low [Rh8-g8, Qd1-b3] " Bc8-e6 " 20 147 148
+fail-low [Rh8-g8, Qd1-b3] " Bc8-d7 " 40 147 148
+fail-low [Rh8-g8, Qd1-b3] " Ke8-f8 " 87 147 148
+fail-low [Rh8-g8, Qd1-b3] " g7-g6 " 50 147 148
+fail-low [Rh8-g8, Qd1-b3] " b7-b6 " 61 147 148
+fail-low [Rh8-g8, Qd1-b3] " Nh6-f5 " 83 147 148
+fail-low [Rh8-g8, Qd1-b3] " Nc6-e7 " 56 147 148
+fail-low [Rh8-g8, Qd1-b3] " Nc6-b8 " 30 147 148
+fail-low [Rh8-g8, Qd1-b3] " Rg8-f8 " 92 147 148
+fail-low [Rh8-g8, Qd1-b3] " Nc6-e5 " 137 147 148
+fail-low [Rh8-g8, Qd1-b3] " Bc8-h3 " 73 147 148
+fail-high [Rh8-g8, Qd1-b3, Qd8-e7, NULL, f7-f6] " Bc4-g8 " 1157 -113 -112
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, NULL] " f7-f6 " -1157 112 113
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, NULL, Nc6-a5] " Nf3-d4 " -2483 -113 -112
+fail-high [Rh8-g8, Qd1-b3, Qd8-e7, NULL, Nc6-a5] " Qb3-a4+ " -18 -113 -112
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, NULL] " Nc6-a5 " 18 112 113
+fail-high [Rh8-g8, Qd1-b3, Qd8-e7, NULL, Ke8-f8] " Qb3-c2 " -45 -113 -112
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, NULL] " Ke8-f8 " 45 112 113
+fail-high [Rh8-g8, Qd1-b3, Qd8-e7, NULL] " Rg8-h8 " 114 112 113
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " Rg8-h8 " 102 112 113
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " Nc6-a5 " 57 112 113
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " Ke8-f8 " 58 112 113
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " Bc8-e6 " -215 112 113
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " Nc6-b4 " 25 112 113
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " Ra8-b8 " 54 112 113
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " f7-f5 " 75 112 113
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " a7-a6 " 61 112 113
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " f7-f6 " 54 112 113
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " Qe7-b4 " 29 112 113
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " Nc6-e5 " -659 112 113
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " Bc8-h3 " 37 112 113
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " Qe7-e5 " 45 112 113
+fail-high [Rh8-g8, Qd1-b3, Qd8-e7] " Bc4-d3 " -102 -113 -112
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " Rg8-h8 " 102 112 148
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " Nc6-a5 " 57 112 148
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " Ke8-f8 " 58 112 148
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " Bc8-e6 " -215 112 148
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " Nc6-b4 " 25 112 148
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " Ra8-b8 " 54 112 148
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " f7-f5 " 75 112 148
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " a7-a6 " 61 112 148
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " f7-f6 " 54 112 148
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " Qe7-b4 " 29 112 148
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " Nc6-e5 " -659 112 148
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " Bc8-h3 " 37 112 148
+fail-low [Rh8-g8, Qd1-b3, Qd8-e7, Bc4-d3] " Qe7-e5 " 45 112 148
+fail-high [Rh8-g8, Qd1-b3, Qd8-e7] " Bc4-d3 " -102 -148 -112
+fail-low [Rh8-g8, Qd1-b3] " Qd8-e7 " 102 112 148
+fail-low [Rh8-g8, Qd1-b3] " f7-f6 " 32 112 148
+fail-low [Rh8-g8, Qd1-b3, a7-a6, NULL] " Nc6-a5 " 87 112 113
+fail-high [Rh8-g8, Qd1-b3, a7-a6, NULL] " Rg8-h8 " 125 112 113
+fail-high [Rh8-g8, Qd1-b3, a7-a6] " Bc4-d3 " -47 -113 -112
+fail-low [Rh8-g8, Qd1-b3] " a7-a6 " 47 112 148
+fail-high [Rh8-g8, Qd1-b3, Nc6-a5, NULL] " Na5-b3 " 2549 112 113
+fail-high [Rh8-g8, Qd1-b3, Nc6-a5] " Qb3-a4+ " -76 -113 -112
+fail-low [Rh8-g8, Qd1-b3] " Nc6-a5 " 76 112 148
+fail-low [Rh8-g8, Qd1-b3] " Rg8-h8 " 88 112 148
+fail-low [Rh8-g8, Qd1-b3] " Bc8-f5 " -161 112 148
+fail-low [Rh8-g8, Qd1-b3] " Ra8-b8 " 40 112 148
+fail-low [Rh8-g8, Qd1-b3] " Bc8-e6 " 20 112 148
+fail-low [Rh8-g8, Qd1-b3] " Bc8-d7 " 40 112 148
+fail-low [Rh8-g8, Qd1-b3] " Ke8-f8 " 87 112 148
+fail-low [Rh8-g8, Qd1-b3] " g7-g6 " 50 112 148
+fail-low [Rh8-g8, Qd1-b3] " b7-b6 " 61 112 148
+fail-low [Rh8-g8, Qd1-b3] " Nh6-f5 " 83 112 148
+fail-low [Rh8-g8, Qd1-b3] " Nc6-e7 " 56 112 148
+fail-low [Rh8-g8, Qd1-b3] " Nc6-b8 " 30 112 148
+fail-low [Rh8-g8, Qd1-b3] " Rg8-f8 " 92 112 148
+fail-low [Rh8-g8, Qd1-b3] " Nc6-e5 " -679 112 148
+fail-low [Rh8-g8, Qd1-b3] " Bc8-h3 " 73 112 148
+fail-high [Rh8-g8] " Qd1-b3 " -102 -148 -112
+new best move Rh8-g8 val: 102 alpha 112 beta 148
+fail-low [] " Rh8-g8 " 102 112 148
+fail-low [d4-d3, NULL] " f7-f6 " 123 136 137
+fail-high [d4-d3, NULL] " a7-a6 " 165 136 137
+fail-high [d4-d3, NULL, Ra8-b8] " Qd1-b3 " -101 -113 -112
+fail-low [d4-d3, NULL] " Ra8-b8 " 101 112 113
+fail-high [d4-d3, NULL, f7-f6] " e5-f6+ " 120 -113 -112
+fail-low [d4-d3, NULL] " f7-f6 " -120 112 113
+fail-low [d4-d3, NULL, a7-a6] " Qd1-b3 " -128 -113 -112
+fail-low [d4-d3, NULL, a7-a6] " e5-e6 " -165 -113 -112
+fail-high [d4-d3, NULL, a7-a6] " Qd1-a4 " -95 -113 -112
+fail-low [d4-d3, NULL] " a7-a6 " 95 112 113
+fail-high [d4-d3, NULL, Nc6-a5] " Qd1-a4+ " -84 -113 -112
+fail-low [d4-d3, NULL] " Nc6-a5 " 84 112 113
+fail-low [d4-d3, NULL, Rh8-g8, Qd1-b3] " Qd8-e7 " 63 112 113
+fail-low [d4-d3, NULL, Rh8-g8, Qd1-b3] " Nc6-a5 " -185 112 113
+fail-low [d4-d3, NULL, Rh8-g8, Qd1-b3] " Ke8-f8 " 108 112 113
+fail-low [d4-d3, NULL, Rh8-g8, Qd1-b3] " Nc6-d4 " -162 112 113
+fail-low [d4-d3, NULL, Rh8-g8, Qd1-b3] " Bc8-f5 " 67 112 113
+fail-low [d4-d3, NULL, Rh8-g8, Qd1-b3] " Ra8-b8 " 91 112 113
+fail-low [d4-d3, NULL, Rh8-g8, Qd1-b3] " Bc8-e6 " 109 112 113
+fail-low [d4-d3, NULL, Rh8-g8, Qd1-b3] " a7-a6 " -164 112 113
+fail-low [d4-d3, NULL, Rh8-g8, Qd1-b3] " Bc8-d7 " -9 112 113
+fail-low [d4-d3, NULL, Rh8-g8, Qd1-b3] " g7-g6 " 46 112 113
+fail-low [d4-d3, NULL, Rh8-g8, Qd1-b3] " Nc6-e5 " -671 112 113
+fail-low [d4-d3, NULL, Rh8-g8, Qd1-b3] " Bc8-h3 " 68 112 113
+fail-high [d4-d3, NULL, Rh8-g8] " Qd1-b3 " -109 -113 -112
+fail-low [d4-d3, NULL] " Rh8-g8 " 109 112 113
+fail-high [d4-d3, NULL, Bc8-f5] " g2-g4 " -23 -113 -112
+fail-low [d4-d3, NULL] " Bc8-f5 " 23 112 113
+fail-high [d4-d3, NULL, Qd8-e7] " Bc4-d3 " 24 -113 -112
+fail-low [d4-d3, NULL] " Qd8-e7 " -24 112 113
+fail-high [d4-d3, NULL, f7-f5] " e5-f6+ " 98 -113 -112
+fail-low [d4-d3, NULL] " f7-f5 " -98 112 113
+fail-high [d4-d3, NULL] " Bc8-e6 " 186 112 113
+fail-high [d4-d3, Ra1-c1] " Bc8-e6 " 152 113 114
+fail-low [d4-d3] " Ra1-c1 " -152 -114 -113
+fail-low [d4-d3, Qd1-b3] " Bc8-e6 " 25 113 114
+fail-low [d4-d3, Qd1-b3] " a7-a6 " -110 113 114
+fail-low [d4-d3, Qd1-b3] " Nc6-d4 " -103 113 114
+fail-low [d4-d3, Qd1-b3] " Nc6-a5 " -175 113 114
+fail-low [d4-d3, Qd1-b3] " Rh8-g8 " 93 113 114
+fail-low [d4-d3, Qd1-b3] " Qd8-e7 " 73 113 114
+fail-low [d4-d3, Qd1-b3] " Ra8-b8 " 101 113 114
+fail-low [d4-d3, Qd1-b3] " f7-f5 " 52 113 114
+fail-low [d4-d3, Qd1-b3] " f7-f6 " 81 113 114
+fail-low [d4-d3, Qd1-b3] " Bc8-d7 " 1 113 114
+fail-low [d4-d3, Qd1-b3] " Ke8-f8 " 102 113 114
+fail-low [d4-d3, Qd1-b3] " Nc6-e5 " -661 113 114
+fail-low [d4-d3, Qd1-b3] " Bc8-h3 " 83 113 114
+fail-high [d4-d3] " Qd1-b3 " -102 -114 -113
+fail-high [d4-d3, Qd1-a4, Ke8-f8] " Qa4-a3+ " -79 -113 -112
+fail-low [d4-d3, Qd1-a4] " Ke8-f8 " 79 112 113
+fail-high [d4-d3, Qd1-a4, a7-a6] " g2-g4 " -96 -113 -112
+fail-low [d4-d3, Qd1-a4] " a7-a6 " 96 112 113
+fail-high [d4-d3, Qd1-a4, Bc8-e6] " Bc4-e6 " -50 -113 -112
+fail-low [d4-d3, Qd1-a4] " Bc8-e6 " 50 112 113
+fail-high [d4-d3, Qd1-a4, Rh8-g8] " Qa4-b3 " -93 -113 -112
+fail-low [d4-d3, Qd1-a4] " Rh8-g8 " 93 112 113
+fail-high [d4-d3, Qd1-a4, Bc8-f5] " g2-g4 " 70 -113 -112
+fail-low [d4-d3, Qd1-a4] " Bc8-f5 " -70 112 113
+fail-low [d4-d3, Qd1-a4] " Qd8-e7 " 26 112 113
+fail-low [d4-d3, Qd1-a4] " Ra8-b8 " -5 112 113
+fail-low [d4-d3, Qd1-a4] " f7-f5 " 1 112 113
+fail-low [d4-d3, Qd1-a4] " f7-f6 " 34 112 113
+fail-low [d4-d3, Qd1-a4] " Bc8-d7 " -3 112 113
+fail-low [d4-d3, Qd1-a4] " g7-g6 " 1 112 113
+fail-low [d4-d3, Qd1-a4] " b7-b6 " -28 112 113
+fail-low [d4-d3, Qd1-a4] " Nh6-f5 " 52 112 113
+fail-low [d4-d3, Qd1-a4] " Nh6-g8 " 7 112 113
+fail-low [d4-d3, Qd1-a4] " Bc8-h3 " 81 112 113
+fail-high [d4-d3] " Qd1-a4 " -96 -113 -112
+fail-low [] " d4-d3 " 96 112 148
+fail-high [Nc6-a5, NULL, Bc8-f5, Qd1-a4+] " c7-c6 " 127 112 113
+fail-low [Nc6-a5, NULL, Bc8-f5] " Qd1-a4+ " -127 -113 -112
+fail-high [Nc6-a5, NULL, Bc8-f5, Bc4-b5+] " c7-c6 " 302 112 113
+fail-low [Nc6-a5, NULL, Bc8-f5] " Bc4-b5+ " -302 -113 -112
+fail-high [Nc6-a5, NULL, Bc8-f5, g2-g4] " Bf5-g6 " 146 112 113
+fail-low [Nc6-a5, NULL, Bc8-f5] " g2-g4 " -146 -113 -112
+fail-low [Nc6-a5, NULL, Bc8-f5] " Nd2-b3 " -198 -113 -112
+fail-low [Nc6-a5, NULL, Bc8-f5] " b2-b4 " -259 -113 -112
+fail-low [Nc6-a5, NULL, Bc8-f5] " Bc4-e2 " -215 -113 -112
+fail-low [Nc6-a5, NULL, Bc8-f5] " Bc4-f1 " -178 -113 -112
+fail-low [Nc6-a5, NULL, Bc8-f5] " e5-e6 " -180 -113 -112
+fail-low [Nc6-a5, NULL, Bc8-f5] " Nd2-e4 " -188 -113 -112
+fail-low [Nc6-a5, NULL, Bc8-f5] " Re1-f1 " -193 -113 -112
+fail-low [Nc6-a5, NULL, Bc8-f5] " Qd1-c1 " -182 -113 -112
+fail-low [Nc6-a5, NULL, Bc8-f5] " Qd1-e2 " -165 -113 -112
+fail-low [Nc6-a5, NULL, Bc8-f5] " Kg1-h1 " -160 -113 -112
+fail-low [Nc6-a5, NULL, Bc8-f5] " Nf3-d4 " -764 -113 -112
+fail-low [Nc6-a5, NULL, Bc8-f5] " Bc4-f7+ " -751 -113 -112
+fail-high [Nc6-a5, NULL] " Bc8-f5 " 127 112 113
+fail-low [Nc6-a5, Qd1-a4+, c7-c6, Bc4-d3] " Ke8-f8 " 51 112 113
+fail-low [Nc6-a5, Qd1-a4+, c7-c6, Bc4-d3] " b7-b5 " -242 112 113
+fail-low [Nc6-a5, Qd1-a4+, c7-c6, Bc4-d3] " Bc8-f5 " 109 112 113
+fail-low [Nc6-a5, Qd1-a4+, c7-c6, Bc4-d3] " Rh8-g8 " -21 112 113
+fail-low [Nc6-a5, Qd1-a4+, c7-c6, Bc4-d3] " Qd8-e7 " -46 112 113
+fail-low [Nc6-a5, Qd1-a4+, c7-c6, Bc4-d3] " Ra8-b8 " 33 112 113
+fail-low [Nc6-a5, Qd1-a4+, c7-c6, Bc4-d3] " Bc8-e6 " 71 112 113
+fail-low [Nc6-a5, Qd1-a4+, c7-c6, Bc4-d3] " a7-a6 " 24 112 113
+fail-low [Nc6-a5, Qd1-a4+, c7-c6, Bc4-d3] " f7-f5 " 14 112 113
+fail-low [Nc6-a5, Qd1-a4+, c7-c6, Bc4-d3] " Bc8-d7 " 18 112 113
+fail-low [Nc6-a5, Qd1-a4+, c7-c6, Bc4-d3] " g7-g6 " 15 112 113
+fail-low [Nc6-a5, Qd1-a4+, c7-c6, Bc4-d3] " b7-b6 " 28 112 113
+fail-low [Nc6-a5, Qd1-a4+, c7-c6, Bc4-d3] " Bc8-h3 " 70 112 113
+fail-high [Nc6-a5, Qd1-a4+, c7-c6] " Bc4-d3 " -109 -113 -112
+fail-low [Nc6-a5, Qd1-a4+] " c7-c6 " 109 112 113
+fail-high [Nc6-a5, Qd1-a4+, Na5-c6] " Bc4-d3 " -72 -113 -112
+fail-low [Nc6-a5, Qd1-a4+] " Na5-c6 " 72 112 113
+fail-low [Nc6-a5, Qd1-a4+] " Bc8-d7 " -94 112 113
+fail-low [Nc6-a5, Qd1-a4+] " Qd8-d7 " -126 112 113
+fail-low [Nc6-a5, Qd1-a4+] " Ke8-f8 " 37 112 113
+fail-low [Nc6-a5, Qd1-a4+] " Ke8-e7 " 5 112 113
+fail-high [Nc6-a5] " Qd1-a4+ " -109 -113 -112
+new best move Nc6-a5 val: 109 alpha 112 beta 148
+fail-low [] " Nc6-a5 " 109 112 148
+fail-high [Bc8-f5, Ra1-c1] " a7-a6 " 179 125 126
+fail-low [Bc8-f5] " Ra1-c1 " -179 -126 -125
+fail-high [Bc8-f5, Qd1-a4] " Bf5-d7 " 194 125 126
+fail-low [Bc8-f5] " Qd1-a4 " -194 -126 -125
+fail-high [Bc8-f5, g2-g4] " Bf5-e6 " 173 125 126
+fail-low [Bc8-f5] " g2-g4 " -173 -126 -125
+fail-high [Bc8-f5, e5-e6] " f7-f6 " 170 125 126
+fail-low [Bc8-f5] " e5-e6 " -170 -126 -125
+fail-high [Bc8-f5, Bc4-b3] " a7-a6 " 190 125 126
+fail-low [Bc8-f5] " Bc4-b3 " -190 -126 -125
+fail-low [Bc8-f5] " Nd2-e4 " -151 -126 -125
+fail-low [Bc8-f5] " Nd2-b3 " -193 -126 -125
+fail-low [Bc8-f5] " Bc4-b5 " -182 -126 -125
+fail-low [Bc8-f5] " Bc4-e2 " -273 -126 -125
+fail-low [Bc8-f5] " Re1-f1 " -195 -126 -125
+fail-low [Bc8-f5] " Re1-e2 " -193 -126 -125
+fail-low [Bc8-f5] " Qd1-e2 " -172 -126 -125
+fail-low [Bc8-f5] " Kg1-h1 " -162 -126 -125
+fail-low [Bc8-f5] " Kg1-f1 " -183 -126 -125
+fail-low [Bc8-f5] " Nf3-d4 " -666 -126 -125
+fail-low [Bc8-f5] " Bc4-f7+ " -658 -126 -125
+fail-high [Bc8-f5, Qd1-b3, Ke8-f8] " Qb3-b7 " 144 -113 -112
+fail-low [Bc8-f5, Qd1-b3] " Ke8-f8 " -144 112 113
+fail-high [Bc8-f5, Qd1-b3, f7-f6] " Qb3-b7 " -55 -113 -112
+fail-low [Bc8-f5, Qd1-b3] " f7-f6 " 55 112 113
+fail-high [Bc8-f5, Qd1-b3, a7-a6] " Qb3-b7 " 142 -113 -112
+fail-low [Bc8-f5, Qd1-b3] " a7-a6 " -142 112 113
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " Qb3-a3 " -119 -113 -112
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " Qb3-a4+ " -127 -113 -112
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " Bc4-b5+ " -292 -113 -112
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " Qb3-b5+ " -264 -113 -112
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " Bc4-d3 " -173 -113 -112
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " g2-g4 " -1760 -113 -112
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " Qb3-d1 " -176 -113 -112
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " e5-e6 " -251 -113 -112
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " Nd2-e4 " -237 -113 -112
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " Nf3-d4 " -1672 -113 -112
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " Bc4-f7+ " -639 -113 -112
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " Qb3-b7 " -1571 -113 -112
+fail-high [Bc8-f5, Qd1-b3] " Nc6-a5 " 119 112 113
+fail-low [Bc8-f5] " Qd1-b3 " -119 -113 -112
+fail-low [Bc8-f5] " Ra1-c1 " -179 -113 -112
+fail-low [Bc8-f5] " Qd1-a4 " -194 -113 -112
+fail-low [Bc8-f5] " g2-g4 " -173 -113 -112
+fail-low [Bc8-f5] " e5-e6 " -170 -113 -112
+fail-low [Bc8-f5] " Bc4-b3 " -190 -113 -112
+fail-low [Bc8-f5] " Nd2-e4 " -151 -113 -112
+fail-low [Bc8-f5] " Nd2-b3 " -193 -113 -112
+fail-low [Bc8-f5] " Bc4-b5 " -182 -113 -112
+fail-low [Bc8-f5] " Bc4-e2 " -273 -113 -112
+fail-low [Bc8-f5] " Re1-f1 " -195 -113 -112
+fail-low [Bc8-f5] " Re1-e2 " -193 -113 -112
+fail-low [Bc8-f5] " Qd1-c1 " -189 -113 -112
+fail-low [Bc8-f5] " Qd1-e2 " -172 -113 -112
+fail-low [Bc8-f5] " Kg1-h1 " -162 -113 -112
+fail-low [Bc8-f5] " Kg1-f1 " -183 -113 -112
+fail-low [Bc8-f5] " Kg1-h2 " -184 -113 -112
+fail-low [Bc8-f5] " a2-a3 " -165 -113 -112
+fail-low [Bc8-f5] " g2-g3 " -230 -113 -112
+fail-low [Bc8-f5] " Nf3-d4 " -666 -113 -112
+fail-low [Bc8-f5] " Bc4-f7+ " -658 -113 -112
+fail-low [Bc8-f5, Qd1-b3] " a7-a6 " -142 112 113
+fail-low [Bc8-f5, Qd1-b3] " Rh8-g8 " 87 112 113
+fail-low [Bc8-f5, Qd1-b3] " Qd8-e7 " 105 112 113
+fail-high [Bc8-f5, Qd1-b3] " Ra8-b8 " 139 112 113
+fail-high [Bc8-f5, Qd1-b3, Nc6-a5] " Qb3-a4+ " -127 -148 -147
+fail-low [Bc8-f5, Qd1-b3] " Nc6-a5 " 127 147 148
+fail-high [Bc8-f5, Qd1-b3, a7-a6] " Qb3-b7 " 142 -148 -147
+fail-low [Bc8-f5, Qd1-b3] " a7-a6 " -142 147 148
+fail-high [Bc8-f5, Qd1-b3, Rh8-g8] " Qb3-b7 " 161 -148 -147
+fail-low [Bc8-f5, Qd1-b3] " Rh8-g8 " -161 147 148
+fail-high [Bc8-f5, Qd1-b3, Qd8-e7] " Qb3-b7 " 187 -148 -147
+fail-low [Bc8-f5, Qd1-b3] " Qd8-e7 " -187 147 148
+fail-high [Bc8-f5, Qd1-b3, Ra8-b8] " Bc4-d3 " -128 -148 -147
+fail-low [Bc8-f5, Qd1-b3] " Ra8-b8 " 128 147 148
+fail-high [Bc8-f5, Qd1-b3, Bf5-e6] " Bc4-e6 " -30 -148 -147
+fail-low [Bc8-f5, Qd1-b3] " Bf5-e6 " 30 147 148
+fail-high [Bc8-f5, Qd1-b3, Bf5-c8] " Bc4-d3 " -96 -148 -147
+fail-low [Bc8-f5, Qd1-b3] " Bf5-c8 " 96 147 148
+fail-low [Bc8-f5, Qd1-b3] " f7-f6 " 75 147 148
+fail-low [Bc8-f5, Qd1-b3] " Bf5-g6 " 114 147 148
+fail-low [Bc8-f5, Qd1-b3] " Bf5-d7 " 50 147 148
+fail-low [Bc8-f5, Qd1-b3] " Ke8-f8 " 96 147 148
+fail-low [Bc8-f5, Qd1-b3] " g7-g6 " 41 147 148
+fail-low [Bc8-f5, Qd1-b3] " b7-b6 " 103 147 148
+fail-low [Bc8-f5, Qd1-b3] " Nc6-e7 " 65 147 148
+fail-low [Bc8-f5, Qd1-b3] " Nc6-b8 " 20 147 148
+fail-low [Bc8-f5, Qd1-b3] " Rh8-f8 " 81 147 148
+fail-low [Bc8-f5, Qd1-b3] " Nc6-e5 " 144 147 148
+fail-low [Bc8-f5, Qd1-b3] " Bf5-h3 " 88 147 148
+fail-low [Bc8-f5, Qd1-b3, Ra8-b8, Bc4-d3] " Bf5-d3 " 128 112 148
+fail-low [Bc8-f5, Qd1-b3, Ra8-b8, Bc4-d3] " Nc6-a5 " 104 112 148
+fail-low [Bc8-f5, Qd1-b3, Ra8-b8, Bc4-d3] " Bf5-g6 " 110 112 148
+fail-low [Bc8-f5, Qd1-b3, Ra8-b8, Bc4-d3] " Ke8-f8 " 112 112 148
+fail-high [Bc8-f5, Qd1-b3, Ra8-b8, Bc4-d3] " Bf5-e6 " 250 112 148
+fail-low [Bc8-f5, Qd1-b3, Ra8-b8] " Bc4-d3 " -250 -148 -112
+fail-low [Bc8-f5, Qd1-b3, Ra8-b8, g2-g4] " Bf5-e6 " 64 147 148
+fail-low [Bc8-f5, Qd1-b3, Ra8-b8, g2-g4] " Nc6-a5 " 102 147 148
+fail-low [Bc8-f5, Qd1-b3, Ra8-b8, g2-g4] " Ke8-f8 " -6 147 148
+fail-low [Bc8-f5, Qd1-b3, Ra8-b8, g2-g4] " Bf5-c8 " 107 147 148
+fail-high [Bc8-f5, Qd1-b3, Ra8-b8, g2-g4] " Bf5-g6 " 158 147 148
+fail-low [Bc8-f5, Qd1-b3, Ra8-b8] " g2-g4 " -158 -148 -112
+fail-high [Bc8-f5, Qd1-b3, Ra8-b8] " Qb3-a4 " -33 -148 -112
+fail-low [Bc8-f5, Qd1-b3] " Ra8-b8 " 33 112 148
+fail-high [Bc8-f5, Qd1-b3, a7-a6] " Qb3-b7 " 142 -113 -112
+fail-low [Bc8-f5, Qd1-b3] " a7-a6 " -142 112 148
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " Qb3-a4+ " -127 -113 -112
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " Bc4-b5+ " -292 -113 -112
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " Qb3-b5+ " -264 -113 -112
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " Bc4-d3 " -173 -113 -112
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " Qb3-a3 " -119 -113 -112
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " g2-g4 " -1760 -113 -112
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " Qb3-d1 " -176 -113 -112
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " e5-e6 " -251 -113 -112
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " Nd2-e4 " -237 -113 -112
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " Nf3-d4 " -1672 -113 -112
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " Bc4-f7+ " -639 -113 -112
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " Qb3-b7 " -1571 -113 -112
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " Qb3-a4+ " -127 -148 -112
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " Bc4-b5+ " -292 -148 -112
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " Qb3-b5+ " -264 -148 -112
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " Qb3-a3 " -119 -148 -112
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " Bc4-d3 " -173 -148 -112
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " g2-g4 " -1760 -148 -112
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " Qb3-d1 " -176 -148 -112
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " e5-e6 " -251 -148 -112
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " Nd2-e4 " -237 -148 -112
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " Nf3-d4 " -1672 -148 -112
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " Bc4-f7+ " -639 -148 -112
+fail-low [Bc8-f5, Qd1-b3, Nc6-a5] " Qb3-b7 " -1571 -148 -112
+fail-low [Bc8-f5, Qd1-b3] " Nc6-a5 " 119 112 148
+fail-high [Bc8-f5, Qd1-b3, Rh8-g8] " Qb3-b7 " 161 -120 -119
+fail-low [Bc8-f5, Qd1-b3] " Rh8-g8 " -161 112 148
+fail-high [Bc8-f5, Qd1-b3, Qd8-e7] " Qb3-b7 " 187 -120 -119
+fail-low [Bc8-f5, Qd1-b3] " Qd8-e7 " -187 112 148
+fail-high [Bc8-f5, Qd1-b3, Bf5-e6] " Bc4-e6 " -30 -120 -119
+fail-low [Bc8-f5, Qd1-b3] " Bf5-e6 " 30 112 148
+fail-high [Bc8-f5, Qd1-b3, Bf5-c8] " Bc4-d3 " -96 -120 -119
+fail-low [Bc8-f5, Qd1-b3] " Bf5-c8 " 96 112 148
+fail-low [Bc8-f5, Qd1-b3] " f7-f6 " 75 112 148
+fail-low [Bc8-f5, Qd1-b3] " Bf5-g6 " 114 112 148
+fail-low [Bc8-f5, Qd1-b3] " Bf5-d7 " 50 112 148
+fail-low [Bc8-f5, Qd1-b3] " Ke8-f8 " 96 112 148
+fail-low [Bc8-f5, Qd1-b3] " g7-g6 " 41 112 148
+fail-low [Bc8-f5, Qd1-b3] " b7-b6 " 103 112 148
+fail-low [Bc8-f5, Qd1-b3] " Nc6-e7 " 65 112 148
+fail-low [Bc8-f5, Qd1-b3] " Nc6-b8 " 20 112 148
+fail-low [Bc8-f5, Qd1-b3] " Rh8-f8 " 81 112 148
+fail-low [Bc8-f5, Qd1-b3] " Ra8-c8 " 89 112 148
+fail-low [Bc8-f5, Qd1-b3] " Nc6-e5 " -678 112 148
+fail-low [Bc8-f5, Qd1-b3] " Bf5-h3 " 88 112 148
+fail-low [Bc8-f5] " Qd1-b3 " -119 -148 -112
+fail-low [Bc8-f5] " Ra1-c1 " -179 -148 -112
+fail-low [Bc8-f5, Qd1-a4, NULL, g2-g4] " Bf5-g6 " 106 118 119
+fail-low [Bc8-f5, Qd1-a4, NULL, g2-g4] " Ke8-f8 " -39 118 119
+fail-low [Bc8-f5, Qd1-a4, NULL, g2-g4] " Bf5-e6 " 110 118 119
+fail-low [Bc8-f5, Qd1-a4, NULL, g2-g4] " Bf5-c8 " 47 118 119
+fail-low [Bc8-f5, Qd1-a4, NULL, g2-g4] " Bf5-d7 " 117 118 119
+fail-low [Bc8-f5, Qd1-a4, NULL, g2-g4] " Qd8-e7 " -97 118 119
+fail-low [Bc8-f5, Qd1-a4, NULL, g2-g4] " Ra8-b8 " -107 118 119
+fail-low [Bc8-f5, Qd1-a4, NULL, g2-g4] " Nh6-g4 " -618 118 119
+fail-low [Bc8-f5, Qd1-a4, NULL, g2-g4] " Bf5-g4 " -503 118 119
+fail-high [Bc8-f5, Qd1-a4, NULL] " g2-g4 " -117 -119 -118
+fail-high [Bc8-f5, Qd1-a4, Bf5-d7] " e5-e6 " -67 -119 -118
+fail-low [Bc8-f5, Qd1-a4] " Bf5-d7 " 67 118 119
+fail-high [Bc8-f5, Qd1-a4, a7-a6] " g2-g4 " 10 -119 -118
+fail-low [Bc8-f5, Qd1-a4] " a7-a6 " -10 118 119
+fail-high [Bc8-f5, Qd1-a4, Ra8-b8] " g2-g4 " 107 -119 -118
+fail-low [Bc8-f5, Qd1-a4] " Ra8-b8 " -107 118 119
+fail-high [Bc8-f5, Qd1-a4, Rh8-g8] " Qa4-b3 " -87 -119 -118
+fail-low [Bc8-f5, Qd1-a4] " Rh8-g8 " 87 118 119
+fail-high [Bc8-f5, Qd1-a4, Qd8-e7] " Qa4-b3 " -105 -119 -118
+fail-low [Bc8-f5, Qd1-a4] " Qd8-e7 " 105 118 119
+fail-low [Bc8-f5, Qd1-a4] " Bf5-e6 " 109 118 119
+fail-low [Bc8-f5, Qd1-a4] " Bf5-c8 " 54 118 119
+fail-low [Bc8-f5, Qd1-a4] " f7-f6 " 69 118 119
+fail-low [Bc8-f5, Qd1-a4] " Bf5-g6 " 104 118 119
+fail-high [Bc8-f5, Qd1-a4] " Ke8-f8 " 122 118 119
+fail-low [Bc8-f5] " Qd1-a4 " -122 -148 -112
+fail-low [Bc8-f5, g2-g4, NULL, g4-f5] " Nh6-f5 " -451 118 119
+fail-low [Bc8-f5, g2-g4, NULL, g4-f5] " Qd8-g5+ " -3259 118 119
+fail-low [Bc8-f5, g2-g4, NULL, g4-f5] " Nc6-e5 " -505 118 119
+fail-high [Bc8-f5, g2-g4, NULL] " g4-f5 " 451 -119 -118
+fail-low [Bc8-f5, g2-g4, Bf5-e6] " Bc4-e6 " -173 -119 -118
+fail-high [Bc8-f5, g2-g4, Bf5-e6] " Qd1-a4 " -110 -119 -118
+fail-low [Bc8-f5, g2-g4] " Bf5-e6 " 110 118 119
+fail-high [Bc8-f5, g2-g4, Bf5-d7] " e5-e6 " -97 -119 -118
+fail-low [Bc8-f5, g2-g4] " Bf5-d7 " 97 118 119
+fail-high [Bc8-f5, g2-g4, a7-a6] " g4-f5 " 551 -119 -118
+fail-low [Bc8-f5, g2-g4] " a7-a6 " -551 118 119
+fail-low [Bc8-f5, g2-g4] " Ke8-f8 " 29 118 119
+fail-high [Bc8-f5, g2-g4] " Bf5-c8 " 141 118 119
+fail-low [Bc8-f5] " g2-g4 " -141 -148 -112
+fail-low [Bc8-f5, e5-e6, NULL, e6-f7+] " Ke8-f8 " -104 118 119
+fail-low [Bc8-f5, e5-e6, NULL, e6-f7+] " Ke8-d7 " -131 118 119
+fail-high [Bc8-f5, e5-e6, NULL] " e6-f7+ " 104 -119 -118
+fail-high [Bc8-f5, e5-e6, f7-f6, Qd1-b3] " Nc6-a5 " 154 118 119
+fail-low [Bc8-f5, e5-e6, f7-f6] " Qd1-b3 " -154 -119 -118
+fail-low [Bc8-f5, e5-e6, f7-f6] " Nf3-h4 " -159 -119 -118
+fail-high [Bc8-f5, e5-e6, f7-f6] " g2-g4 " -10 -119 -118
+fail-low [Bc8-f5, e5-e6] " f7-f6 " 10 118 119
+fail-low [Bc8-f5, e5-e6, Bf5-e6, Bc4-e6, f7-e6, Re1-e6+] " Ke8-f7 " 109 118 119
+fail-low [Bc8-f5, e5-e6, Bf5-e6, Bc4-e6, f7-e6, Re1-e6+] " Ke8-d7 " 95 118 119
+fail-low [Bc8-f5, e5-e6, Bf5-e6, Bc4-e6, f7-e6, Re1-e6+] " Ke8-f8 " 71 118 119
+fail-low [Bc8-f5, e5-e6, Bf5-e6, Bc4-e6, f7-e6, Re1-e6+] " Nc6-e7 " 0 118 119
+fail-high [Bc8-f5, e5-e6, Bf5-e6, Bc4-e6, f7-e6] " Re1-e6+ " -109 -119 -118
+fail-low [Bc8-f5, e5-e6, Bf5-e6, Bc4-e6] " f7-e6 " 109 118 119
+fail-high [Bc8-f5, e5-e6, Bf5-e6] " Bc4-e6 " -109 -119 -118
+fail-low [Bc8-f5, e5-e6] " Bf5-e6 " 109 118 119
+fail-low [Bc8-f5, e5-e6, f7-e6, Bc4-e6, Bf5-e6, Re1-e6+] " Ke8-f7 " 109 118 119
+fail-low [Bc8-f5, e5-e6, f7-e6, Bc4-e6, Bf5-e6, Re1-e6+] " Ke8-d7 " 95 118 119
+fail-low [Bc8-f5, e5-e6, f7-e6, Bc4-e6, Bf5-e6, Re1-e6+] " Ke8-f8 " 71 118 119
+fail-low [Bc8-f5, e5-e6, f7-e6, Bc4-e6, Bf5-e6, Re1-e6+] " Nc6-e7 " 0 118 119
+fail-high [Bc8-f5, e5-e6, f7-e6, Bc4-e6, Bf5-e6] " Re1-e6+ " -109 -119 -118
+fail-low [Bc8-f5, e5-e6, f7-e6, Bc4-e6] " Bf5-e6 " 109 118 119
+fail-low [Bc8-f5, e5-e6, f7-e6, Bc4-e6] " Nc6-a5 " -117 118 119
+fail-low [Bc8-f5, e5-e6, f7-e6, Bc4-e6] " Bf5-g6 " -32 118 119
+fail-low [Bc8-f5, e5-e6, f7-e6, Bc4-e6] " Ke8-f8 " 99 118 119
+fail-low [Bc8-f5, e5-e6, f7-e6, Bc4-e6] " Qd8-e7 " -4 118 119
+fail-low [Bc8-f5, e5-e6, f7-e6, Bc4-e6] " Ra8-b8 " -65 118 119
+fail-low [Bc8-f5, e5-e6, f7-e6, Bc4-e6] " a7-a6 " -61 118 119
+fail-low [Bc8-f5, e5-e6, f7-e6, Bc4-e6] " Bf5-h3 " -70 118 119
+fail-high [Bc8-f5, e5-e6, f7-e6] " Bc4-e6 " -109 -119 -118
+fail-low [Bc8-f5, e5-e6] " f7-e6 " 109 118 119
+fail-high [Bc8-f5, e5-e6, a7-a6] " e6-f7+ " 84 -119 -118
+fail-low [Bc8-f5, e5-e6] " a7-a6 " -84 118 119
+fail-high [Bc8-f5, e5-e6, Nc6-a5] " e6-f7+ " 114 -119 -118
+fail-low [Bc8-f5, e5-e6] " Nc6-a5 " -114 118 119
+fail-high [Bc8-f5, e5-e6, Rh8-g8] " e6-f7+ " 292 -119 -118
+fail-low [Bc8-f5, e5-e6] " Rh8-g8 " -292 118 119
+fail-low [Bc8-f5, e5-e6] " Qd8-e7 " 38 118 119
+fail-low [Bc8-f5, e5-e6] " Ra8-b8 " -111 118 119
+fail-low [Bc8-f5, e5-e6] " Ke8-f8 " 86 118 119
+fail-low [Bc8-f5, e5-e6] " Bf5-g6 " -88 118 119
+fail-low [Bc8-f5, e5-e6] " g7-g6 " -128 118 119
+fail-low [Bc8-f5, e5-e6] " b7-b6 " -115 118 119
+fail-low [Bc8-f5, e5-e6] " Nc6-b4 " -149 118 119
+fail-low [Bc8-f5, e5-e6] " Nc6-e7 " 20 118 119
+fail-low [Bc8-f5, e5-e6] " Nc6-b8 " 108 118 119
+fail-low [Bc8-f5, e5-e6] " Rh8-f8 " -116 118 119
+fail-low [Bc8-f5, e5-e6] " Ra8-c8 " -112 118 119
+fail-low [Bc8-f5, e5-e6] " Bf5-h3 " -445 118 119
+fail-high [Bc8-f5] " e5-e6 " -109 -148 -112
+fail-low [] " Bc8-f5 " 109 112 148
+fail-high [Ra8-b8, NULL] " a7-a6 " 154 115 116
+fail-high [Ra8-b8, NULL, b7-b5, Bc4-b3] " Nc6-a5 " 122 112 113
+fail-low [Ra8-b8, NULL, b7-b5] " Bc4-b3 " -122 -113 -112
+fail-low [Ra8-b8, NULL, b7-b5] " Bc4-d3 " -137 -113 -112
+fail-low [Ra8-b8, NULL, b7-b5] " Bc4-e2 " -183 -113 -112
+fail-low [Ra8-b8, NULL, b7-b5] " Bc4-f1 " -162 -113 -112
+fail-low [Ra8-b8, NULL, b7-b5] " e5-e6 " -245 -113 -112
+fail-low [Ra8-b8, NULL, b7-b5] " Nd2-e4 " -293 -113 -112
+fail-low [Ra8-b8, NULL, b7-b5] " Qd1-c2 " -197 -113 -112
+fail-low [Ra8-b8, NULL, b7-b5] " Qd1-b3 " -222 -113 -112
+fail-low [Ra8-b8, NULL, b7-b5] " g2-g4 " -246 -113 -112
+fail-low [Ra8-b8, NULL, b7-b5] " Nd2-b3 " -308 -113 -112
+fail-low [Ra8-b8, NULL, b7-b5] " Re1-e2 " -240 -113 -112
+fail-low [Ra8-b8, NULL, b7-b5] " Re1-e4 " -239 -113 -112
+fail-low [Ra8-b8, NULL, b7-b5] " Nf3-d4 " -874 -113 -112
+fail-low [Ra8-b8, NULL, b7-b5] " Bc4-b5 " -862 -113 -112
+fail-low [Ra8-b8, NULL, b7-b5] " Bc4-f7+ " -695 -113 -112
+fail-high [Ra8-b8, NULL] " b7-b5 " 122 112 113
+fail-high [Ra8-b8, g2-g4] " b7-b5 " 246 110 111
+fail-low [Ra8-b8] " g2-g4 " -246 -111 -110
+fail-low [Ra8-b8, e5-e6] " Bc8-e6 " 102 110 111
+fail-low [Ra8-b8, e5-e6] " f7-e6 " 102 110 111
+fail-high [Ra8-b8, e5-e6] " f7-f6 " 122 110 111
+fail-low [Ra8-b8] " e5-e6 " -122 -111 -110
+fail-low [Ra8-b8] " Ra1-c1 " -120 -111 -110
+fail-low [Ra8-b8] " Nd2-e4 " -142 -111 -110
+fail-high [Ra8-b8] " Qd1-c2 " -86 -111 -110
+fail-high [Ra8-b8, Qd1-a4, Ke8-f8] " Qa4-a3+ " -87 -113 -112
+fail-low [Ra8-b8, Qd1-a4] " Ke8-f8 " 87 112 113
+fail-high [Ra8-b8, Qd1-a4, f7-f6] " e5-f6+ " 241 -113 -112
+fail-low [Ra8-b8, Qd1-a4] " f7-f6 " -241 112 113
+fail-high [Ra8-b8, Qd1-a4, a7-a6] " Bc4-d3 " -83 -113 -112
+fail-low [Ra8-b8, Qd1-a4] " a7-a6 " 83 112 113
+fail-high [Ra8-b8, Qd1-a4, Rh8-g8] " Qa4-b3 " -61 -113 -112
+fail-low [Ra8-b8, Qd1-a4] " Rh8-g8 " 61 112 113
+fail-high [Ra8-b8, Qd1-a4, Qd8-e7] " Bc4-d3 " 3 -113 -112
+fail-low [Ra8-b8, Qd1-a4] " Qd8-e7 " -3 112 113
+fail-low [Ra8-b8, Qd1-a4] " Bc8-e6 " 55 112 113
+fail-low [Ra8-b8, Qd1-a4] " f7-f5 " -54 112 113
+fail-low [Ra8-b8, Qd1-a4] " Bc8-d7 " 62 112 113
+fail-low [Ra8-b8, Qd1-a4] " g7-g6 " -55 112 113
+fail-low [Ra8-b8, Qd1-a4] " b7-b6 " -72 112 113
+fail-low [Ra8-b8, Qd1-a4] " Nh6-f5 " -5 112 113
+fail-low [Ra8-b8, Qd1-a4] " Nh6-g8 " -40 112 113
+fail-low [Ra8-b8, Qd1-a4] " Rh8-f8 " -11 112 113
+fail-low [Ra8-b8, Qd1-a4] " Bc8-h3 " 29 112 113
+fail-high [Ra8-b8] " Qd1-a4 " -87 -113 -112
+fail-low [] " Ra8-b8 " 87 112 148
+fail-low [Qd8-e7, Qd1-a4, Ke8-f8] " Bc4-d3 " -130 -113 -112
+fail-low [Qd8-e7, Qd1-a4, Ke8-f8] " Qa4-b3 " -116 -113 -112
+fail-low [Qd8-e7, Qd1-a4, Ke8-f8] " Nd2-e4 " -133 -113 -112
+fail-high [Qd8-e7, Qd1-a4, Ke8-f8] " Qa4-c2 " -88 -113 -112
+fail-low [Qd8-e7, Qd1-a4] " Ke8-f8 " 88 112 113
+fail-high [Qd8-e7, Qd1-a4, f7-f6] " e5-f6 " 569 -113 -112
+fail-low [Qd8-e7, Qd1-a4] " f7-f6 " -569 112 113
+fail-high [Qd8-e7, Qd1-a4, a7-a6] " Bc4-d3 " -69 -113 -112
+fail-low [Qd8-e7, Qd1-a4] " a7-a6 " 69 112 113
+fail-high [Qd8-e7, Qd1-a4, Qe7-b4] " Qa4-b4 " 79 -113 -112
+fail-low [Qd8-e7, Qd1-a4] " Qe7-b4 " -79 112 113
+fail-low [Qd8-e7, Qd1-a4] " Rh8-g8 " 18 112 113
+fail-low [Qd8-e7, Qd1-a4] " Bc8-e6 " 56 112 113
+fail-low [Qd8-e7, Qd1-a4] " f7-f5 " -35 112 113
+fail-high [Qd8-e7, Qd1-a4] " Bc8-d7 " 212 112 113
+fail-low [Qd8-e7] " Qd1-a4 " -212 -113 -112
+fail-low [Qd8-e7] " Bc4-d3 " -187 -113 -112
+fail-low [Qd8-e7] " Ra1-c1 " -176 -113 -112
+fail-low [Qd8-e7] " Nd2-e4 " -153 -113 -112
+fail-low [Qd8-e7, Qd1-c2, Bc8-f5] " Bc4-d3 " -174 -113 -112
+fail-low [Qd8-e7, Qd1-c2, Bc8-f5] " g2-g4 " -154 -113 -112
+fail-high [Qd8-e7, Qd1-c2, Bc8-f5] " Qc2-a4 " -55 -113 -112
+fail-low [Qd8-e7, Qd1-c2] " Bc8-f5 " 55 112 113
+fail-high [Qd8-e7, Qd1-c2] " a7-a6 " 122 112 113
+fail-low [Qd8-e7] " Qd1-c2 " -122 -113 -112
+fail-low [Qd8-e7] " Qd1-b3 " -122 -113 -112
+fail-low [Qd8-e7] " Bc4-b3 " -169 -113 -112
+fail-low [Qd8-e7] " g2-g4 " -155 -113 -112
+fail-low [Qd8-e7] " Nd2-b3 " -153 -113 -112
+fail-low [Qd8-e7] " Bc4-b5 " -118 -113 -112
+fail-low [Qd8-e7] " Bc4-e2 " -233 -113 -112
+fail-low [Qd8-e7] " Bc4-d5 " -149 -113 -112
+fail-low [Qd8-e7] " Re1-f1 " -175 -113 -112
+fail-low [Qd8-e7] " Re1-e2 " -149 -113 -112
+fail-low [Qd8-e7] " Re1-e4 " -148 -113 -112
+fail-low [Qd8-e7] " Qd1-c1 " -165 -113 -112
+fail-low [Qd8-e7] " Qd1-b1 " -152 -113 -112
+fail-low [Qd8-e7] " Nf3-d4 " -676 -113 -112
+fail-low [Qd8-e7] " Bc4-f7+ " -680 -113 -112
+fail-low [Qd8-e7, Bc4-b5, a7-a6] " Bb5-d3 " -187 -148 -147
+fail-high [Qd8-e7, Bc4-b5, a7-a6] " Bb5-c4 " -96 -148 -147
+fail-low [Qd8-e7, Bc4-b5] " a7-a6 " 96 147 148
+fail-low [Qd8-e7, Bc4-b5, Bc8-d7] " Bb5-c4 " -149 -148 -147
+fail-low [Qd8-e7, Bc4-b5, Bc8-d7] " Nd2-e4 " -213 -148 -147
+fail-low [Qd8-e7, Bc4-b5, Bc8-d7] " Qd1-a4 " -177 -148 -147
+fail-low [Qd8-e7, Bc4-b5, Bc8-d7] " Qd1-c2 " -150 -148 -147
+fail-low [Qd8-e7, Bc4-b5, Bc8-d7] " Bb5-d3 " -202 -148 -147
+fail-low [Qd8-e7, Bc4-b5, Bc8-d7] " g2-g4 " -213 -148 -147
+fail-low [Qd8-e7, Bc4-b5, Bc8-d7] " Nd2-b3 " -210 -148 -147
+fail-low [Qd8-e7, Bc4-b5, Bc8-d7] " Nd2-c4 " -222 -148 -147
+fail-low [Qd8-e7, Bc4-b5, Bc8-d7] " Bb5-e2 " -248 -148 -147
+fail-high [Qd8-e7, Bc4-b5, Bc8-d7] " Bb5-c6 " -113 -148 -147
+fail-low [Qd8-e7, Bc4-b5] " Bc8-d7 " 113 147 148
+fail-high [Qd8-e7, Bc4-b5, Qe7-b4] " Qd1-a4 " -87 -148 -147
+fail-low [Qd8-e7, Bc4-b5] " Qe7-b4 " 87 147 148
+fail-high [Qd8-e7, Bc4-b5, Qe7-c5] " Qd1-a4 " -87 -148 -147
+fail-low [Qd8-e7, Bc4-b5] " Qe7-c5 " 87 147 148
+fail-high [Qd8-e7, Bc4-b5, Rh8-g8] " Qd1-a4 " -46 -148 -147
+fail-low [Qd8-e7, Bc4-b5] " Rh8-g8 " 46 147 148
+fail-high [Qd8-e7, Bc4-b5] " Ke8-f8 " 191 147 148
+fail-high [Qd8-e7, Bc4-b5] " a7-a6 " 287 185 186
+fail-low [Qd8-e7, Bc4-b5, Ke8-f8] " Qd1-a4 " -160 -148 -112
+fail-low [Qd8-e7, Bc4-b5, Ke8-f8] " Nd2-e4 " -196 -148 -112
+fail-low [Qd8-e7, Bc4-b5, Ke8-f8] " Qd1-c2 " -125 -148 -112
+fail-low [Qd8-e7, Bc4-b5, Ke8-f8] " Qd1-b3 " -118 -148 -112
+fail-low [Qd8-e7, Bc4-b5, Ke8-f8] " Bb5-d3 " -169 -148 -112
+fail-low [Qd8-e7, Bc4-b5, Ke8-f8] " Bb5-c4 " -144 -148 -112
+fail-low [Qd8-e7, Bc4-b5, Ke8-f8] " g2-g4 " -188 -148 -112
+fail-low [Qd8-e7, Bc4-b5, Ke8-f8] " Nd2-b3 " -193 -148 -112
+fail-low [Qd8-e7, Bc4-b5, Ke8-f8] " Nd2-c4 " -201 -148 -112
+fail-low [Qd8-e7, Bc4-b5, Ke8-f8] " Bb5-e2 " -223 -148 -112
+fail-low [Qd8-e7, Bc4-b5, Ke8-f8] " Re1-f1 " -212 -148 -112
+fail-low [Qd8-e7, Bc4-b5, Ke8-f8] " Re1-e2 " -186 -148 -112
+fail-low [Qd8-e7, Bc4-b5, Ke8-f8] " Re1-e4 " -185 -148 -112
+fail-high [Qd8-e7, Bc4-b5, Ke8-f8] " Bb5-c6 " -90 -148 -112
+fail-low [Qd8-e7, Bc4-b5] " Ke8-f8 " 90 112 148
+fail-high [Qd8-e7, Bc4-b5, a7-a6] " Bb5-c4 " -96 -113 -112
+fail-low [Qd8-e7, Bc4-b5] " a7-a6 " 96 112 148
+fail-high [Qd8-e7, Bc4-b5, Qe7-b4] " Qd1-a4 " -87 -113 -112
+fail-low [Qd8-e7, Bc4-b5] " Qe7-b4 " 87 112 148
+fail-high [Qd8-e7, Bc4-b5, Qe7-c5] " Qd1-a4 " -87 -113 -112
+fail-low [Qd8-e7, Bc4-b5] " Qe7-c5 " 87 112 148
+fail-high [Qd8-e7, Bc4-b5, Rh8-g8] " Qd1-a4 " -46 -113 -112
+fail-low [Qd8-e7, Bc4-b5] " Rh8-g8 " 46 112 148
+fail-low [Qd8-e7, Bc4-b5] " Bc8-e6 " 129 112 148
+fail-low [Qd8-e7, Bc4-b5] " f7-f5 " 67 112 148
+fail-high [Qd8-e7, Bc4-b5] " Bc8-d7 " 212 112 148
+fail-low [Qd8-e7] " Bc4-b5 " -212 -148 -112
+fail-low [Qd8-e7] " Ra1-c1 " -176 -148 -112
+fail-low [Qd8-e7] " Qd1-a4 " -212 -148 -112
+fail-low [Qd8-e7] " Nd2-e4 " -153 -148 -112
+fail-high [Qd8-e7, Qd1-c2, a7-a6] " Bc4-d3 " -146 -148 -147
+fail-low [Qd8-e7, Qd1-c2] " a7-a6 " 146 147 148
+fail-low [Qd8-e7, Qd1-c2] " Bc8-d7 " 97 147 148
+fail-low [Qd8-e7, Qd1-c2] " Nc6-b4 " 28 147 148
+fail-high [Qd8-e7, Qd1-c2] " Bc8-f5 " 290 147 148
+fail-low [Qd8-e7] " Qd1-c2 " -290 -148 -112
+fail-low [Qd8-e7, Qd1-b3] " Nc6-a5 " 28 147 148
+fail-low [Qd8-e7, Qd1-b3] " a7-a6 " 147 147 148
+fail-low [Qd8-e7, Qd1-b3] " Bc8-f5 " 105 147 148
+fail-low [Qd8-e7, Qd1-b3] " Rh8-g8 " 112 147 148
+fail-low [Qd8-e7, Qd1-b3] " Ke8-f8 " 116 147 148
+fail-low [Qd8-e7, Qd1-b3] " Bc8-d7 " 68 147 148
+fail-low [Qd8-e7, Qd1-b3] " Bc8-e6 " 123 147 148
+fail-low [Qd8-e7, Qd1-b3] " f7-f5 " 71 147 148
+fail-low [Qd8-e7, Qd1-b3] " Qe7-b4 " 115 147 148
+fail-low [Qd8-e7, Qd1-b3] " f7-f6 " 100 147 148
+fail-low [Qd8-e7, Qd1-b3] " g7-g6 " 70 147 148
+fail-low [Qd8-e7, Qd1-b3] " b7-b6 " 85 147 148
+fail-low [Qd8-e7, Qd1-b3] " Nh6-f5 " 113 147 148
+fail-low [Qd8-e7, Qd1-b3] " Nh6-g8 " 91 147 148
+fail-low [Qd8-e7, Qd1-b3] " Nc6-e5 " -605 147 148
+fail-low [Qd8-e7, Qd1-b3] " Bc8-h3 " 96 147 148
+fail-low [Qd8-e7, Qd1-b3] " Qe7-e5 " 111 147 148
+fail-low [Qd8-e7, Qd1-b3] " a7-a6 " 147 112 148
+fail-low [Qd8-e7, Qd1-b3] " Bc8-f5 " 105 112 148
+fail-low [Qd8-e7, Qd1-b3] " Nc6-a5 " 28 112 148
+fail-low [Qd8-e7, Qd1-b3] " Rh8-g8 " 112 112 148
+fail-low [Qd8-e7, Qd1-b3] " Ke8-f8 " 116 112 148
+fail-low [Qd8-e7, Qd1-b3] " Bc8-d7 " 68 112 148
+fail-low [Qd8-e7, Qd1-b3] " Bc8-e6 " 123 112 148
+fail-low [Qd8-e7, Qd1-b3] " f7-f5 " 71 112 148
+fail-low [Qd8-e7, Qd1-b3] " Qe7-b4 " 115 112 148
+fail-low [Qd8-e7, Qd1-b3] " f7-f6 " 100 112 148
+fail-low [Qd8-e7, Qd1-b3] " g7-g6 " 70 112 148
+fail-low [Qd8-e7, Qd1-b3] " b7-b6 " 85 112 148
+fail-low [Qd8-e7, Qd1-b3] " Nh6-f5 " 113 112 148
+fail-low [Qd8-e7, Qd1-b3] " Nh6-g8 " 91 112 148
+fail-low [Qd8-e7, Qd1-b3] " Nc6-e5 " -605 112 148
+fail-low [Qd8-e7, Qd1-b3] " Bc8-h3 " 96 112 148
+fail-low [Qd8-e7, Qd1-b3] " Qe7-e5 " 111 112 148
+fail-low [Qd8-e7] " Qd1-b3 " -147 -148 -112
+fail-low [Qd8-e7] " Bc4-b3 " -169 -148 -112
+fail-low [Qd8-e7] " Bc4-d3 " -187 -148 -112
+fail-low [Qd8-e7] " g2-g4 " -155 -148 -112
+fail-low [Qd8-e7] " Nd2-b3 " -153 -148 -112
+fail-low [Qd8-e7] " Bc4-e2 " -233 -148 -112
+fail-low [Qd8-e7] " Bc4-d5 " -149 -148 -112
+fail-low [Qd8-e7] " Re1-f1 " -175 -148 -112
+fail-low [Qd8-e7] " Re1-e2 " -149 -148 -112
+fail-low [Qd8-e7] " Re1-e4 " -148 -148 -112
+fail-low [Qd8-e7] " Qd1-c1 " -165 -148 -112
+fail-low [Qd8-e7] " Qd1-b1 " -152 -148 -112
+fail-low [Qd8-e7] " Qd1-e2 " -132 -148 -112
+fail-low [Qd8-e7] " Nf3-d4 " -676 -148 -112
+fail-low [Qd8-e7] " Bc4-f7+ " -680 -148 -112
+new best move Qd8-e7 val: 132 alpha 112 beta 148
+Qd8-e7 Qd1-e2
+new best move (>a) Qd8-e7 val: 132 alpha 112 beta 148
+fail-low [] " Qd8-e7 " 132 112 148
+fail-low [f7-f5, NULL, a7-a6] " Bc4-f7+ " -856 -133 -132
+fail-high [f7-f5, NULL, a7-a6] " Bc4-d3 " -123 -133 -132
+fail-low [f7-f5, NULL] " a7-a6 " 123 132 133
+fail-low [f7-f5, NULL, Nc6-a5] " Bc4-b5+ " -231 -133 -132
+fail-high [f7-f5, NULL, Nc6-a5] " Qd1-a4+ " -66 -133 -132
+fail-low [f7-f5, NULL] " Nc6-a5 " 66 132 133
+fail-high [f7-f5, NULL, Ke8-f8] " Bc4-d3 " -118 -133 -132
+fail-low [f7-f5, NULL] " Ke8-f8 " 118 132 133
+fail-low [f7-f5, NULL, Bc8-d7] " Bc4-f7+ " -854 -133 -132
+fail-high [f7-f5, NULL, Bc8-d7] " e5-e6 " 31 -133 -132
+fail-low [f7-f5, NULL] " Bc8-d7 " -31 132 133
+fail-low [f7-f5, NULL, f5-f4] " Bc4-f7+ " -840 -133 -132
+fail-high [f7-f5, NULL, f5-f4] " e5-e6 " -97 -133 -132
+fail-low [f7-f5, NULL] " f5-f4 " 97 132 133
+fail-low [f7-f5, NULL, g7-g6] " Bc4-f7+ " -833 -133 -132
+fail-high [f7-f5, NULL, g7-g6] " Ra1-c1 " -50 -133 -132
+fail-low [f7-f5, NULL] " g7-g6 " 50 132 133
+fail-low [f7-f5, NULL] " b7-b6 " 84 132 133
+fail-low [f7-f5, NULL] " Nh6-f7 " 74 132 133
+fail-low [f7-f5, NULL] " Nh6-g8 " 41 132 133
+fail-low [f7-f5, NULL] " Nc6-b4 " 49 132 133
+fail-low [f7-f5, NULL] " Nc6-e7 " 52 132 133
+fail-low [f7-f5, NULL] " Rh8-f8 " 81 132 133
+fail-low [f7-f5, NULL] " Qd8-d7 " 57 132 133
+fail-low [f7-f5, NULL] " Ke8-e7 " 70 132 133
+fail-low [f7-f5, NULL] " Nc6-e5 " -701 132 133
+fail-low [] " f7-f5 " 123 112 148
+fail-high [Bc8-e6, NULL, Be6-c4, Nd2-c4] " Ke8-f8 " 215 132 133
+fail-low [Bc8-e6, NULL, Be6-c4] " Nd2-c4 " -215 -133 -132
+fail-low [Bc8-e6, NULL, Be6-c4] " Nf3-d4 " -771 -133 -132
+fail-high [Bc8-e6, NULL] " Be6-c4 " 215 132 133
+fail-low [Bc8-e6, Bc4-e6, f7-e6, Qd1-b3] " a7-a6 " 40 132 133
+fail-low [Bc8-e6, Bc4-e6, f7-e6, Qd1-b3] " Nc6-a5 " 129 132 133
+fail-low [Bc8-e6, Bc4-e6, f7-e6, Qd1-b3] " Ke8-f8 " 29 132 133
+fail-low [Bc8-e6, Bc4-e6, f7-e6, Qd1-b3] " Rh8-g8 " 20 132 133
+fail-low [Bc8-e6, Bc4-e6, f7-e6, Qd1-b3] " Ke8-f7 " 45 132 133
+fail-low [Bc8-e6, Bc4-e6, f7-e6, Qd1-b3] " g7-g6 " 17 132 133
+fail-low [Bc8-e6, Bc4-e6, f7-e6, Qd1-b3] " b7-b6 " 63 132 133
+fail-low [Bc8-e6, Bc4-e6, f7-e6, Qd1-b3] " Nh6-f5 " 24 132 133
+fail-low [Bc8-e6, Bc4-e6, f7-e6, Qd1-b3] " Nh6-f7 " 34 132 133
+fail-low [Bc8-e6, Bc4-e6, f7-e6, Qd1-b3] " Nh6-g8 " -16 132 133
+fail-low [Bc8-e6, Bc4-e6, f7-e6, Qd1-b3] " Nc6-e5 " -633 132 133
+fail-high [Bc8-e6, Bc4-e6, f7-e6] " Qd1-b3 " -129 -133 -132
+fail-low [Bc8-e6, Bc4-e6] " f7-e6 " 129 132 133
+fail-low [Bc8-e6, Bc4-e6] " Nc6-e5 " -398 132 133
+fail-high [Bc8-e6] " Bc4-e6 " -129 -133 -132
+fail-low [] " Bc8-e6 " 129 112 148
+fail-high [a7-a6, NULL, g7-g5] " Qd1-a4 " -81 -133 -132
+fail-low [a7-a6, NULL] " g7-g5 " 81 132 133
+fail-high [a7-a6, NULL, Bc8-f5] " g2-g4 " -58 -133 -132
+fail-low [a7-a6, NULL] " Bc8-f5 " 58 132 133
+fail-high [a7-a6, NULL, b7-b5] " Bc4-b3 " -103 -133 -132
+fail-low [a7-a6, NULL] " b7-b5 " 103 132 133
+fail-high [a7-a6, NULL, Nc6-a5] " Qd1-a4+ " -97 -133 -132
+fail-low [a7-a6, NULL] " Nc6-a5 " 97 132 133
+fail-high [a7-a6, NULL, Rh8-g8] " Qd1-a4 " -87 -133 -132
+fail-low [a7-a6, NULL] " Rh8-g8 " 87 132 133
+fail-low [a7-a6, NULL, Ke8-f8] " Bc4-d3 " -160 -133 -132
+fail-low [a7-a6, NULL, Ke8-f8] " Qd1-a4 " -151 -133 -132
+fail-low [a7-a6, NULL, Ke8-f8] " Qd1-e2 " -137 -133 -132
+fail-low [a7-a6, NULL, Ke8-f8] " e5-e6 " -159 -133 -132
+fail-low [a7-a6, NULL, Ke8-f8] " Nd2-e4 " -163 -133 -132
+fail-high [a7-a6, NULL, Ke8-f8] " Qd1-b3 " -132 -133 -132
+fail-low [a7-a6, NULL] " Ke8-f8 " 132 132 133
+fail-high [a7-a6, NULL] " Bc8-d7 " 151 132 133
+fail-low [a7-a6, e5-e6] " f7-f5 " 125 132 133
+fail-low [a7-a6, e5-e6] " Bc8-e6 " 106 132 133
+fail-low [a7-a6, e5-e6] " f7-e6 " 106 132 133
+fail-high [a7-a6, e5-e6] " f7-f6 " 144 132 133
+fail-low [a7-a6] " e5-e6 " -144 -133 -132
+fail-high [a7-a6, Bc4-d3] " Ra8-b8 " 167 132 133
+fail-low [a7-a6] " Bc4-d3 " -167 -133 -132
+fail-high [a7-a6, Ra1-c1] " Bc8-e6 " 152 132 133
+fail-low [a7-a6] " Ra1-c1 " -152 -133 -132
+fail-high [a7-a6, Qd1-e2] " Bc8-e6 " 153 132 133
+fail-low [a7-a6] " Qd1-e2 " -153 -133 -132
+fail-high [a7-a6, Nd2-e4] " b7-b5 " 282 132 133
+fail-low [a7-a6] " Nd2-e4 " -282 -133 -132
+fail-high [a7-a6, Qd1-b3] " b7-b5 " 211 132 133
+fail-low [a7-a6] " Qd1-b3 " -211 -133 -132
+fail-high [a7-a6, Qd1-c2] " Bc8-f5 " 302 132 133
+fail-low [a7-a6] " Qd1-c2 " -302 -133 -132
+fail-low [a7-a6] " Bc4-b3 " -152 -133 -132
+fail-high [a7-a6] " Qd1-a4 " -97 -133 -132
+fail-low [] " a7-a6 " 97 112 148
+fail-low [] " Ke8-f8 " 116 112 148
+fail-low [f7-f6, NULL] " f6-e5 " 0 132 133
+fail-low [f7-f6, NULL] " Nc6-e5 " 0 132 133
+fail-low [f7-f6, NULL] " a7-a6 " -103 132 133
+fail-low [f7-f6, NULL] " Bc8-f5 " -85 132 133
+fail-low [f7-f6, NULL] " Nc6-a5 " 112 132 133
+fail-low [f7-f6, NULL] " Ke8-f8 " 113 132 133
+fail-low [f7-f6, NULL] " Bc8-d7 " 109 132 133
+fail-low [f7-f6, NULL] " f6-f5 " 89 132 133
+fail-low [f7-f6, NULL] " g7-g6 " 98 132 133
+fail-low [f7-f6, NULL] " Nh6-f5 " 96 132 133
+fail-low [f7-f6, NULL] " Nh6-f7 " 97 132 133
+fail-low [f7-f6, NULL] " Nh6-g8 " 68 132 133
+fail-low [f7-f6, NULL] " Nc6-b4 " 82 132 133
+fail-low [f7-f6, NULL] " Bc8-h3 " -491 132 133
+fail-low [] " f7-f6 " 113 112 148
+fail-low [] " Bc8-d7 " 109 112 148
+fail-low [] " g7-g6 " 70 112 148
+fail-low [] " b7-b6 " 103 112 148
+fail-low [] " Nh6-f5 " 123 112 148
+fail-low [] " Nh6-g8 " 93 112 148
+fail-low [] " Nc6-b4 " 100 112 148
+fail-low [] " Nc6-e7 " 103 112 148
+fail-low [] " Nc6-b8 " 77 112 148
+fail-low [] " Rh8-f8 " 124 112 148
+fail-low [] " Qd8-d7 " 110 112 148
+fail-low [] " Ke8-g8 " 58 112 148
+fail-low [] " Ke8-e7 " 112 112 148
+fail-low [] " Ke8-d7 " 67 112 148
+fail-low [] " a7-a5 " 113 112 148
+fail-low [] " g7-g5 " 117 112 148
+fail-low [] " b7-b5 " -126 112 148
+fail-low [] " Nh6-g4 " 0 112 148
+fail-low [] " Bc8-g4 " 58 112 148
+fail-low [] " Qd8-f6 " -57 112 148
+fail-low [] " Qd8-d6 " -33 112 148
+fail-low [] " Qd8-h4 " 21 112 148
+fail-low [] " Qd8-g5 " 84 112 148
+fail-low [] " Qd8-d5 " 78 112 148
+fail-low [] " Nc6-e5 " -632 112 148
+fail-low [] " Bc8-h3 " -461 112 148
+node_count: 5231 avg ply: 4.319336268201829 max ply: 15 alpha 132 beta 148 val 132
+REAL PV: [Qd8-e7, Qd1-e2]
 
-new best move Ng4-e5 val: -228 alpha 186 beta 240
-new best move Nc6-e5 val: -25 alpha 186 beta 240
-new best move Ng4-h6 val: 171 alpha 186 beta 240
-new best move Nc6-a5 val: 179 alpha 186 beta 240
-node_count: 6753 avg ply: 5.7456707159472735 max ply: 14 alpha 186 beta 240 val 179
-pv: []
-
-faillow a 186 b 240 val 179 factor 30
-new best move Ng4-e5 val: 120 alpha 149 beta 240
-new best move Ng4-h6 val: 191 alpha 149 beta 240
-Ng4-h6 Qd1-c2 a7-a6
-new best move (>a) Ng4-h6 val: 191 alpha 149 beta 240
-node_count: 8577 avg ply: 5.8657407407407405 max ply: 16 alpha 191 beta 240 val 191
-REAL PV: [Ng4-h6, Qd1-c2, a7-a6]
-
-18.00633955001831 s
-
->> depth: 4.5 , allowance: 80
-new best move a7-a6 val: -97 alpha 173 beta 209
-new best move Ng4-h6 val: 165 alpha 173 beta 209
-new best move Nc6-a5 val: 170 alpha 173 beta 209
-node_count: 12411 avg ply: 6.419426048565121 max ply: 18 alpha 173 beta 209 val 170
-pv: []
-
-faillow a 173 b 209 val 170 factor 18
-new best move Ng4-e5 val: 147 alpha 152 beta 209
-new best move Ng4-h6 val: 192 alpha 152 beta 209
-Ng4-h6 Qd1-c2 Bc8-f5 Qc2-b3 Nc6-a5 Qb3-a4+ Na5-c6
-new best move (>a) Ng4-h6 val: 192 alpha 152 beta 209
-node_count: 19313 avg ply: 7.016117969821673 max ply: 18 alpha 192 beta 209 val 192
-REAL PV: [Ng4-h6, Qd1-c2, Bc8-f5, Qc2-b3, Nc6-a5, Qb3-a4+, Na5-c6]
-
-50.39378905296326 s
-
->> depth: 5.0 , allowance: 143
-new best move Ng4-h6 val: 192 alpha 174 beta 210
-Ng4-h6 Nd2-b3 Qd8-e7 Qd1-d2
-new best move (>a) Ng4-h6 val: 192 alpha 174 beta 210
-node_count: 26447 avg ply: 7.234766355140187 max ply: 19 alpha 192 beta 210 val 192
-REAL PV: [Ng4-h6, Nd2-b3, Qd8-e7, Qd1-d2]
-
-33.35645914077759 s
-
->> depth: 5.5 , allowance: 260
-new best move Ng4-h6 val: 172 alpha 174 beta 210
-new best move Nc6-a5 val: 174 alpha 174 beta 210
-node_count: 39497 avg ply: 7.784152776614457 max ply: 19 alpha 174 beta 210 val 174
-pv: []
-
-new best move Ng4-e5 val: 156 alpha 156 beta 210
-new best move Ng4-h6 val: 171 alpha 156 beta 210
-Ng4-h6 Qd1-c2 a7-a5
-new best move (>a) Ng4-h6 val: 171 alpha 156 beta 210
-node_count: 68853 avg ply: 8.455973011018882 max ply: 19 alpha 171 beta 210 val 171
-REAL PV: [Ng4-h6, Qd1-c2, a7-a5]
-
-192.2585015296936 s
-0.855
-309.8251385688782 s
+10.048005819320679 s
+0.66
+22.314677953720093 s

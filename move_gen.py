@@ -86,7 +86,22 @@ def preserved_castle_rights(position_flags, side):
     if side == Side.WHITE:
         return not (position_flags & 1 or (position_flags & 12) == 12)
     return not (position_flags & 2 or (position_flags & 48) == 48)
-    
+
+def piece_attacks(piece_type, piece_squares, free):
+    base_type = PieceType.base_type(piece_type)
+    if base_type == PieceType.P:
+        return pawn_attack(piece_squares, PieceType.get_side(piece_type))
+    elif base_type == PieceType.N:
+        return knight_attack(piece_squares)
+    elif base_type == PieceType.B:
+        return bishop_attack(piece_squares, free)
+    elif base_type == PieceType.Q:
+        return queen_attack(piece_squares, free)
+    elif base_type == PieceType.K:
+        return king_attack(piece_squares)
+    elif base_type == PieceType.R:
+        return rook_attack(piece_squares, free)
+
 # Position flags:
 # white king has moved - bit 1
 # black king has moved - bit 2

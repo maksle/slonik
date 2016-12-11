@@ -552,6 +552,7 @@ because they are being blocked, or will no longer be blocked, by the move."""
         
         # update piece attacks incrementally
         updated_attacks_pts = []
+        
         # .. for the sliding pieces
         for pt in self.blocking_change(move):
             base_pt = PieceType.base_type(pt)
@@ -569,7 +570,7 @@ because they are being blocked, or will no longer be blocked, by the move."""
         # .. and for promo piece
         if move.move_type == MoveType.promo and move.promo_piece not in updated_attacks_pts:
             self.piece_attacks[move.promo_piece] = self.get_piece_attacks(PieceType.base_type(move.promo_piece), side)
-
+        
         # recompute the attacks for each side
         for base_pt in [PieceType.P, PieceType.N, PieceType.B, PieceType.R, PieceType.Q, PieceType.K]:
             self.attacks = [0, 0]
@@ -588,3 +589,4 @@ def zobrist_pieces(pieces, piece_type):
         square_ind = bit_position(piece)
         zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[square_ind][piece_type]
     return zobrist_hash
+

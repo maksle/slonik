@@ -98,10 +98,34 @@ pos = Position()
 pos = Position.from_fen("r1bqk2r/ppp2ppp/2n5/4P3/2Bp2n1/5N1P/PP1N1PP1/R2Q1RK1 b kq - 1 10")
 # pos = Position.from_fen("r1b1k2r/ppp2ppp/5q2/4n3/2Bp4/5N1P/PP3PP1/R2QR1K1 b kq - 3 13")
 # pos = Position.from_fen("r1bq1k1r/ppp3pp/5p2/4n3/2BN4/7P/PP3PP1/R2QR1K1 b - - 0 14")
-pos = Position.from_fen("r1bqk2r/1pp2ppp/2n5/4P3/p1BN4/7P/PP1Q1PP1/3R1RK1 b kq - 0 15")
+# pos = Position.from_fen("r1bqk2r/1pp2ppp/2n5/4P3/p1BN4/7P/PP1Q1PP1/3R1RK1 b kq - 0 15")
 
-pos = Position.from_fen("r1bqk2r/1pp2ppp/8/4n3/p1BN4/7P/PP1Q1PP1/3RR1K1 b kq - 1 16")
-evaluate(pos, True)
+# pos = Position.from_fen("r1bqk2r/1pp2ppp/8/4n3/p1BN4/7P/PP1Q1PP1/3RR1K1 b kq - 1 16")
+# evaluate(pos, True)
+
+#  after g5
+# pos = Position.from_fen("r1bqk2r/ppp2p1p/2n4n/4P1p1/2Bp4/5N1P/PP1N1PP1/R2QR1K1 w kq - 0 12")
+# evaluate(pos, True)
+# print()
+# # after 00
+# pos = Position.from_fen("r1bq1rk1/ppp2ppp/2n4n/4P3/2Bp4/5N1P/PP1N1PP1/R2QR1K1 w - - 4 12")
+# evaluate(pos, True)
+
+pos = Position.from_fen("r1bqk2r/ppp2ppp/2n4n/4P3/2Bp4/5N1P/PP1N1PP1/R2QR1K1 b kq - 3 11")
+pos = Position.from_fen("r1bqk2r/ppp2ppp/2n5/4P3/2Bp2n1/5N1P/PP1N1PP1/R2Q1RK1 b kq - 1 10")
+
+# f6 f4
+# pos = Position.from_fen("r1bqk2r/ppp3pp/5p2/4n3/2Bp1P2/7P/PP1N2P1/R2QR1K1 b kq - 0 13")
+# evaluate(pos, True)
+
+# # f6 f4 f5 
+# pos = Position.from_fen("r1bqk2r/ppp3pp/8/4np2/2Bp1P2/7P/PP1N2P1/R2QR1K1 w kq - 0 14")
+# evaluate(pos, True)
+
+# # f6 f4 c6
+# pos = Position.from_fen("r1bqk2r/pp4pp/2p2p2/4n3/2Bp1P2/7P/PP1N2P1/R2QR1K1 w kq - 0 14")
+# evaluate(pos, True)
+
 # play(pos)
 
 #Ng4-e5 Re1
@@ -112,14 +136,14 @@ evaluate(pos, True)
 # pos = Position.from_fen("r1bqk2r/ppp2ppp/8/4n3/2Bp4/7P/PP1N1PP1/R2QR1K1 b kq - 1 12")
 # evaluate(pos, True)
 
-# import time 
-# now = time.time()
-# val, si = iterative_deepening(4, pos)
-# # val = search(SearchPos(pos), [None] * 64, 0, -10000000, 10000000, 1, .001, True)
-# # print("node count", node_count)
-# print(val / 200)
-# then = time.time()
-# print(then-now, 's')
+import time 
+now = time.time()
+val, si = iterative_deepening(4.5, pos)
+# val = search(SearchPos(pos), [None] * 64, 0, -10000000, 10000000, 1, .001, True)
+# print("node count", node_count)
+print(val / 200)
+then = time.time()
+print(then-now, 's')
 
 # import time
 # now = time.time()

@@ -401,7 +401,7 @@ def get_rank(n, side=None):
         return rank
     else:
         return 7 - rank
-       
+
 BETWEEN_SQS = [[0] * 65 for i in range(64)]
 LINE_SQS = [[0] * 65 for i in range(64)]
 
@@ -424,3 +424,10 @@ for sq_ind in range(64):
             BETWEEN_SQS[sq_ind][sq2_ind] = attack_fn(sq, sq2 ^ FULL_BOARD) & attack_fn(sq2, sq ^ FULL_BOARD)
             LINE_SQS[sq_ind][sq2_ind] = (attack_fn(sq, FULL_BOARD) & attack_fn(sq2, FULL_BOARD)) | sq | sq2
 
+AHEAD_SQS = [[0 for i in range(64)] for s in range(2)]
+for sq_ind in range(64):
+    for side in [Side.WHITE, Side.BLACK]:
+        last_rank = 7 if side == Side.WHITE else 0
+        f = 7 - (sq_ind % 8)
+        last_sq = FILES[f] & RANKS[last_rank]
+        AHEAD_SQS[side][sq_ind] = BETWEEN_SQS[sq_ind][bit_position(last_sq)] | last_sq
