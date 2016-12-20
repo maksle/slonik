@@ -6,6 +6,8 @@ from side import Side
 from piece_type import PieceType
 import gmpy2
 
+Pt = PieceType
+
 A_FILE = 0x8080808080808080
 B_FILE = 0x4040404040404040
 G_FILE = 0x0202020202020202
@@ -269,7 +271,7 @@ def bishop_attack_calc(g, p):
         | se_attack(g, p) \
         | sw_attack(g, p)
 
-def knight_attack(g):
+def knight_attack_calc(g):
     attacks = ((g << 6) & NOT_A_FILE & NOT_B_FILE) \
         | ((g >> 10) & NOT_A_FILE & NOT_B_FILE) \
         | ((g >> 17) & NOT_A_FILE) \
@@ -280,7 +282,7 @@ def knight_attack(g):
         | ((g << 17) & NOT_H_FILE)
     return attacks & ((1 << 64) - 1)
 
-def king_attack(g):
+def king_attack_calc(g):
     return ((g << 9) & NOT_H_FILE) \
         | g << 8 \
         | ((g << 7) & NOT_A_FILE) \
@@ -290,7 +292,7 @@ def king_attack(g):
         | g >> 8 \
         | ((g >> 9) & NOT_A_FILE)
 
-def pawn_attack(pawn, side_to_move):
+def pawn_attack_calc(pawn, side_to_move):
     if side_to_move == Side.WHITE:
         return ((pawn << 9) & NOT_H_FILE) \
             | ((pawn << 7) & NOT_A_FILE)
@@ -298,6 +300,21 @@ def pawn_attack(pawn, side_to_move):
         return ((pawn >> 9) & NOT_A_FILE) \
             | ((pawn >> 7) & NOT_H_FILE)
 
+def piece_attack(pt, sq, occupied):
+    bt = Pt.base_type(pt)
+    if bt == Pt.P:
+        return pawn_attack(sq, Pt.get_side(pt))
+    elif bt == Pt.N:
+        return knight_attack(sq)
+    elif bt == Pt.B:
+        return bishop_attack(sq, occupied)
+    elif bt == Pt.R:
+        return rook_attack(sq, occupied)
+    elif bt == Pt.Q:
+        return bishop_attack(sq, occupied) | rook_attack(sq, occupied)
+    elif bt == Pt.K:
+        return king_attack(sq)
+    
 def exclude_own(attacks, own):
     not_own = own ^ FULL_BOARD
     return attacks & not_own
@@ -484,26 +501,39 @@ for sq_ind in range(64):
         last_sq = FILES[f] & RANKS[last_rank]
         AHEAD_SQS[side][sq_ind] = BETWEEN_SQS[sq_ind][bit_position(last_sq)] | last_sq
 
-def bishop_attack(sq, free):
+ATTACKS = [[0] * 64 for i in range(7)]
+for pt in [Pt.N, Pt.K]:
+    for sq in range(64):
+        if pt == Pt.N: ATTACKS[pt][sq] = knight_attack_calc(1 << sq)
+        elif pt == Pt.K: ATTACKS[pt][sq] = king_attack_calc(1 << sq)
+
+def knight_attack(sq):
+    return ATTACKS[Pt.N][bit_position(sq)]
+
+def king_attack(sq):
+    return ATTACKS[Pt.K][bit_position(sq)]
+
+def pawn_attack(sq, side):
+    return pawn_attack_calc(sq, side)
+
+def bishop_attack(sq, occupied):
     bitpos = bit_position(sq)
-    occ = (FULL_BOARD ^ free) & mask
-    occ &= MAGIC_MASKS[PieceType.B][bitpos]
+    occ = occupied & MAGIC_MASKS[PieceType.B][bitpos]
     occ *= MAGIC_NUMBER[PieceType.B][bitpos]
     occ &= FULL_BOARD
     hash_index = occ >> (64 - MASK_BIT_LENGTH[PieceType.B][bitpos])
     return MAGIC_ATTACKS[PieceType.B][bitpos][hash_index]
 
-def rook_attack(sq, free):
+def rook_attack(sq, occupied):
     bitpos = bit_position(sq)
-    occ = (FULL_BOARD ^ free) & mask
-    occ &= MAGIC_MASKS[PieceType.R][bitpos]
+    occ = occupied & MAGIC_MASKS[PieceType.R][bitpos]
     occ *= MAGIC_NUMBER[PieceType.R][bitpos]
     occ &= FULL_BOARD
     hash_index = occ >> (64 - MASK_BIT_LENGTH[PieceType.R][bitpos])
     return MAGIC_ATTACKS[PieceType.R][bitpos][hash_index]
 
-def queen_attack(sq, free):
-    return bishop_attack(sq, free) | rook_attack(sq, free)
+def queen_attack(sq, occupied):
+    return bishop_attack(sq, occupied) | rook_attack(sq, occupied)
 
 MASK_BIT_LENGTH = [[] for i in range(7)]
 MASK_BIT_LENGTH[PieceType.B] = [
@@ -697,9 +727,7 @@ for pt in [PieceType.B, PieceType.R]:
         bits = MASK_BIT_LENGTH[pt][sq]
         for index in range(1 << bits):
             occupation = index_to_occupation(index, bits, mask)
+            free = invert(occupation) # calc funcs take free, not occupied
             index_hash = ((occupation * magic) & FULL_BOARD) >> (64 - bits)
-            free = occupation ^ FULL_BOARD
             attack_fn = bishop_attack_calc if pt == PieceType.B else rook_attack_calc
-            # print(pt, sq, magic, MAGIC_ATTACKS[pt][sq][index_hash], attack_fn(1 << sq, free))
-            # assert(MAGIC_ATTACKS[pt][sq][index_hash] is None or MAGIC_ATTACKS[pt][sq][index_hash] == attack_fn(1 << sq, free))
             MAGIC_ATTACKS[pt][sq][index_hash] = attack_fn(1 << sq, free)

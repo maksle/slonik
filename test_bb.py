@@ -224,37 +224,10 @@ def test_queen_attack():
     attacker = int(''.join(g_arr), 2)
     free = int(''.join(p_arr), 2)
 
-    res = queen_attack(attacker, free)
+    res = queen_attack_calc(attacker, free)
     assert res == 9820426766351346249
-
-def test_queen_attack_2():
-    g_arr = [
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000010',
-        '00001000',
-        '00000000',
-        '00000000',
-        '00000000',
-    ]
-    p_arr = [
-        '11111111',
-        '11111111',
-        '11111111',
-        '11111111',
-        '11111111',
-        '11111111',
-        '11111111',
-        '11111111',
-    ]
-    attacker = int(''.join(g_arr), 2)
-    free = int(''.join(p_arr), 2)
-
-    res = queen_attack(attacker, free)
-    # print_bb(res)
-    # print(res)
-    assert res == 11118032872913386091
+    res = queen_attack(attacker, invert(free))
+    assert res == 9820426766351346249
 
 def test_rook_attack():
     g_arr = [
@@ -280,9 +253,9 @@ def test_rook_attack():
     attacker = int(''.join(g_arr), 2)
     free = int(''.join(p_arr), 2)
 
-    res = rook_attack(attacker, free)
-    # print_bb(res)
-    # print(res)
+    res = rook_attack_calc(attacker, free)
+    assert res == 578721386714368008
+    res = rook_attack(attacker, invert(free))
     assert res == 578721386714368008
 
 def test_bishop_attack():
@@ -309,10 +282,10 @@ def test_bishop_attack():
     attacker = int(''.join(g_arr), 2)
     free = int(''.join(p_arr), 2)
 
-    res = bishop_attack(attacker, free)
-    # print_bb(res)
+    res = bishop_attack_calc(attacker, free)
     assert res == 9241705379636978241
-
+    res = bishop_attack(attacker, invert(free))
+    assert res == 9241705379636978241
 
 def test_bishop_attack_2():
     g_arr = [
@@ -338,9 +311,9 @@ def test_bishop_attack_2():
     attacker = int(''.join(g_arr), 2)
     free = int(''.join(p_arr), 2)
 
-    res = bishop_attack(attacker, free)
-    # print_bb(res)
-    # print()
+    res = bishop_attack_calc(attacker, free)
+    assert res == 0x2010080500050810
+    res = bishop_attack(attacker, invert(free))
     assert res == 0x2010080500050810
     
 def test_knight_attack():
@@ -422,22 +395,6 @@ def test_knight_attack_5():
     res = knight_attack(attacker)
     # print_bb(res)
     assert res == 168886289
-
-def test_knight_attack_6():
-    g_arr = [
-        '00000000',
-        '01000000',
-        '00000000',
-        '00001000',
-        '00000000',
-        '00000000',
-        '00000100',
-        '00000000',
-    ]
-    attacker = int(''.join(g_arr), 2)
-    res = knight_attack(attacker)
-    # print_bb(res)
-    assert res == 0x101432a02a150011
     
 def test_king_attack():
     g_arr = [
@@ -724,305 +681,6 @@ def test_pawn_moves():
     e5 = 0x800000000
     assert list(pawn_moves(pawns, own, other,
                Side.WHITE, PieceType.B_PAWN, e7, e5)) == [(512, 65536), (512, 131072), (512, 33554432), (16384, 2097152), (262144, 67108864), (4194304, 1073741824), (68719476736, 8796093022208), (68719476736, 17592186044416), (137438953472, 35184372088832), (36028797018963968, 9223372036854775808)]
-
-    # pawn_moves(pawns, own, other,
-    #            Side.WHITE, PieceType.B_PAWN, e7, e5)
-    # print(list(move for move in pawn_moves(pawns, own, other,
-    #            Side.WHITE, PieceType.B_PAWN, e7, e5)))
-    # for move in (move for move in pawn_moves(pawns, own, other,
-    #            Side.WHITE, PieceType.B_PAWN, e7, e5)):
-    #     print('From:')
-    #     print_bb(move[0])
-    #     print('To:')
-    #     print_bb(move[1])
-    #     print()
-
-def test_king_moves():
-    king_arr = [
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00001000',
-    ]
-    own_arr = [
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00001100',
-        '00011000',
-    ]
-    attacked_arr = [
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000100',
-        '00000100',
-    ]
-    king = int(''.join(king_arr), 2)
-    own = int(''.join(own_arr), 2)
-    attacked = int(''.join(attacked_arr), 2)
-   
-    # print(list(king_moves(king, own, attacked)))
-    assert list(king_moves(king, own, attacked)) == [(8, 4096)]
-    # for move in king_moves(king, own, attacked):
-    #     print('From:')
-    #     print_bb(move[0])
-    #     print('To:')
-    #     print_bb(move[1])
-    #     print()
-
-def test_king_castle_moves():
-    own_arr = [
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000111',
-        '10011001',
-    ]
-    other_arr = [
-        '10001001',
-        '11100011',
-        '00000000',
-        '00000000',
-        '00011111',
-        '00000000',
-        '00000000',
-        '00000000',
-    ]
-    attacked_arr = [
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00011111',
-        '00000000',
-    ]
-    own = int(''.join(own_arr), 2)
-    other = int(''.join(other_arr), 2)
-    attacked = int(''.join(attacked_arr), 2)
-    position_flags = Side.WHITE << 6
-
-    # king_castle_moves(own, other, attacked, position_flags)
-    # print("Castles:")
-    # print(list(king_castle_moves(own, other, attacked, position_flags)))
-
-    assert list(king_castle_moves(own, other, attacked, position_flags)) == [(8, 2)]
-
-    # for move in king_castle_moves(own, other, attacked, position_flags):
-    #     print('From:')
-    #     print_bb(move[0])
-    #     print('To:')
-    #     print_bb(move[1])
-    #     print()
-
-def test_king_castle_moves_2():
-    own_arr = [
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000111',
-        '10001001',
-    ]
-    other_arr = [
-        '10001001',
-        '11100011',
-        '00000000',
-        '00000000',
-        '00011111',
-        '00000000',
-        '00000000',
-        '00000000',
-    ]
-    attacked_arr = [
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00011111',
-        '00000000',
-    ]
-    own = int(''.join(own_arr), 2)
-    other = int(''.join(other_arr), 2)
-    attacked = int(''.join(attacked_arr), 2)
-    position_flags = Side.WHITE << 6
-
-    # king_castle_moves(own, other, attacked, position_flags)
-    # print(list(king_castle_moves(own, other, attacked, position_flags)))
-    assert list(king_castle_moves(own, other, attacked, position_flags)) == [(8, 2), (8, 32)]
-
-    # for move in king_castle_moves(own, other, attacked, position_flags):
-    #     print('From:')
-    #     print_bb(move[0])
-    #     print('To:')
-    #     print_bb(move[1])
-    #     print()
-
-def test_king_castle_moves_3():
-    own_arr = [
-        '10001001',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000111',
-        '00000000',
-    ]
-    other_arr = [
-        '00000000',
-        '11100011',
-        '00000000',
-        '00000000',
-        '00011111',
-        '00000000',
-        '00000000',
-        '10001001',
-    ]
-    attacked_arr = [
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00011111',
-        '00000000',
-    ]
-    own = int(''.join(own_arr), 2)
-    other = int(''.join(other_arr), 2)
-    attacked = int(''.join(attacked_arr), 2)
-    position_flags = Side.BLACK << 6
-
-    # king_castle_moves(own, other, attacked, position_flags)
-    # print(list(king_castle_moves(own, other, attacked, position_flags)))
-    assert list(king_castle_moves(own, other, attacked, position_flags)) == [(8<<56, 2<<56), (8<<56, 32<<56)]
-
-    # for move in king_castle_moves(own, other, attacked, position_flags):
-    #     print('From:')
-    #     print_bb(move[0])
-    #     print('To:')
-    #     print_bb(move[1])
-    #     print()
-
-def test_king_castle_moves_4():
-    own_arr = [
-        '10001001',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000111',
-        '00000000',
-    ]
-    other_arr = [
-        '00000000',
-        '11100011',
-        '00000000',
-        '00000000',
-        '00011111',
-        '00000000',
-        '00000000',
-        '10001001',
-    ]
-    attacked_arr = [
-        '00100001',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00011111',
-        '00000000',
-    ]
-    own = int(''.join(own_arr), 2)
-    other = int(''.join(other_arr), 2)
-    attacked = int(''.join(attacked_arr), 2)
-    position_flags = Side.BLACK << 6
-
-    # king_castle_moves(own, other, attacked, position_flags)
-    # print(list(king_castle_moves(own, other, attacked, position_flags)))
-    assert list(king_castle_moves(own, other, attacked, position_flags)) == [(8<<56, 2<<56)]
-
-    position_flags = Side.BLACK | 2
-    # print('here', (own, other, attacked, position_flags))
-    # print(list(king_castle_moves(own, other, attacked, position_flags)))
-    assert list(king_castle_moves(own, other, attacked, position_flags)) == []
-    
-    # for move in king_castle_moves(own, other, attacked, position_flags):
-    #     print('From:')
-    #     print_bb(move[0])
-    #     print('To:')
-    #     print_bb(move[1])
-    #     print()
-
-def test_king_castle_moves_5():
-    own_arr = [
-        '10001001',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000111',
-        '00000000',
-    ]
-    other_arr = [
-        '00000000',
-        '11100011',
-        '00000000',
-        '00000000',
-        '00011111',
-        '00000000',
-        '00000000',
-        '10001001',
-    ]
-    attacked_arr = [
-        '00100001',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00000000',
-        '00011111',
-        '00000000',
-    ]
-    own = int(''.join(own_arr), 2)
-    other = int(''.join(other_arr), 2)
-    attacked = int(''.join(attacked_arr), 2)
-    position_flags = Side.BLACK << 6
-
-    # king_castle_moves(own, other, attacked, position_flags)
-    # print(list(king_castle_moves(own, other, attacked, position_flags)))
-    assert list(king_castle_moves(own, other, attacked, position_flags)) == [(8<<56, 2<<56)]
-
-    # for move in king_castle_moves(own, other, attacked, position_flags):
-    #     print('From:')
-    #     print_bb(move[0])
-    #     print('To:')
-    #     print_bb(move[1])
-    #     print()
-
 if __name__ == "__main__":
     import sys
     from inspect import getmembers, isfunction
