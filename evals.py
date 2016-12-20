@@ -574,7 +574,7 @@ def discoveries_and_pins(position, side, target_piece_type=Pt.K):
     return (discoverers, pinned)
 
 def evaluate(position, debug=False):
-    if ' '.join(map(str, position.moves)) == "e2-e4 e7-e6 Qd1-f3":
+    if ' '.join(map(str, position.moves)) == "Ng4-e5 Nf3-e5 Nc6-e5 Rf1-e1 f7-f6 f2-f4":
         debug = True
     
     evals = defaultdict(lambda: [0, 0])
