@@ -15,13 +15,18 @@ class Evaluation():
         self.double_attacks = [0] * 2
 
     def init_attacks(self):
-        free = self.position.occupied[Side.WHITE] | self.position.occupied[Side.BLACK]
+        occ = self.position.occupied[Side.WHITE] | self.position.occupied[Side.BLACK]
         for side in [Side.WHITE, Side.BLACK]:
+            pinned = self.position.pinned[Pt.piece(Pt.K, side)]
+            king_us = self.position.pieces[Pt.piece(Pt.K, side)]
             for sq in range(64):
                 pt = self.position.squares[sq]
                 if pt == Pt.NULL: continue
                 if Pt.get_side(pt) == side:
-                    attacks = piece_attack(pt, 1 << sq, free)
+                    sq_bb = 1 << sq
+                    attacks = piece_attack(pt, sq_bb, occ)
+                    if pinned & sq_bb:
+                        attacks &= LINE_SQS[bit_position(king_us)][sq]
                     self.piece_attacks[pt] |= attacks
                     self.double_attacks[side] |= self.all_attacks[side] & attacks
                     self.all_attacks[side] |= attacks
@@ -449,13 +454,14 @@ class Evaluation():
 
         evaluations = [0, 0]
 
-        self.init_attacks()
+        # self.init_attacks()
         
         counts = piece_counts(position)
 
         POTENTIALS_BB = [self.all_pawn_attack_potentials(Side.WHITE), self.all_pawn_attack_potentials(Side.BLACK)]
         KING_ZONE_BB = [self.king_safety_squares(Side.WHITE), self.king_safety_squares(Side.BLACK)]
         
+        q_discoverers, q_pinned, q_sliding_checkers = self.position.get_discoveries_and_pins(Pt.Q)
         PINNED = self.position.pinned
         DISCOVERERS = self.position.discoverers
         
@@ -545,11 +551,11 @@ class Evaluation():
             if debug: evals["Discovery threats to King bonus"][side] += value
             evaluations[side] += value
 
-            value = count_bits(PINNED[Pt.piece(Pt.Q, side)]) * 10
+            value = count_bits(q_pinned[Pt.piece(Pt.Q, side)]) * 10
             if debug: evals["Pins to Queen penalty"][side] += value
             evaluations[side] -= value
 
-            value = count_bits(DISCOVERERS[Pt.piece(Pt.Q, side ^ 1)]) * 100
+            value = count_bits(q_discoverers[Pt.piece(Pt.Q, side ^ 1)]) * 100
             if debug: evals["Discovery threats to Queen bonus"][side] += value
             evaluations[side] += value
 

@@ -50,7 +50,7 @@ def test_king_move():
 def test_position_1():
     position = Position()
     moves = []
-    for move in list(position.get_move_candidates()):
+    for move in list(position.generate_moves_all()):
         moves.append([move.piece_type, move.from_sq, move.to_sq])
     # print([Move(move[0], move[1], move[2]) for move in moves])
     assert len(moves) == 20

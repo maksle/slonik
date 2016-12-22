@@ -27,7 +27,7 @@ class SearchInfo():
 History = namedtuple('History', ['move', 'value'])
 move_history = [[[None for i in range(64)] for i in range(13)] for i in range(2)]
 def update_history(side, move, value):
-    print(side, move, value)
+    # print(side, move, value)
     entry = move_history[side][move.piece_type][bit_position(move.to_sq)]
     adjusted_val = value
     if entry:
@@ -54,13 +54,7 @@ def make_move(move):
                 entry = move_history[i][j][k] 
                 if entry is not None:
                     move_history[i][j][k] = History(entry.move, entry.value)
-    # for side in move_history:
-    #     for pc in side:
-    #         for sq in pc:
-    #             if sq is not None:
-    #                 embed()
-    #                 sq.value /= 2
-                
+    
 tb_hits = 0
 node_count = 0
 killer_moves = defaultdict(list)
@@ -84,7 +78,7 @@ def add_killer(ply, move):
     killer_moves[ply].append(move)
 
 def depth_to_allowance(depth):
-    return int(math.ceil(.193006 * math.e ** (1.29829 * depth)) + depth * 3)
+    return int(math.ceil(.193006 * math.e ** (1.29829 * depth)))
 
 def allowance_to_depth(allowance):
     base = allowance / .193006
@@ -154,6 +148,9 @@ def search(node, si, ply, a, b, allowance, pv_node, cut_node):
     si[ply+1].pv.clear()
     
     pos_key = node.zobrist_hash ^ si[ply].excluded_move.compact()
+
+    if ' '.join(map(str,node.moves)) == "Ng4-e5 Nf3-e5 Nc6-e5 Rf1-e1":
+        print("debug")
     
     found = False
     found, tt_ind, tt_entry = tt.get_tt_index(pos_key)
@@ -233,11 +230,11 @@ def search(node, si, ply, a, b, allowance, pv_node, cut_node):
     counter = None
     if len(node.moves):
         counter = lookup_counter(node.side_to_move() ^ 1, node.moves[-1])
-    
+
+    #
+    # Move iteration
     for move in moves:
-        # if ' '.join(map(str,node.moves)) == "Ng4-e5 Nf3-e5 Nc6-e5 Rf1-e1 f7-f6 f2-f4" and str(move) == "f6-f5":
-        #     print("debug")
-    
+
         if counter is not None and counter.move == move:
             move.prob *= 1.25
         elif not improving:
@@ -286,6 +283,7 @@ def search(node, si, ply, a, b, allowance, pv_node, cut_node):
             # print("val", val, "rbeta", rbeta)
             
             if val < rbeta:
+                print("extending", node.moves, move)
                 extending = True
                 move.prob = 1
 
@@ -377,22 +375,27 @@ def search(node, si, ply, a, b, allowance, pv_node, cut_node):
     if move_count == 0:
         if si[ply].excluded_move != Move(PieceType.NULL): best_val = a
         # mate or statemate
-        elif in_check: best_val = MATE_VALUE
-        else: best_val = DRAW_VALUE
+        elif in_check:
+            best_val = MATE_VALUE
+            print("got mated", node.moves)
+        else:
+            best_val = DRAW_VALUE
     elif best_move:
-        if not best_move_is_capture:
+        if best_val > a_orig and not best_move_is_capture:
             bonus = int(allowance) ** 2
+            print("rewarding", node.side_to_move(), "for move", best_move, "with", bonus)
             update_history(node.side_to_move(), best_move, bonus)
             if prior_move and prior_move.piece_type != PieceType.NULL:
                 update_counter(node.side_to_move() ^ 1, prior_move, best_move)
                 # penalize prior quiet move that allowed this good move
                 if len(node.moves) > 1 and prior_move.piece_type != PieceType.NULL and not prior_move.move_type & MoveType.capture:
+                    print("penalizing", node.side_to_move() ^ 1, "for move", prior_move, "with", -(bonus + 4))
                     update_history(node.side_to_move() ^ 1, prior_move, -(bonus + 4))
-    elif allowance_to_depth(allowance) >= 2.5 and not best_move_is_capture:
-        assert(best_val <= a)
+    elif best_val <= a_orig and allowance_to_depth(allowance) >= 2.5 and not best_move_is_capture:
         # reward the quiet move that caused this node to fail low
         bonus = int(allowance) ** 2
         if len(node.moves) > 1 and prior_move.piece_type != PieceType.NULL and not prior_move.move_type & MoveType.capture:
+            print("rewarding", node.side_to_move() ^ 1, "for move", prior_move, "with", bonus)
             update_history(node.side_to_move() ^ 1, prior_move, bonus)
 
     # if best_val == LOW_BOUND:

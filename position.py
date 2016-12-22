@@ -485,11 +485,11 @@ class Position():
                 b = BETWEEN_SQS[sq][sniper_sq] & occ
                 if b and reset_ls1b(b) == 0:
                     if self.occupied[us] & b:
-                        pinned[Pt.piece(Pt.K, us)] |= b
+                        pinned[Pt.piece(target_piece_type, us)] |= b
                     elif self.occupied[them] & b:
-                        discoverers[Pt.piece(Pt.K, us)] |= b
+                        discoverers[Pt.piece(target_piece_type, us)] |= b
                 elif not b:
-                    sliding_checkers[Pt.piece(Pt.K, us)] |= sniper
+                    sliding_checkers[Pt.piece(target_piece_type, us)] |= sniper
 
         return discoverers, pinned, sliding_checkers
 
