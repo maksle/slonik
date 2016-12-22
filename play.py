@@ -71,87 +71,19 @@ def get_user_move(side):
     move = Move(piece_type, from_sq, to_sq)
     return move
 
-# pos = Position()
-
 pos = Position.from_fen("r1bqk2r/ppp2ppp/2n5/4P3/2Bp2n1/5N1P/PP1N1PP1/R2Q1RK1 b kq - 1 10")
-pos = Position.from_fen("r1bqk2r/ppp3pp/5p2/4n3/2Bp1P2/7P/PP1N2P1/R2QR1K1 b kq - 0 13")
-evaluate(pos, True)
 
-# import time 
-# now = time.time()
-# val, si = iterative_deepening(4.5, pos)
-# # val = search(SearchPos(pos), [None] * 64, 0, -10000000, 10000000, 1, .001, True)
-# # print("node count", node_count)
-# print(val / 200)
-# then = time.time()
-# print(then-now, 's')
-
-# pos = Position.from_fen("rnb1kbnr/pp1ppppp/2p5/q7/3PP3/8/PPP2PPP/RNBQKBNR w KQkq - 1 3")
-# pos.make_move(Move(PieceType.K,E1,E2))
-# evaluate(pos, True)
-
-# pos = Position.from_fen("rnbqkb1r/ppp1pp1p/5np1/3p4/3P4/2N2N2/PPP1PPPP/R1BQKB1R w KQkq - 0 4")
-# evaluate(pos, True)
-# pos.make_move(Move(PieceType.R,H1,G1))
-# print()
-# evaluate(pos, True)
-
-# pos = Position.from_fen("r1bqk2r/ppp2ppp/8/4n3/2Bp4/7P/PP1N1PP1/R2QR1K1 b kq - 1 12")
-# evaluate(pos, True)
-# print()
-# pos.make_move(Move(PieceType.Q + 6, D8, E7))
-# evaluate(pos, True)
-# print()
-# pos = Position.from_fen("r1bqk2r/ppp2ppp/8/4n3/2Bp4/7P/PP1N1PP1/R2QR1K1 b kq - 1 12")
-# pos.make_move(Move(PieceType.Q + 6, D8, F6))
-# evaluate(pos, True)
-# pos.make_move(Move(PieceType.N, D2, F3))
-# evaluate(pos, True)
-
-# pos = Position.from_fen("r1bqk2r/ppp2ppp/2n5/4P3/2Bp2n1/5N1P/PP1N1PP1/R2Q1RK1 b kq - 1 10")
-# pos = Position.from_fen("r1b1k2r/ppp2ppp/5q2/4n3/2Bp4/5N1P/PP3PP1/R2QR1K1 b kq - 3 13")
-# pos = Position.from_fen("r1bq1k1r/ppp3pp/5p2/4n3/2BN4/7P/PP3PP1/R2QR1K1 b - - 0 14")
-# pos = Position.from_fen("r1bqk2r/1pp2ppp/2n5/4P3/p1BN4/7P/PP1Q1PP1/3R1RK1 b kq - 0 15")
-
-# pos = Position.from_fen("r1bqk2r/1pp2ppp/8/4n3/p1BN4/7P/PP1Q1PP1/3RR1K1 b kq - 1 16")
-# evaluate(pos, True)
-
-#  after g5
-# pos = Position.from_fen("r1bqk2r/ppp2p1p/2n4n/4P1p1/2Bp4/5N1P/PP1N1PP1/R2QR1K1 w kq - 0 12")
-# evaluate(pos, True)
-# print()
-# # after 00
-# pos = Position.from_fen("r1bq1rk1/ppp2ppp/2n4n/4P3/2Bp4/5N1P/PP1N1PP1/R2QR1K1 w - - 4 12")
-# evaluate(pos, True)
-
-# pos = Position.from_fen("r1bqk2r/ppp2ppp/2n4n/4P3/2Bp4/5N1P/PP1N1PP1/R2QR1K1 b kq - 3 11")
-# pos = Position.from_fen("r1bqk2r/ppp2ppp/2n5/4P3/2Bp2n1/5N1P/PP1N1PP1/R2Q1RK1 b kq - 1 10")
-
-# f6 f4
+# ng4xe5 nf3xe5 nxe5 re1 f6 f4
 # pos = Position.from_fen("r1bqk2r/ppp3pp/5p2/4n3/2Bp1P2/7P/PP1N2P1/R2QR1K1 b kq - 0 13")
-# evaluate(pos, True)
+# Evaluation(pos).init_attacks().evaluate(True)
 
-# # f6 f4 f5 
-# pos = Position.from_fen("r1bqk2r/ppp3pp/8/4np2/2Bp1P2/7P/PP1N2P1/R2QR1K1 w kq - 0 14")
-# evaluate(pos, True)
-
-# # f6 f4 c6
-# pos = Position.from_fen("r1bqk2r/pp4pp/2p2p2/4n3/2Bp1P2/7P/PP1N2P1/R2QR1K1 w kq - 0 14")
-# evaluate(pos, True)
-
-# play(pos)
-
-#Ng4-e5 Re1
-# pos = Position.from_fen("r1bqk2r/ppp2ppp/2n5/4n3/2Bp4/5N1P/PP1N1PP1/R2QR1K1 b kq - 1 11")
-# evaluate(pos, True)
-
-#Ng4-e5 Ne5 Ne5 Re1
-# pos = Position.from_fen("r1bqk2r/ppp2ppp/8/4n3/2Bp4/7P/PP1N1PP1/R2QR1K1 b kq - 1 12")
-# evaluate(pos, True)
+# ng4xe5 nf3xe5 nxd5 re1 qe7
+# pos = Position.from_fen("r1b1k2r/ppp1qppp/8/4n3/2Bp4/7P/PP1N1PP1/R2QR1K1 w kq - 2 13")
+# Evaluation(pos).init_attacks().evaluate(True)
 
 # import time 
 # now = time.time()
-# val, si = iterative_deepening(4.5, pos)
+# val, si = iterative_deepening(5, pos)
 # # val = search(SearchPos(pos), [None] * 64, 0, -10000000, 10000000, 1, .001, True)
 # # print("node count", node_count)
 # print(val / 200)
@@ -164,7 +96,57 @@ evaluate(pos, True)
 # then = time.time()
 # print(then-now, end='s')
 
-# def do_test():
-#     pos = Position.from_fen("r1b1kb1r/1pp1pppp/p1n2n2/8/3P2q1/2NB1N2/PPP2PPP/R1BQR1K1 b kq - 1 8")
-#     pos.make_move(Move(PieceType.B_KNIGHT, C6, D4))
-#     return pos
+
+# old eval:
+# {'Bad Bishop Penalty B': [24, 16],
+#  'Castling readiness': [0, 0],
+#  'Center Attack Bonus': [30, 20],
+#  'Discovery threats to King bonus': [0, 0],
+#  'Discovery threats to Queen bonus': [0, 0],
+#  'King Attack': [43, 56],
+#  'Material ': [940, 1316],
+#  'Material B': [826, 826],
+#  'Material N': [764.75, 764.75],
+#  'Material Q': [2560.0, 2560.0],
+#  'Material R': [2519.2400000000002, 2519.2400000000002],
+#  'Minor Behind Pawn B': [0, 0],
+#  'Minor Behind Pawn N': [0, 0],
+#  'Minor Outpost B': [7, 7],
+#  'Minor Outpost N': [12, 12],
+#  'Mobility': [104, 41],
+#  'PSQT adjustments': [23, 31],
+#  'Pawn Potential Penalty': [14, 2],
+#  'Pawn Structure': [-250, -271],
+#  'Pawn cover': [12, 6],
+#  'Pins to King penalty': [0, 15],
+#  'Pins to Queen penalty': [0, 0],
+#  'Rook Position R': [45, 0],
+#  'Threats bonus': [150, 20]}
+# EVAL -127
+
+# new...
+# {'Bad Bishop Penalty B': [24, 16],
+#  'Castling readiness': [0, 0],
+#  'Center Attack Bonus': [30, 20],
+#  'Discovery threats to King bonus': [0, 0],
+#  'Discovery threats to Queen bonus': [0, 0],
+#  'King Attack': [79, 50],
+#  'Material ': [940, 1316],
+#  'Material B': [826, 826],
+#  'Material N': [764.75, 764.75],
+#  'Material Q': [2560.0, 2560.0],
+#  'Material R': [2519.2400000000002, 2519.2400000000002],
+#  'Minor Behind Pawn B': [0, 0],
+#  'Minor Behind Pawn N': [0, 0],
+#  'Minor Outpost B': [7, 7],
+#  'Minor Outpost N': [12, 12],
+#  'Mobility': [93, 53],
+#  'PSQT adjustments': [23, 31],
+#  'Pawn Potential Penalty': [14, 2],
+#  'Pawn Structure': [-250, -271],
+#  'Pawn cover': [12, 6],
+#  'Pins to King penalty': [0, 15],
+#  'Pins to Queen penalty': [0, 0],
+#  'Rook Position R': [45, 0],
+#  'Threats bonus': [150, 76]}
+# EVAL -164

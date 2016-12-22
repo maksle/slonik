@@ -46,26 +46,13 @@ def test_king_move():
     assert(preserved_castle_rights(position.position_flags, Side.WHITE) == False)
     assert(position.w_king_castle_ply == -1)
     assert(position.b_king_castle_ply == -1)
-
-def test_move_piece_attacks():
-    """Tests that piece attacks are correctly updated after piece move"""
-    position = Position()
-    position.make_move(Move(PieceType.W_PAWN, E2, E4))
-    assert(position.piece_attacks[PieceType.W_BISHOP] == 0x804020105a00)
-    
-    # position.make_move(Move(PieceType.B_KNIGHT, G8, F6))
-    # position.make_move(Move(PieceType.W_QUEEN, D1, E2))
-    # for pt in PieceType.piece_types(base_only=False):
-    #     print("pt is ", pt, HUMAN_PIECE[pt])
-    #     attacks = position.piece_attacks[pt]
-    #     print_bb(attacks)
-    #     print()
     
 def test_position_1():
     position = Position()
     moves = []
-    for move in list(position.generate_moves()):
+    for move in list(position.generate_moves_all()):
         moves.append([move.piece_type, move.from_sq, move.to_sq])
+    # print([Move(move[0], move[1], move[2]) for move in moves])
     assert len(moves) == 20
     
 def test_zobrist():
@@ -99,8 +86,16 @@ def test_promotion():
     position.make_move(move)
     assert(position.occupied[0] == 1441151897938428418)
     assert(position.squares[bit_position(F8)] == PieceType.Q)
-    assert(position.piece_attacks[PieceType.R] == 17011244761091413012)
-    assert(position.piece_attacks[PieceType.Q] == 1985618100175243261)
+    rook_attacks = 0
+    
+    for r in iterate_pieces(position.pieces[PieceType.R]):
+        att = rook_attack(r, position.occupied[0] | position.occupied[1])
+        rook_attacks |= att
+    assert(rook_attacks == 17011244761091413012)
+    queen_attacks = 0
+    for q in iterate_pieces(position.pieces[PieceType.Q]):
+        queen_attacks |= queen_attack(q, position.occupied[0] | position.occupied[1])
+    assert(queen_attacks == 1985618100175243261)
     assert(position.pieces[PieceType.Q] == (F8 | G1))
     assert(position.pieces[PieceType.P] == 0)
     position2 = Position.from_fen("3R1Q2/1k6/8/5R2/8/8/6K1/6Q1 b - - 1 3")
@@ -112,46 +107,12 @@ def test_promotion2():
     position.make_move(move)
     assert(position.occupied[1] == 144678138096386068)
     assert(position.squares[bit_position(F1)] == PieceType.B_QUEEN)
-    assert(position.piece_attacks[PieceType.B_QUEEN] == 18232691494221090331)
+    q_att = 0
+    for q in iterate_pieces(position.pieces[PieceType.B_QUEEN]):
+        q_att |= queen_attack(q, position.occupied[0] | position.occupied[1])
+    assert(q_att == 18232691494221090331)
     assert(position.pieces[PieceType.B_QUEEN] == (F1 | G8))
 
-def test_fix_attacks_for_pins():
-    pos = Position.from_fen("r1bqk2r/1pp2ppp/8/4n3/p1BN4/7P/PP1Q1PP1/3RR1K1 b kq - 1 16")
-    before = pos.attacks[1]
-    before_w = pos.attacks[0]
-    
-    PINNED = [[0 for bt in range(7)] for i in range(2)]
-    for side in [Side.WHITE, Side.BLACK]:
-        for bt in [Pt.K, Pt.Q]:
-            discoverers, pinned = discoveries_and_pins(pos, side, bt)
-            PINNED[side][bt] = pinned
-    
-    fix_attacks(pos, Side.BLACK, PINNED)
-    after = pos.attacks[1]
-    after_w = pos.attacks[0]
-    
-    assert(before ^ after == 538181632)
-    assert(before_w == after_w)
-
-def test_fix_attacks_for_pins_2():
-    pos = Position.from_fen("r1bqk2r/1pp2ppp/8/4n3/p1BN4/7P/PP1Q1PP1/3RR1K1 b kq - 1 16")
-    before = pos.attacks[1]
-    before_w = pos.attacks[0]
-    
-    PINNED = [[0 for bt in range(7)] for i in range(2)]
-    for side in [Side.WHITE, Side.BLACK]:
-        for bt in [Pt.K, Pt.Q]:
-            discoverers, pinned = discoveries_and_pins(pos, side, bt)
-            PINNED[side][bt] = pinned
-    
-    fix_attacks(pos, Side.WHITE, PINNED)
-    fix_attacks(pos, Side.BLACK, PINNED)
-    after = pos.attacks[1]
-    after_w = pos.attacks[0]
-    
-    assert(before ^ after == 538181632)
-    assert(before_w == after_w)
-    
 if __name__ == "__main__":
     import sys
     from inspect import getmembers, isfunction

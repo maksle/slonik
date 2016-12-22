@@ -1,0 +1,3 @@
+change sort to assign prob based on bucket (see>=0, checks, other), and apply gaussian to other only
+play engine against itself to determine if change is + or -
+add pin to queen to evals

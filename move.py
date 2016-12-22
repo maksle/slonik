@@ -5,10 +5,11 @@ from bb import *
 class MoveType():
     regular=0
     check=1
-    promo=2
+    capture=2
+    promo=4
 
 class Move():
-    def __init__(self, piece_type, from_sq=0, to_sq=0, move_type=None, promo_piece=None, position=None, see_score=None, is_capture=False):
+    def __init__(self, piece_type, from_sq=0, to_sq=0, move_type=None, promo_piece=None, position=None, see_score=None):
         self.piece_type = piece_type
         self.from_sq = from_sq
         self.to_sq = to_sq
@@ -16,14 +17,14 @@ class Move():
         self.promo_piece = promo_piece
         self.position = position
         self.see_score = see_score
-        self.is_capture = is_capture
-    
+        
     def __str__(self):
         if self.piece_type is None or self.piece_type == PieceType.NULL:
             return "NULL"
         return HUMAN_PIECE[self.piece_type] \
             + HUMAN_BOARD_INV[self.from_sq] \
             + "-" + HUMAN_BOARD_INV[self.to_sq] \
+            + ("=" + HUMAN_PIECE[self.promo_piece] if self.move_type & MoveType.promo else "") \
             + ("+" if self.move_type == MoveType.check else "")
     
     def __repr__(self):

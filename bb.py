@@ -4,6 +4,9 @@ piece attacks"""
 from print_bb import *
 from side import Side
 from piece_type import PieceType
+import gmpy2
+
+Pt = PieceType
 
 A_FILE = 0x8080808080808080
 B_FILE = 0x4040404040404040
@@ -253,22 +256,22 @@ def sw_attack(g, p):
     g |= pr2 & g >> 28
     return g >> 7 & NOT_H_FILE
 
-def rook_attack(g, p):
+def rook_attack_calc(g, p):
     return north_attack(g, p) \
         | east_attack(g, p) \
         | south_attack(g, p) \
         | west_attack(g, p)
 
-def queen_attack(g, p):
-    return rook_attack(g, p) | bishop_attack(g, p)
+def queen_attack_calc(g, p):
+    return rook_attack_calc(g, p) | bishop_attack_calc(g, p)
 
-def bishop_attack(g, p):
+def bishop_attack_calc(g, p):
     return nw_attack(g, p) \
         | ne_attack(g, p) \
         | se_attack(g, p) \
         | sw_attack(g, p)
 
-def knight_attack(g):
+def knight_attack_calc(g):
     attacks = ((g << 6) & NOT_A_FILE & NOT_B_FILE) \
         | ((g >> 10) & NOT_A_FILE & NOT_B_FILE) \
         | ((g >> 17) & NOT_A_FILE) \
@@ -279,7 +282,7 @@ def knight_attack(g):
         | ((g << 17) & NOT_H_FILE)
     return attacks & ((1 << 64) - 1)
 
-def king_attack(g):
+def king_attack_calc(g):
     return ((g << 9) & NOT_H_FILE) \
         | g << 8 \
         | ((g << 7) & NOT_A_FILE) \
@@ -289,7 +292,7 @@ def king_attack(g):
         | g >> 8 \
         | ((g >> 9) & NOT_A_FILE)
 
-def pawn_attack(pawn, side_to_move):
+def pawn_attack_calc(pawn, side_to_move):
     if side_to_move == Side.WHITE:
         return ((pawn << 9) & NOT_H_FILE) \
             | ((pawn << 7) & NOT_A_FILE)
@@ -297,6 +300,21 @@ def pawn_attack(pawn, side_to_move):
         return ((pawn >> 9) & NOT_A_FILE) \
             | ((pawn >> 7) & NOT_H_FILE)
 
+def piece_attack(pt, sq, occupied):
+    bt = Pt.base_type(pt)
+    if bt == Pt.P:
+        return pawn_attack(sq, Pt.get_side(pt))
+    elif bt == Pt.N:
+        return knight_attack(sq)
+    elif bt == Pt.B:
+        return bishop_attack(sq, occupied)
+    elif bt == Pt.R:
+        return rook_attack(sq, occupied)
+    elif bt == Pt.Q:
+        return bishop_attack(sq, occupied) | rook_attack(sq, occupied)
+    elif bt == Pt.K:
+        return king_attack(sq)
+    
 def exclude_own(attacks, own):
     not_own = own ^ FULL_BOARD
     return attacks & not_own
@@ -315,15 +333,18 @@ def iterate_pieces(b):
         yield ls1b(board)
         board = reset_ls1b(board)
 
+# def count_bits(b):
+#     n = 0
+#     while b > 0:
+#         n = n + 1
+#         b = reset_ls1b(b)
+#     return n
+
+# def count_bits(b):
+#     return bin(b).count("1")
+
 def count_bits(b):
-    n = 0
-    while b > 0:
-        n = n + 1
-        b = reset_ls1b(b)
-    return n
-    
-def mask(b, mask_val):
-    return b & (mask_val ^ FULL_BOARD)
+    return gmpy2.popcount(b)
 
 def en_pessant_sq(side_to_move, last_move_piece, from_sq, to_sq):
     if side_to_move == Side.WHITE \
@@ -341,8 +362,25 @@ def en_pessant_sq(side_to_move, last_move_piece, from_sq, to_sq):
 def invert(b):
     return b ^ FULL_BOARD
 
+# de_bruijn_bitpos = [
+#     63,  0, 58,  1, 59, 47, 53,  2,
+#     60, 39, 48, 27, 54, 33, 42,  3,
+#     61, 51, 37, 40, 49, 18, 28, 20,
+#     55, 30, 34, 11, 43, 14, 22,  4,
+#     62, 57, 46, 52, 38, 26, 32, 41,
+#     50, 36, 17, 19, 29, 10, 13, 21,
+#     56, 45, 25, 31, 35, 16,  9, 12,
+#     44, 24, 15,  8, 23,  7,  6,  5
+# ]
+# def bit_position(square):
+#     return de_bruijn_bitpos[((ls1b(square) * 0x07edd5e59a4e28c2) & FULL_BOARD) >> 58]
+
+# surprisingly this is faster than using the de bruijn sequence
+# def bit_position(square):
+#     return len(bin(square))-3
+
 def bit_position(square):
-    return len(bin(square))-3
+    return gmpy2.bit_scan1(square)
 
 def shift_north(n, side):
     if side == Side.WHITE:
@@ -402,21 +440,52 @@ def get_rank(n, side=None):
     else:
         return 7 - rank
 
+
+# MAGIC BITBOARDS helpers
+def edge_mask(sq):
+    edges = 0
+    rk = sq // 8
+    fl = 7 - (sq % 8)
+    if not rk == 0: edges |= RANKS[0]
+    if not rk == 7: edges |= RANKS[7]
+    if not fl == 0: edges |= FILES[0]
+    if not fl == 7: edges |= FILES[7]
+    return edges
+
+def rook_mask(sq):
+    attacks = PSEUDO_ATTACKS[PieceType.R][sq]
+    edges = edge_mask(sq)
+    return attacks & (FULL_BOARD ^ edges)
+
+def bishop_mask(sq):
+    attacks = PSEUDO_ATTACKS[PieceType.B][sq]
+    edges = edge_mask(sq)
+    return attacks & (FULL_BOARD ^ edges)
+
+    
 BETWEEN_SQS = [[0] * 65 for i in range(64)]
 LINE_SQS = [[0] * 65 for i in range(64)]
 
 PSEUDO_ATTACKS = [[0] * 64 for i in range(7)]
+MAGIC_MASKS = [[0] * 64 for i in range(7)]
 for sq_ind in range(64):
     for pt in [PieceType.B, PieceType.R]:
         sq = 1 << sq_ind
-        attack_fn = bishop_attack if pt == PieceType.B else rook_attack
-        PSEUDO_ATTACKS[pt][sq_ind] = attack_fn(sq, FULL_BOARD)
-        PSEUDO_ATTACKS[PieceType.Q][sq_ind] |= attack_fn(sq, FULL_BOARD)
+
+        attack_fn = bishop_attack_calc if pt == PieceType.B else rook_attack_calc
+        attacks = attack_fn(sq, FULL_BOARD)
+        PSEUDO_ATTACKS[pt][sq_ind] = attacks
+        PSEUDO_ATTACKS[PieceType.Q][sq_ind] |= attacks
+
+        mask_fn = bishop_mask if pt == PieceType.B else rook_mask
+        mask = mask_fn(sq_ind)
+        MAGIC_MASKS[pt][sq_ind] = mask
+        MAGIC_MASKS[PieceType.Q][sq_ind] |= mask
 
 for sq_ind in range(64):
     for sq2_ind in range(64):
         for pt in [PieceType.B, PieceType.R]:
-            attack_fn = bishop_attack if pt == PieceType.B else rook_attack
+            attack_fn = bishop_attack_calc if pt == PieceType.B else rook_attack_calc
             sq = 1 << sq_ind
             sq2 = 1 << sq2_ind
             if PSEUDO_ATTACKS[pt][sq_ind] & sq2 == 0:
@@ -431,3 +500,235 @@ for sq_ind in range(64):
         f = 7 - (sq_ind % 8)
         last_sq = FILES[f] & RANKS[last_rank]
         AHEAD_SQS[side][sq_ind] = BETWEEN_SQS[sq_ind][bit_position(last_sq)] | last_sq
+
+ATTACKS = [[0] * 64 for i in range(7)]
+for pt in [Pt.N, Pt.K]:
+    for sq in range(64):
+        if pt == Pt.N: ATTACKS[pt][sq] = knight_attack_calc(1 << sq)
+        elif pt == Pt.K: ATTACKS[pt][sq] = king_attack_calc(1 << sq)
+
+def knight_attack(sq):
+    return ATTACKS[Pt.N][bit_position(sq)]
+
+def king_attack(sq):
+    return ATTACKS[Pt.K][bit_position(sq)]
+
+def pawn_attack(sq, side):
+    return pawn_attack_calc(sq, side)
+
+def bishop_attack(sq, occupied):
+    bitpos = bit_position(sq)
+    occ = occupied & MAGIC_MASKS[PieceType.B][bitpos]
+    occ *= MAGIC_NUMBER[PieceType.B][bitpos]
+    occ &= FULL_BOARD
+    hash_index = occ >> (64 - MASK_BIT_LENGTH[PieceType.B][bitpos])
+    return MAGIC_ATTACKS[PieceType.B][bitpos][hash_index]
+
+def rook_attack(sq, occupied):
+    bitpos = bit_position(sq)
+    occ = occupied & MAGIC_MASKS[PieceType.R][bitpos]
+    occ *= MAGIC_NUMBER[PieceType.R][bitpos]
+    occ &= FULL_BOARD
+    hash_index = occ >> (64 - MASK_BIT_LENGTH[PieceType.R][bitpos])
+    return MAGIC_ATTACKS[PieceType.R][bitpos][hash_index]
+
+def queen_attack(sq, occupied):
+    return bishop_attack(sq, occupied) | rook_attack(sq, occupied)
+
+MASK_BIT_LENGTH = [[] for i in range(7)]
+MASK_BIT_LENGTH[PieceType.B] = [
+  6, 5, 5, 5, 5, 5, 5, 6,
+  5, 5, 5, 5, 5, 5, 5, 5,
+  5, 5, 7, 7, 7, 7, 5, 5,
+  5, 5, 7, 9, 9, 7, 5, 5,
+  5, 5, 7, 9, 9, 7, 5, 5,
+  5, 5, 7, 7, 7, 7, 5, 5,
+  5, 5, 5, 5, 5, 5, 5, 5,
+  6, 5, 5, 5, 5, 5, 5, 6
+];
+
+MASK_BIT_LENGTH[PieceType.R] = [
+  12, 11, 11, 11, 11, 11, 11, 12,
+  11, 10, 10, 10, 10, 10, 10, 11,
+  11, 10, 10, 10, 10, 10, 10, 11,
+  11, 10, 10, 10, 10, 10, 10, 11,
+  11, 10, 10, 10, 10, 10, 10, 11,
+  11, 10, 10, 10, 10, 10, 10, 11,
+  11, 10, 10, 10, 10, 10, 10, 11,
+  12, 11, 11, 11, 11, 11, 11, 12
+];
+
+MAGIC_ATTACKS = [[] for i in range(7)]
+MAGIC_ATTACKS[PieceType.B] = [[None] * 512 for i in range(64)]
+MAGIC_ATTACKS[PieceType.R] = [[None] * 4096 for i in range(64)]
+
+def index_to_occupation(index, bits, mask):
+    m = mask
+    result = 0
+    for i in range(bits):
+        j = ls1b(m)
+        m = reset_ls1b(m)
+        if index & (1 << i):
+            result |= j
+    return result
+            
+MAGIC_NUMBER = [[] for i in range(7)]
+MAGIC_NUMBER[PieceType.B] = [
+    9304441232522551809,
+    5197197952615010356,
+    290631748237168640,
+    1262155822310490112,
+    9264203776884064257,
+    4684385864763049009,
+    2313025036383944704,
+    1443478456087938120,
+    
+    774090679976016,
+    1306430928654044196,
+    9223522687463227393,
+    153764521465348226,
+    3458768981727394832,
+    4791866292238811168,
+    18019449408331792,
+    594476269954934304,
+    
+    649675308061426176,
+    9225626087636239376,
+    9225624437976732160,
+    2348631614491214848,
+    4612820716585222404,
+    1163336218600539908,
+    4611967502002823172,
+    4611971893606649872,
+    
+    4522497571819584,
+    11819710416710353408,
+    110340390449709568,
+    586594127551402240,
+    3476924047873318916,
+    144258128899737088,
+    1173198708800522768,
+    3171099286652911910,
+    
+    1154082898125521664,
+    4612814125981503490,
+    21392253016736776,
+    167160127293952,
+    4917934366771970304,
+    4748069518046184193,
+    563517258269696,
+    1171227274402468352,
+    
+    466228367853600,
+    1153486723179741744,
+    334354681235464,
+    37154980429432832,
+    9259436156364260608,
+    6757632831390208,
+    3794354570994385412,
+    9224506751188523264,
+    
+    74810278297600,
+    76708530406555656,
+    5800637426016723456,
+    18172728729665601,
+    2267776679936,
+    70403120890912,
+    90090701441875968,
+    2603661418834214928,
+    
+    4641542200153342988,
+    73184600445159570,
+    653021948120926336,
+    703687443908608,
+    110762613381923332,
+    4665738048838314020,
+    3553759087100480,
+    582759550845696
+]
+
+MAGIC_NUMBER[PieceType.R] = [
+    9295448606603477248,
+    9241387810290683904,
+    10520418350834692225,
+    72092797872636160,
+    4755810075845592096,
+    144119594713360417,
+    288241373550806032,
+    16573247456075124868,
+
+    2460232036091172897,
+    1196286367813636,
+    74450682706399232,
+    140806208356480,
+    5764889067082770432,
+    5765170799975600136,
+    562984346723353,
+    1459729231436079362,
+
+    4629842803698974720,
+    4612289651384976258,
+    1481684827431239808,
+    364792119866427392,
+    504544445576775680,
+    9261793921032258560,
+    55173493501081616,
+    1161196429135478852,
+
+    2322170705379616,
+    35185445851136,
+    2312633599472435330,
+    563233421811728,
+    15024012757110360064,
+    4901042846389370884,
+    31527482315244872,
+    10151799449209988,
+
+    105828136780165,
+    864726313921941504,
+    2324210488411427073,
+    4611695914585690116,
+    2310351013338417152,
+    577023738864734340,
+    649659673972050192,
+    4611688922932576516,
+
+    4646811287846914,
+    76562616910168064,
+    9007341006553152,
+    4900479551766921242,
+    585542752725434384,
+    2486057380769956112,
+    9223427012503339264,
+    1134981632360452,
+
+    7068963674293174784,
+    1171287747375138880,
+    13511366354670720,
+    671040845612404864,
+    720858892842566912,
+    283676147712128,
+    4684307116537156096,
+    180322144682496,
+
+    19804136227362,
+    282420943265921,
+    141021226801666,
+    3459046126504641929,
+    576742846327162881,
+    9289233718052865,
+    864832974180356108,
+    145294587333762
+]
+
+print("Initializing Magics")
+for pt in [PieceType.B, PieceType.R]:
+    for sq, magic in enumerate(MAGIC_NUMBER[pt]):
+        mask = MAGIC_MASKS[pt][sq]
+        bits = MASK_BIT_LENGTH[pt][sq]
+        for index in range(1 << bits):
+            occupation = index_to_occupation(index, bits, mask)
+            free = invert(occupation) # calc funcs take free, not occupied
+            index_hash = ((occupation * magic) & FULL_BOARD) >> (64 - bits)
+            attack_fn = bishop_attack_calc if pt == PieceType.B else rook_attack_calc
+            MAGIC_ATTACKS[pt][sq][index_hash] = attack_fn(1 << sq, free)
