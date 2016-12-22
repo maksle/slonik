@@ -463,6 +463,8 @@ class Evaluation():
         
         q_discoverers, q_pinned, q_sliding_checkers = self.position.get_discoveries_and_pins(Pt.Q)
         PINNED = self.position.pinned
+        PINNED[Pt.piece(Pt.Q, Side.WHITE)] = q_pinned[Pt.piece(Pt.Q, Side.WHITE)]
+        PINNED[Pt.piece(Pt.Q, Side.BLACK)] = q_pinned[Pt.piece(Pt.Q, Side.BLACK)]
         DISCOVERERS = self.position.discoverers
         
         for side in [Side.WHITE, Side.BLACK]:

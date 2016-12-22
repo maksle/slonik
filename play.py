@@ -83,7 +83,7 @@ pos = Position.from_fen("r1bqk2r/ppp2ppp/2n5/4P3/2Bp2n1/5N1P/PP1N1PP1/R2Q1RK1 b 
 
 import time 
 now = time.time()
-val, si = iterative_deepening(4, pos)
+val, si = iterative_deepening(5, pos)
 # val = search(SearchPos(pos), [None] * 64, 0, -10000000, 10000000, 1, .001, True)
 # print("node count", node_count)
 print(val / 200)

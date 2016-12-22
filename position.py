@@ -470,26 +470,28 @@ class Position():
         for side in [Side.WHITE, Side.BLACK]:
             us = side
             them = side ^ 1
+
             sq = bit_position(self.pieces[Pt.piece(target_piece_type, us)])
             
-            occ = self.occupied[us] | self.occupied[them]
-            
-            diag_snipers = self.pieces[Pt.piece(Pt.B, them)] | self.pieces[Pt.piece(Pt.Q, them)]
-            diag_snipers &= PSEUDO_ATTACKS[PieceType.B][sq]
+            if sq and sq > 0:
+                occ = self.occupied[us] | self.occupied[them]
 
-            line_snipers = self.pieces[Pt.piece(Pt.R, them)] | self.pieces[Pt.piece(Pt.Q, them)]
-            line_snipers &= PSEUDO_ATTACKS[PieceType.R][sq]
-            
-            for sniper in iterate_pieces(diag_snipers | line_snipers):
-                sniper_sq = bit_position(sniper)
-                b = BETWEEN_SQS[sq][sniper_sq] & occ
-                if b and reset_ls1b(b) == 0:
-                    if self.occupied[us] & b:
-                        pinned[Pt.piece(target_piece_type, us)] |= b
-                    elif self.occupied[them] & b:
-                        discoverers[Pt.piece(target_piece_type, us)] |= b
-                elif not b:
-                    sliding_checkers[Pt.piece(target_piece_type, us)] |= sniper
+                diag_snipers = self.pieces[Pt.piece(Pt.B, them)] | self.pieces[Pt.piece(Pt.Q, them)]
+                diag_snipers &= PSEUDO_ATTACKS[PieceType.B][sq]
+
+                line_snipers = self.pieces[Pt.piece(Pt.R, them)] | self.pieces[Pt.piece(Pt.Q, them)]
+                line_snipers &= PSEUDO_ATTACKS[PieceType.R][sq]
+
+                for sniper in iterate_pieces(diag_snipers | line_snipers):
+                    sniper_sq = bit_position(sniper)
+                    b = BETWEEN_SQS[sq][sniper_sq] & occ
+                    if b and reset_ls1b(b) == 0:
+                        if self.occupied[us] & b:
+                            pinned[Pt.piece(target_piece_type, us)] |= b
+                        elif self.occupied[them] & b:
+                            discoverers[Pt.piece(target_piece_type, us)] |= b
+                    elif not b:
+                        sliding_checkers[Pt.piece(target_piece_type, us)] |= sniper
 
         return discoverers, pinned, sliding_checkers
 
