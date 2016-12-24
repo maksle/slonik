@@ -81,14 +81,14 @@ pos = Position.from_fen("r1bqk2r/ppp2ppp/2n5/4P3/2Bp2n1/5N1P/PP1N1PP1/R2Q1RK1 b 
 # pos = Position.from_fen("r1b1k2r/ppp1qppp/8/4n3/2Bp4/7P/PP1N1PP1/R2QR1K1 w kq - 2 13")
 # Evaluation(pos).init_attacks().evaluate(True)
 
-# import time 
-# now = time.time()
-# val, si = iterative_deepening(5, pos)
-# # val = search(SearchPos(pos), [None] * 64, 0, -10000000, 10000000, 1, .001, True)
-# # print("node count", node_count)
-# print(val / 200)
-# then = time.time()
-# print(then-now, 's')
+import time 
+now = time.time()
+val, si = iterative_deepening(3.5, pos)
+# val = search(SearchPos(pos), [None] * 64, 0, -10000000, 10000000, 1, .001, True)
+# print("node count", node_count)
+print(val / 200)
+then = time.time()
+print(then-now, 's')
 
 # import time
 # now = time.time()

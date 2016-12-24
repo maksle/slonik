@@ -103,26 +103,37 @@ def iterative_deepening(target_depth, node, si=None):
         alpha, beta = val - fail_factor, val + fail_factor
         
         print ("\n>> depth:", depth, ", allowance:", allowance)
+
+        pv = []
         
         now = time.time()
         while not finished:
             val = search(node, si, 0, alpha, beta, allowance, True, False)
-
+            
             if val < alpha:
                 print("faillow", "a", alpha, "b", beta, "val", val, "factor", fail_factor)
             if val > beta:
                 print("failhigh", "a", alpha, "b", beta, "val", val, "factor", fail_factor)
-
+                
             if val <= alpha:
                 alpha = val - fail_factor
                 # beta = (alpha + beta) // 2
                 fail_factor += fail_factor // 3 + 6
+                if len(pv) > 0: # fail low after fail high
+                    finshed = True
+                    print("ACCEPTING FAIL-HIGH PV", pv)
+                    si[0].pv = pv[:]
+                else:
+                    pv = []
             elif val >= beta:
                 # alpha = (alpha + beta) / 2
                 beta = val + fail_factor
                 fail_factor += fail_factor // 3 + 6
+                pv = si[0].pv[:]
             else:
                 finished = True
+                pv = si[0].pv[:]
+            print("PV so far:", pv)
         then = time.time()
         print(then-now, 's')
     
@@ -149,8 +160,8 @@ def search(node, si, ply, a, b, allowance, pv_node, cut_node):
     
     pos_key = node.zobrist_hash ^ si[ply].excluded_move.compact()
 
-    if ' '.join(map(str,node.moves)) == "Ng4-e5 Nf3-e5 Nc6-e5 Rf1-e1":
-        print("debug")
+    # if ' '.join(map(str,node.moves)) == "Ng4-e5 Nf3-e5 Nc6-e5 Rf1-e1":
+    #     print("debug")
     
     found = False
     found, tt_ind, tt_entry = tt.get_tt_index(pos_key)
@@ -345,14 +356,15 @@ def search(node, si, ply, a, b, allowance, pv_node, cut_node):
             val = -search(child, si, ply+1, -b, -a, int(allowance * move.prob), True, False)
 
         if val > best_val:
+            prev_best = best_move
             best_val, best_move = val, move
             # if move_count > 5:
             #     print("movecount", move_count, move, list(map(str,node.moves)))
             best_move_is_capture = is_capture
             if pv_node:
-                print("local best move", node.moves, move, "val:", val, "alpha", a_orig, "beta", b)
-                # if is_root:
-                #     print("new best move", move, "val:", val, "alpha", a_orig, "beta", b)
+                # print("local best move", node.moves, move, "val:", val, "alpha", a_orig, "beta", b)
+                if is_root:
+                    print("new best move", move, "over", prev_best, "val:", val, "alpha", a_orig, "beta", b)
                 if val > a:
                     # next_move_prob = None
                     si[ply].pv = [move] + si[ply+1].pv
@@ -364,12 +376,14 @@ def search(node, si, ply, a, b, allowance, pv_node, cut_node):
         a = max(a, val)
         # print(node.moves, move)
         if a >= b:
-            print("fail-high", node.moves, "\"", best_move, "\"", val, a_orig, b)
+            if pv_node:
+                print("fail-high", node.moves, "\"", best_move, "\"", val, a_orig, b)
             if best_move: 
                 add_killer(ply, best_move)
             break
         elif a <= a_orig:
-            print("fail-low", node.moves, "\"", move, "\"", val, a_orig, b)
+            if pv_node:
+                print("fail-low", node.moves, "\"", move, "\"", val, a_orig, b)
         
     prior_move = node.last_move()
     if move_count == 0:
@@ -383,19 +397,19 @@ def search(node, si, ply, a, b, allowance, pv_node, cut_node):
     elif best_move:
         if best_val > a_orig and not best_move_is_capture:
             bonus = int(allowance) ** 2
-            print("rewarding", node.side_to_move(), "for move", best_move, "with", bonus)
+            # print("rewarding", node.side_to_move(), "for move", best_move, "with", bonus)
             update_history(node.side_to_move(), best_move, bonus)
             if prior_move and prior_move.piece_type != PieceType.NULL:
                 update_counter(node.side_to_move() ^ 1, prior_move, best_move)
                 # penalize prior quiet move that allowed this good move
                 if len(node.moves) > 1 and prior_move.piece_type != PieceType.NULL and not prior_move.move_type & MoveType.capture:
-                    print("penalizing", node.side_to_move() ^ 1, "for move", prior_move, "with", -(bonus + 4))
+                    # print("penalizing", node.side_to_move() ^ 1, "for move", prior_move, "with", -(bonus + 4))
                     update_history(node.side_to_move() ^ 1, prior_move, -(bonus + 4))
     elif best_val <= a_orig and allowance_to_depth(allowance) >= 2.5 and not best_move_is_capture:
         # reward the quiet move that caused this node to fail low
         bonus = int(allowance) ** 2
         if len(node.moves) > 1 and prior_move.piece_type != PieceType.NULL and not prior_move.move_type & MoveType.capture:
-            print("rewarding", node.side_to_move() ^ 1, "for move", prior_move, "with", bonus)
+            # print("rewarding", node.side_to_move() ^ 1, "for move", prior_move, "with", bonus)
             update_history(node.side_to_move() ^ 1, prior_move, bonus)
 
     # if best_val == LOW_BOUND:
@@ -446,6 +460,7 @@ def qsearch(node, si, ply, alpha, beta, allowance, pv_node, in_check):
             if alpha >= beta:
                 update_ply_stat(ply)
                 # print(node.moves, tt_entry.value)
+                # print(node.moves, "qsearch ttvalue", tt_entry.value)
                 return tt_entry.value
     
     # to stop search of endless checks, including repetition checks
@@ -478,7 +493,8 @@ def qsearch(node, si, ply, alpha, beta, allowance, pv_node, in_check):
                                         Move(PieceType.NULL, None, None).compact(),
                                         tt.BoundType.LO_BOUND, best_value, allowance, static_eval))
             update_ply_stat(ply)
-            # print(node.moves, best_value)
+            if pv_node:
+                print("qs stand pat", node.moves, best_value, ">=", beta)
             return best_value
 
         if pv_node and best_value > alpha:
@@ -532,6 +548,7 @@ def qsearch(node, si, ply, alpha, beta, allowance, pv_node, in_check):
             if score > alpha:
                 if pv_node and score < beta:
                     alpha = score
+                    print("qs upgrade", node.moves, move, score, ">", best_move)
                     best_move = move
                     si[ply].pv = [move] + si[ply+1].pv
                     si[ply+1].pv = []
@@ -541,7 +558,8 @@ def qsearch(node, si, ply, alpha, beta, allowance, pv_node, in_check):
                         tt.save_tt_entry(tt.TTEntry(node.zobrist_hash, move.compact(),
                                                     tt.BoundType.LO_BOUND, best_value, allowance, static_eval))
                         update_ply_stat(ply)
-                        # print(node.moves, score)
+                        if pv_node:
+                            print("qs beta-cutoff", node.moves, move, score, ">=", beta)
                         return score
 
         # print("q", node.moves, move)
@@ -623,63 +641,66 @@ def sort_moves(moves, position, si, ply, quiescence):
         return (see_val, hist_val, psqt_val)
     
     for move in moves:
-        if quiescence:
-            if move.move_type & MoveType.capture:
-                captures.append(move)
-            else:
-                other_moves.append(move)
+        if move in find_pv(position):
+            from_pv.append(move)
+        elif is_capture(move.to_sq, other):
+            captures.append(move)
+        elif move.move_type == MoveType.check:
+            checks.append(move)
+        elif counter and counter.move == move:
+            counters.append(move)
+        elif move in killer_moves[ply]:
+            killers.append(move)
         else:
-            if move in find_pv(position):
-                from_pv.append(move)
-            elif is_capture(move.to_sq, other):
-                captures.append(move)
-            elif move.move_type == MoveType.check:
-                checks.append(move)
-            elif counter and counter.move == move:
-                counters.append(move)
-            elif move in killer_moves[ply]:
-                killers.append(move)
-            else:
-                other_moves.append(move)
-                
-    captures = sorted(captures, key=sort_crit, reverse=True)
+            other_moves.append(move)
+
     checks = sorted(checks, key=sort_crit, reverse=True)
-    captures_see = map(lambda c: (sort_crit(c), c), captures)
+    
+    captures_see = map(lambda c: (sort_crit(c, en_prise_sort=True), c), captures)
     sorted_cap_see = sorted(captures_see, key=itemgetter(0), reverse=True)
+
     other_moves.sort(key=lambda m: sort_crit(m, en_prise_sort=True), reverse=True)
     
-    if quiescence:
-        result = list(itertools.chain(map(itemgetter(1), sorted_cap_see), captures, other_moves))
-    else:
-        cap_see_gt0 = []
-        cap_see_lt0 = []
-        cap_see_eq0 = []
-        for cs in sorted_cap_see:
-            see, hist, psqt = cs[0]
-            if see > 0:
-                cap_see_gt0.append(cs[1])
-            elif see == 0:
-                cap_see_eq0.append(cs[1])
-            else:
-                cap_see_lt0.append(cs[1])
-        result = list(itertools.chain(from_pv, cap_see_gt0, cap_see_eq0, checks, counters, killers, other_moves, cap_see_lt0))
+    cap_see_gt0 = []
+    cap_see_lt0 = []
+    cap_see_eq0 = []
+    for cs in sorted_cap_see:
+        see, hist, psqt = cs[0]
+        move = cs[1]
+        if see > 0:
+            move.prob = .8
+            cap_see_gt0.append(move)
+        elif see == 0:
+            move.prob = .7
+            cap_see_eq0.append(move)
+        else:
+            move.prob = .5
+            cap_see_lt0.append(move)
 
-    # gaussian formula
-    if len(result):
-        a = -.126 * math.log(.001 * len(result))
+    for move in from_pv: move.prob = .9
+    for move in checks: move.prob = .65
+    for move in counters: move.prob = .65
+    for move in killers: move.prob = .65
+
+    rest = other_moves + cap_see_lt0
+    
+    # gaussian formula for 'rest' moves
+    if len(rest):
+        a = -.126 * math.log(.001 * len(rest))
     else:
         a = 0
     mu = 0
-    sigma_sq = len(result)
+    sigma_sq = len(rest)
     
     total_prob = 0
-    for ind, move in enumerate(result):
+    for ind, move in enumerate(rest):
         move.prob = a * math.e**(-(ind+1 - mu)**2 / (2 * sigma_sq))
         total_prob += move.prob
-    if len(result) and total_prob < 1:
-        result[0].prob += 1 - total_prob
+    if len(rest) and total_prob < 1:
+        rest[0].prob += 1 - total_prob
     
     # print([move.prob for move in result])
+    result = list(itertools.chain(from_pv, cap_see_gt0, cap_see_eq0, checks, counters, killers, other_moves, cap_see_lt0))
     return result
 
 def print_moves(moves):
@@ -718,41 +739,3 @@ def evaluate_moves(position):
         scores.append(Evaluation(pos).init_attacks().evaluate())
     res = list(sorted(zip(map(str,moves), scores), key=lambda x: x[1]))
     return pprint.pprint(res)
-
-def discoveries_and_pins(position, side, target_piece_type=Pt.K):
-    """Return squares of singular pieces between sliders and the king of side
-    `side`. Blockers of opposite side can move and cause discovered check, and
-    blockers of same side are pinned. `target_piece_type` is piece things are pinned to."""
-    target_piece_sq = position.pieces[Pt.piece(target_piece_type, side)]
-    us = position.occupied[side]
-    them = position.occupied[side ^ 1]
-    all_occupied = us | them
-
-    diags = PSEUDO_ATTACKS[Pt.B][bit_position(target_piece_sq)]
-    diag_sliders = position.pieces[Pt.piece(Pt.B, side ^ 1)]
-    diag_sliders |= position.pieces[Pt.piece(Pt.Q, side ^ 1)]
-    snipers = diags & diag_sliders
-
-    cross = PSEUDO_ATTACKS[Pt.R][bit_position(target_piece_sq)]
-    cross_sliders = position.pieces[Pt.piece(Pt.R, side ^ 1)]
-    cross_sliders |= position.pieces[Pt.piece(Pt.Q, side ^ 1)]
-    snipers |= cross & cross_sliders
-
-    pinned = 0
-    discoverers = 0
-    for sniper_sq in iterate_pieces(snipers):
-        # queen vs queen and the target piece is defended, assume not pin (ignoring possibility of more xrays)
-        if Pt.base_type(position.squares[bit_position(sniper_sq)]) == target_piece_type \
-           and position.attacks[side] & target_piece_sq:
-            continue
-        squares_between = BETWEEN_SQS[bit_position(sniper_sq)][bit_position(target_piece_sq)]
-        if count_bits(squares_between & all_occupied) == 1:
-            p = us & squares_between
-            d = them & squares_between
-            if p:
-                pinned |= p
-            elif d and Pt.base_type(position.squares[bit_position(d)]) != Pt.P:
-                discoverers |= d
-
-    # position.pinned[Pt.piece(target_piece_type, side)] = pinned
-    return (discoverers, pinned)

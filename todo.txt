@@ -1,3 +1,4 @@
 change sort to assign prob based on bucket (see>=0, checks, other), and apply gaussian to other only
 play engine against itself to determine if change is + or -
 add pin to queen to evals
+does qd6 null search when there is a pawn on e5
