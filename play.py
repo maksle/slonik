@@ -83,7 +83,7 @@ pos = Position.from_fen("r1bqk2r/ppp2ppp/2n5/4P3/2Bp2n1/5N1P/PP1N1PP1/R2Q1RK1 b 
 
 import time 
 now = time.time()
-val, si = iterative_deepening(3.5, pos)
+val, si = iterative_deepening(3, pos)
 # val = search(SearchPos(pos), [None] * 64, 0, -10000000, 10000000, 1, .001, True)
 # print("node count", node_count)
 print(val / 200)
@@ -96,57 +96,5 @@ print(then-now, 's')
 # then = time.time()
 # print(then-now, end='s')
 
-
-# old eval:
-# {'Bad Bishop Penalty B': [24, 16],
-#  'Castling readiness': [0, 0],
-#  'Center Attack Bonus': [30, 20],
-#  'Discovery threats to King bonus': [0, 0],
-#  'Discovery threats to Queen bonus': [0, 0],
-#  'King Attack': [43, 56],
-#  'Material ': [940, 1316],
-#  'Material B': [826, 826],
-#  'Material N': [764.75, 764.75],
-#  'Material Q': [2560.0, 2560.0],
-#  'Material R': [2519.2400000000002, 2519.2400000000002],
-#  'Minor Behind Pawn B': [0, 0],
-#  'Minor Behind Pawn N': [0, 0],
-#  'Minor Outpost B': [7, 7],
-#  'Minor Outpost N': [12, 12],
-#  'Mobility': [104, 41],
-#  'PSQT adjustments': [23, 31],
-#  'Pawn Potential Penalty': [14, 2],
-#  'Pawn Structure': [-250, -271],
-#  'Pawn cover': [12, 6],
-#  'Pins to King penalty': [0, 15],
-#  'Pins to Queen penalty': [0, 0],
-#  'Rook Position R': [45, 0],
-#  'Threats bonus': [150, 20]}
-# EVAL -127
-
-# new...
-# {'Bad Bishop Penalty B': [24, 16],
-#  'Castling readiness': [0, 0],
-#  'Center Attack Bonus': [30, 20],
-#  'Discovery threats to King bonus': [0, 0],
-#  'Discovery threats to Queen bonus': [0, 0],
-#  'King Attack': [79, 50],
-#  'Material ': [940, 1316],
-#  'Material B': [826, 826],
-#  'Material N': [764.75, 764.75],
-#  'Material Q': [2560.0, 2560.0],
-#  'Material R': [2519.2400000000002, 2519.2400000000002],
-#  'Minor Behind Pawn B': [0, 0],
-#  'Minor Behind Pawn N': [0, 0],
-#  'Minor Outpost B': [7, 7],
-#  'Minor Outpost N': [12, 12],
-#  'Mobility': [93, 53],
-#  'PSQT adjustments': [23, 31],
-#  'Pawn Potential Penalty': [14, 2],
-#  'Pawn Structure': [-250, -271],
-#  'Pawn cover': [12, 6],
-#  'Pins to King penalty': [0, 15],
-#  'Pins to Queen penalty': [0, 0],
-#  'Rook Position R': [45, 0],
-#  'Threats bonus': [150, 76]}
-# EVAL -164
+# python3 -m cProfile -o profile5 play.py
+# pstats.Stats('profile5').strip_dirs().sort_stats('cumulative').print_stats(15)

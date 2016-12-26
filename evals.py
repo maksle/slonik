@@ -622,7 +622,7 @@ def eval_see(pos, move):
             break
         piece_type_stm, attacker = lowest
 
-        captured_piece_type = position.squares[len(bin(square))-3]
+        captured_piece_type = position.squares[bit_position(square)]
         balance = MG_PIECES[Pt.base_type(captured_piece_type)] - gains[-1]
         gains.append(balance)
 
@@ -641,43 +641,51 @@ def eval_see(pos, move):
     move.see_score = gains[0]
     return gains[0]
 
-def lowest_attacker(pos, square, side=None):
-    """Finds lowest piece of `side` attacking a square"""
+def lowest_attacker(pos, square, side=None, highest_attacker=Pt.NULL):
+    """Finds lowest piece of `side` attacking a square. `highest_attacker` means
+    skip attacks of higher or equal value of given pt"""
     position = Position(pos)
     side = position.side_to_move() if side is None else side
+    highest_attacker = Pt.K if highest_attacker == Pt.NULL else highest_attacker
 
     # pawn
-    if side == Side.WHITE:
-        possible_from_squares = south_west(square) | south_east(square)
-    else:
-        possible_from_squares = north_west(square) | north_east(square)
-    piece_type = Pt.piece(Pt.P, side)
-    attackers = position.pieces[piece_type] & possible_from_squares
-    if attackers:
-        return piece_type, ls1b(attackers)
+    if Pt.P < highest_attacker:
+        possible_from_squares = shift_sw(square, side) | shift_se(square, side)
+        piece_type = Pt.piece(Pt.P, side)
+        attackers = position.pieces[piece_type] & possible_from_squares
+        if attackers:
+            return piece_type, ls1b(attackers)
 
     # knight
-    piece_type = Pt.piece(Pt.N, side)
-    possible_from_squares = knight_attack(square)
-    attackers = position.pieces[piece_type] & possible_from_squares
-    if attackers:
-        return piece_type, ls1b(attackers)
+    if Pt.N < highest_attacker:
+        piece_type = Pt.piece(Pt.N, side)
+        possible_from_squares = knight_attack(square)
+        attackers = position.pieces[piece_type] & possible_from_squares
+        if attackers:
+            return piece_type, ls1b(attackers)
 
     # sliders
-    for piece_type in [Pt.B, Pt.R, Pt.Q]:
-        piece_type_stm = Pt.piece(piece_type, side)
-        for attacker in iterate_pieces(position.pieces[piece_type_stm]):
-            free = invert(position.occupied[side] | position.occupied[side^1])
-            attacks = piece_attack(piece_type_stm, attacker, free)
-            if attacks & square:
-                return piece_type_stm, attacker
+    for piece_type in [Pt.B, Pt.R]:
+        if piece_type < highest_attacker:
+            pt = Pt.piece(piece_type, side)
+            occ = position.occupied[side] | position.occupied[side^1]
+            attacks = piece_attack(pt, square, occ)
+
+            b = attacks & position.pieces[pt]
+            if b: return pt, ls1b(b)
+
+            if Pt.Q < highest_attacker:
+                qn = Pt.piece(Pt.Q, side)
+                b = attacks & position.pieces[qn]
+                if b: return qn, ls1b(b)
 
     # king
-    piece_type = Pt.piece(Pt.K, side)
-    possible_from_squares = king_attack(square)
-    attackers = position.pieces[piece_type] & possible_from_squares
-    if attackers:
-        return piece_type, attackers
+    if Pt.K < highest_attacker:
+        piece_type = Pt.piece(Pt.K, side)
+        possible_from_squares = king_attack(square)
+        attackers = position.pieces[piece_type] & possible_from_squares
+        if attackers:
+            return piece_type, attackers
 
 def next_en_prise(position, side, move=None):
     """finds next en-prise piece for `side` optionally after `move` is done"""
@@ -696,10 +704,9 @@ def next_en_prise(position, side, move=None):
             continue
 
         for square in iterate_pieces(pos.pieces[pt]):
-            lowest = lowest_attacker(pos, square, side ^ 1)
+            # equal val but undefended more readily handled by eval_see
+            lowest = lowest_attacker(pos, square, side ^ 1, Pt.base_type(pt))
             if not lowest: continue
             attacker_pt, attacker_sq = lowest
-            # equal val but undefended more readily handled by eval_see
-            if MG_PIECES[Pt.base_type(attacker_pt)] < MG_PIECES[Pt.base_type(pt)]:
-                return pt, square, attacker_pt, attacker_sq
+            return pt, square, attacker_pt, attacker_sq
     return 0, 0, 0, 0

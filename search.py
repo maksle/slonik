@@ -656,7 +656,7 @@ def sort_moves(moves, position, si, ply, quiescence):
 
     checks = sorted(checks, key=sort_crit, reverse=True)
     
-    captures_see = map(lambda c: (sort_crit(c, en_prise_sort=True), c), captures)
+    captures_see = map(lambda c: (sort_crit(c, en_prise_sort=False), c), captures)
     sorted_cap_see = sorted(captures_see, key=itemgetter(0), reverse=True)
 
     other_moves.sort(key=lambda m: sort_crit(m, en_prise_sort=True), reverse=True)
