@@ -15,10 +15,8 @@ class Entry(cmd.Cmd):
         self.engine.info = self.uci_info
         self.engine.start()
         
-        self.movetime_timer = None
-
-    def uci_info(self, info_str):
-        print("info", info_str, file=self.stdout, flush=True)
+    def uci_info(self, *info_str):
+        print("info", *info_str, file=self.stdout, flush=True)
         
     def do_uci(self, args):
         print("id name slonik", file=self.stdout, flush=True)
@@ -65,33 +63,29 @@ class Entry(cmd.Cmd):
         else: self.engine.init_root_moves(params[index+1:].split())
 
         try: index = params.index("ponder")
-        except: self.engine.ponder = False
+        except: pass
         else: self.engine.ponder = True
 
         try: index = params.index("depth")
-        except: self.engine.max_depth = None
+        except: pass
         else: self.engine.max_depth = params[index+1]
         
         try: index = params.index("nodes")
-        except: self.engine.max_nodes = None
+        except: pass
         else: self.engine.max_nodes = params[index+1]
 
         try: index = params.index("movetime")
         except: pass
-        else:
-            milliseconds = float(params[index+1]) / 1000
-            self.movetime_timer = threading.Timer(milliseconds, self.do_stop)
-            self.movetime_timer.start()
-
+        else: self.engine.movetime = float(params[index+1]) / 1000
+            
         try: index = params.index("infinite")
-        except: self.engine.infinite = False
+        except: pass
         else: self.engine.infinite = True
 
         self.engine.go()
 
     def do_stop(self, args):
-        if self.movetime_timer:
-            self.movetime_timer.cancel()
+        self.engine.stop()
 
     def do_ponderhit(self, args):
         self.engine.ponder = False
@@ -101,9 +95,6 @@ class Entry(cmd.Cmd):
         sys.exit()
 
     def cleanup(self):
-        if self.movetime_timer:
-            self.movetime_timer.cancel()
-            self.movetime_timer.join()
         self.engine.quit()
         self.engine.join()
             

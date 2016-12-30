@@ -9,6 +9,15 @@ MG_PIECES[PieceType.R] = 1285
 MG_PIECES[PieceType.Q] = 2513
 MG_PIECES[PieceType.K] = 0
 
+EG_PIECES = [None for i in range(0, 7)]
+EG_PIECES[PieceType.NULL] = 0
+EG_PIECES[PieceType.P] = 248
+EG_PIECES[PieceType.N] = 832
+EG_PIECES[PieceType.B] = 897
+EG_PIECES[PieceType.R] = 1371
+EG_PIECES[PieceType.Q] = 2650
+EG_PIECES[PieceType.K] = 0
+
 def material_eval(counts, piece_t, side):
     if piece_t == PieceType.P:
         return pawn_value(counts, side)

@@ -243,7 +243,7 @@ class Position():
         valid_sqs = self.occupied[them]
 
         # include promotions
-        yield from self.generate_moves_pt(Pt.piece(Pt.P, us), valid_sqs, promo=True)
+        yield from self.generate_moves_pt(Pt.piece(Pt.P, us), valid_sqs, do_promo=True)
 
         yield from self.generate_moves_pt(Pt.piece(Pt.N, us), valid_sqs)
         yield from self.generate_moves_pt(Pt.piece(Pt.B, us), valid_sqs)

@@ -40,12 +40,14 @@ class SearchStats():
     def update_ply_stat(self, ply):
         self.ply['count'] += ply
         self.ply['iter'] += 1
-        self.ply['max'] = max(self.ply_max, ply)
+        self.ply['max'] = max(self.ply['max'], ply)
 
     def reset(self):
         self.tb_hits = 0
         self.node_count = 0
         self.ply = dict(count=0, iter=0, max=0)
+        self.time_start = 0
+        self.checkpoints = 0
         
 
 def depth_to_allowance(depth):
@@ -65,6 +67,8 @@ class Engine(threading.Thread):
         super(Engine, self).__init__()
         self.root_position = Position()
         self.root_moves = None
+        self.si = [None] * 64
+        self.search_stats = SearchStats()
         self.killer_moves = defaultdict(list)
         self.counter_history = [[[None for sq in range(64)] for piece in range(13)] for side in range(2)]
         self.move_history = [[[None for sq in range(64)] for piece in range(13)] for side in range(2)]
@@ -72,8 +76,9 @@ class Engine(threading.Thread):
         self.info = print
         self.ponder = False
         self.infinite = False
+        self.movetime = None
         self.max_nodes = None
-        self.max_depth = None
+        self.max_depth = 64
         self.exec_event = threading.Event()
         self.stop_event = threading.Event()
         self.quit_event = threading.Event()
@@ -95,6 +100,8 @@ class Engine(threading.Thread):
             self.iterative_deepening()
             self.stop_event.clear()
             self.exec_event.clear()
+            if self.quit_event.is_set():
+                sys.exit()
 
     def stop(self):
         self.stop_event.set()
@@ -105,8 +112,15 @@ class Engine(threading.Thread):
         self.exec_event.set()
         
     def go(self):
+        self.search_stats.time_start = time.time()
         self.exec_event.set()
-                
+
+    def checkpoint(self):
+        # max_depth is taken care of in iterative_deepening()
+        if (self.max_nodes and self.search_stats.node_count >= self.max_nodes) \
+           or (self.movetime and (time.time() - self.search_stats.time_start) >= self.movetime):
+            self.stop_event.set()
+        
     def init_root_moves(self, uci_moves=None):
         if uci_moves is None:
             self.root_moves = self.root_position.generate_moves_all(legal=True)
@@ -126,7 +140,7 @@ class Engine(threading.Thread):
             return self.move_history[side][move.piece_type][bit_position(move.to_sq)]
 
     # Counters heuristic
-    def update_counter(side, move, counter):
+    def update_counter(self, side, move, counter):
         entry = self.counter_history[side][move.piece_type][bit_position(move.to_sq)]
         self.counter_history[side][move.piece_type][bit_position(move.to_sq)] = Counter(counter)
 
@@ -155,7 +169,7 @@ class Engine(threading.Thread):
         self.search_stats.reset()
 
     # Search
-    def iterative_deepening(self, target_depth, node, si=None):
+    def iterative_deepening(self):
         """Search deeper each iteration until stop condition. If fail high or
         fail low, widen the aspiration window and search again."""
         alpha = LOW_BOUND
@@ -164,28 +178,31 @@ class Engine(threading.Thread):
         depth = 0
 
         val = 0
-        si = si or [None] * 64
 
-        while depth < target_depth:
+        pv = []
+        
+        while not self.stop_event.is_set() \
+              and depth < self.max_depth \
+              and (not self.max_nodes or self.search_stats.node_count < self.max_nodes) \
+              and (not self.movetime or (time.time() - self.search_stats.time_start) < self.movetime):
             depth += .5
             allowance = depth_to_allowance(depth)
             finished = False
             fail_factor = 18
-
+            
             alpha, beta = val - fail_factor, val + fail_factor
-
-            print ("\n>> depth:", depth, ", allowance:", allowance)
-
-            pv = []
-
-            now = time.time()
+            
+            # print ("\n>> depth:", depth, ", allowance:", allowance)
+            
             while not finished:
-                val = search(node, si, 0, alpha, beta, allowance, True, False)
-
+                if self.stop_event.is_set(): break
+                val = self.search(self.root_position, 0, alpha, beta, allowance, True, False)
+                if self.stop_event.is_set(): break
+                
                 if self.debug:
-                    if val < alpha:
+                    if val <= alpha:
                         self.info("faillow", "a", alpha, "b", beta, "val", val, "factor", fail_factor)
-                    if val > beta:
+                    if val >= beta:
                         self.info("failhigh", "a", alpha, "b", beta, "val", val, "factor", fail_factor)
 
                 if val <= alpha:
@@ -194,39 +211,61 @@ class Engine(threading.Thread):
                     fail_factor += fail_factor // 3 + 6
                     if len(pv) > 0: # fail low after fail high
                         finshed = True
-                        if self.debug:
-                            self.info("ACCEPTING FAIL-HIGH PV", pv)
-                        si[0].pv = pv[:]
+                        # if self.debug:
+                        #     self.info("ACCEPTING FAIL-HIGH PV", pv)
+                        self.si[0].pv = pv[:]
                     else:
                         pv = []
                 elif val >= beta:
                     # alpha = (alpha + beta) / 2
                     beta = val + fail_factor
                     fail_factor += fail_factor // 3 + 6
-                    pv = si[0].pv[:]
+                    pv = self.si[0].pv[:]
                 else:
                     finished = True
-                    pv = si[0].pv[:]
+                    pv = self.si[0].pv[:]
 
-                if self.debug:
-                    self.info("PV so far:", pv)
+                if val <= alpha or val >= beta: bound = "upperbound" if val <= alpha else "lowerbound"
+                else: bound = ""
+                elapsed = time.time() - self.search_stats.time_start
+                self.info("depth", int(self.search_stats.ply["count"] / self.search_stats.ply["iter"]),
+                          "seldepth", int(self.search_stats.ply["max"]),
+                          "score cp", val * 100 / EG_PIECES[Pt.P], bound,
+                          "nodes", self.search_stats.node_count,
+                          "nps", self.search_stats.node_count * 1000 / elapsed,
+                          "tbhits", self.search_stats.tb_hits,
+                          "time", elapsed,
+                          "pv", "".join([m.to_uci for m in pv]))
 
-            then = time.time()
+        # some stop condition but stop event didn't come yet, we have to wait
+        if not self.stop_event.is_set() and (self.ponder or self.infinite):
+            self.stop_event.wait()
 
-            if self.debug:
-                self.info(then-now, 's')
+        if len(pv) > 1:
+            self.info("bestmove", pv[0].to_uci, "ponder", pv[1].to_uci)
+        elif len(pv) > 0:
+            self.info("bestmove", pv[0].to_uci)
         
-        return val, si
+        return val, self.si
 
-    def search(self, node, si, ply, a, b, allowance, pv_node, cut_node):
+    def search(self, node, ply, a, b, allowance, pv_node, cut_node):
         """Search for best move in position `node` within alpha and beta window."""
         assert(pv_node or a == b-1)
 
+        if self.search_stats.checkpoints > 5000:
+           self.search_stats.checkpoints = 0               
+           self.checkpoint()
+
+        if self.stop_event.is_set():
+            return STOP_VALUE #Evaluation(node).init_attacks().evaluate()
+                          
         self.search_stats.node_count += 1
 
         a_orig = a
         is_root = pv_node and ply == 0
 
+        si = self.si
+        
         si[ply] = si[ply] or SearchInfo()
         si[ply+1] = si[ply+1] or SearchInfo()
 
@@ -258,7 +297,7 @@ class Engine(threading.Thread):
         in_check = node.in_check()
 
         if allowance_to_depth(allowance) < 1:
-            score = qsearch(node, si, ply, a, b, 9, pv_node, in_check)
+            score = self.qsearch(node, ply, a, b, 9, pv_node, in_check)
             return score
 
         if not in_check:
@@ -273,7 +312,7 @@ class Engine(threading.Thread):
                    and found and tt_entry.value >= b:
                     si[ply+1].null_move_prune_search = True
                     node.make_null_move()
-                    val = -search(node, si, ply+1, -b, -b+1, int(allowance * .75), False, False)
+                    val = -self.search(node, ply+1, -b, -b+1, int(allowance * .75), False, False)
                     node.undo_null_move()
                     si[ply+1].null_move_prune_search = False
 
@@ -285,7 +324,7 @@ class Engine(threading.Thread):
             if not found and allowance_to_depth(allowance) >= 4 \
                and (pv_node or static_eval + MG_PIECES[PieceType.P] >= b):
                 si[ply+1].skip_early_pruning = True
-                val = search(node, si, ply, a, b, int(allowance * .75), pv_node, cut_node)
+                val = self.search(node, ply, a, b, int(allowance * .75), pv_node, cut_node)
                 si[ply+1].skip_early_pruning = False
                 found, tt_ind, tt_entry = tt.get_tt_index(node.zobrist_hash)
 
@@ -311,11 +350,11 @@ class Engine(threading.Thread):
             pseudo_moves = node.generate_moves_in_check()
         else:
             pseudo_moves = node.generate_moves_all()
-        moves = sort_moves(pseudo_moves, node, si, ply, False)
+        moves = self.sort_moves(pseudo_moves, node, si, ply, False)
 
         counter = None
         if len(node.moves):
-            counter = lookup_counter(node.side_to_move() ^ 1, node.moves[-1])
+            counter = self.lookup_counter(node.side_to_move() ^ 1, node.moves[-1])
 
         #
         # Move iteration
@@ -362,14 +401,14 @@ class Engine(threading.Thread):
                 si[ply].excluded_move = move
                 si[ply].singular_search = True
                 si[ply].skip_early_pruning = True
-                val = search(node, si, ply, rbeta-1, rbeta, int(allowance * move.prob * .75), False, cut_node)
+                val = self.search(node, ply, rbeta-1, rbeta, int(allowance * move.prob * .75), False, cut_node)
                 si[ply].skip_early_pruning = False
                 si[ply].singular_search = False
                 si[ply].excluded_move = Move(PieceType.NULL)
                 # print("val", val, "rbeta", rbeta)
 
                 if val < rbeta:
-                    print("extending", node.moves, move)
+                    # print("extending", node.moves, move)
                     extending = True
                     move.prob = 1
 
@@ -407,7 +446,7 @@ class Engine(threading.Thread):
                         if victim_after > victim_before:
                             r -= depth_to_allowance(2)
 
-                hist = lookup_history(node.side_to_move(), move)
+                hist = self.lookup_history(node.side_to_move(), move)
                 # print("hist", move, hist)
                 if hist and hist.value > 20:
                     r -= depth_to_allowance(1)
@@ -416,20 +455,23 @@ class Engine(threading.Thread):
 
                 if r < 0: r = 0
 
-                val = -search(child, si, ply+1, -(a+1), -a, int(zw_allowance - r), False, True)
+                val = -self.search(child, ply+1, -(a+1), -a, int(zw_allowance - r), False, True)
                 do_full_zw = val > a and r != 0
             else:
                 do_full_zw = not (pv_node and move.prob >= .4)
 
             # .. zero window full allotment search
             if do_full_zw:
-                val = -search(child, si, ply+1, -(a+1), -a, int(zw_allowance), True, not cut_node)
+                val = -self.search(child, ply+1, -(a+1), -a, int(zw_allowance), True, not cut_node)
 
             # .. full window full allotment search
             # otherwise we let the fail highs cause parent to fail low and try different move
             if pv_node and (move.prob >= .4 or (a < val and (val < b or is_root))):
-                val = -search(child, si, ply+1, -b, -a, int(allowance * move.prob), True, False)
+                val = -self.search(child, ply+1, -b, -a, int(allowance * move.prob), True, False)
 
+            if self.stop_event.is_set():
+                return STOP_VALUE
+                
             if val > best_val:
                 prev_best = best_move
                 best_val, best_move = val, move
@@ -438,27 +480,27 @@ class Engine(threading.Thread):
                 best_move_is_capture = is_capture
                 if pv_node:
                     # print("local best move", node.moves, move, "val:", val, "alpha", a_orig, "beta", b)
-                    if is_root:
-                        print("new best move", move, "over", prev_best, "val:", val, "alpha", a_orig, "beta", b)
+                    # if is_root:
+                    #     print("new best move", move, "over", prev_best, "val:", val, "alpha", a_orig, "beta", b)
                     if val > a:
                         # next_move_prob = None
                         si[ply].pv = [move] + si[ply+1].pv
                         si[ply+1].pv = []
-                        if is_root:
-                            print_moves(si[ply].pv)
-                            print("new best move (root,>a)", move, "val:", val, "alpha", a_orig, "beta", b)
+                        # if is_root:
+                        #     print_moves(si[ply].pv)
+                            # print("new best move (root,>a)", move, "val:", val, "alpha", a_orig, "beta", b)
 
             a = max(a, val)
             # print(node.moves, move)
             if a >= b:
-                if pv_node:
-                    print("fail-high", node.moves, "\"", best_move, "\"", val, a_orig, b)
+                # if pv_node:
+                #     print("fail-high", node.moves, "\"", best_move, "\"", val, a_orig, b)
                 if best_move: 
-                    add_killer(ply, best_move)
+                    self.add_killer(ply, best_move)
                 break
-            elif a <= a_orig:
-                if pv_node:
-                    print("fail-low", node.moves, "\"", move, "\"", val, a_orig, b)
+            # elif a <= a_orig:
+                # if pv_node:
+                #     print("fail-low", node.moves, "\"", move, "\"", val, a_orig, b)
 
         prior_move = node.last_move()
         if move_count == 0:
@@ -466,26 +508,26 @@ class Engine(threading.Thread):
             # mate or statemate
             elif in_check:
                 best_val = MATE_VALUE
-                print("got mated", node.moves)
+                # print("got mated", node.moves)
             else:
                 best_val = DRAW_VALUE
         elif best_move:
             if best_val > a_orig and not best_move_is_capture:
                 bonus = int(allowance) ** 2
                 # print("rewarding", node.side_to_move(), "for move", best_move, "with", bonus)
-                update_history(node.side_to_move(), best_move, bonus)
+                self.update_history(node.side_to_move(), best_move, bonus)
                 if prior_move and prior_move.piece_type != PieceType.NULL:
-                    update_counter(node.side_to_move() ^ 1, prior_move, best_move)
+                    self.update_counter(node.side_to_move() ^ 1, prior_move, best_move)
                     # penalize prior quiet move that allowed this good move
                     if len(node.moves) > 1 and prior_move.piece_type != PieceType.NULL and not prior_move.move_type & MoveType.capture:
                         # print("penalizing", node.side_to_move() ^ 1, "for move", prior_move, "with", -(bonus + 4))
-                        update_history(node.side_to_move() ^ 1, prior_move, -(bonus + 4))
+                        self.update_history(node.side_to_move() ^ 1, prior_move, -(bonus + 4))
         elif best_val <= a_orig and allowance_to_depth(allowance) >= 2.5 and not best_move_is_capture:
             # reward the quiet move that caused this node to fail low
             bonus = int(allowance) ** 2
             if len(node.moves) > 1 and prior_move.piece_type != PieceType.NULL and not prior_move.move_type & MoveType.capture:
                 # print("rewarding", node.side_to_move() ^ 1, "for move", prior_move, "with", bonus)
-                update_history(node.side_to_move() ^ 1, prior_move, bonus)
+                self.update_history(node.side_to_move() ^ 1, prior_move, bonus)
 
         # if best_val == LOW_BOUND:
         #     print("best_val is LOW_BOUND, node.moves", node.moves, best_val)
@@ -508,7 +550,7 @@ class Engine(threading.Thread):
             
         return best_val
 
-    def qsearch(self, node, si, ply, alpha, beta, allowance, pv_node, in_check):
+    def qsearch(self, node, ply, alpha, beta, allowance, pv_node, in_check):
         """Find best resulting quiet position within the alpha-beta window and
         return the evaluation."""
         
@@ -516,6 +558,8 @@ class Engine(threading.Thread):
 
         self.search_stats.node_count += 1
 
+        si = self.si
+        
         if pv_node:
             si[ply] = SearchInfo()
             si[ply+1] = SearchInfo()
@@ -573,8 +617,8 @@ class Engine(threading.Thread):
                                             Move(PieceType.NULL, None, None).compact(),
                                             tt.BoundType.LO_BOUND, best_value, allowance, static_eval))
                 self.search_stats.update_ply_stat(ply)
-                if pv_node:
-                    print("qs stand pat", node.moves, best_value, ">=", beta)
+                # if pv_node:
+                #     print("qs stand pat", node.moves, best_value, ">=", beta)
                 return best_value
 
             if pv_node and best_value > alpha:
@@ -587,7 +631,7 @@ class Engine(threading.Thread):
             pseudo_moves = node.generate_moves_in_check()
         else:
             pseudo_moves = node.generate_moves_violent()
-        moves = sort_moves(pseudo_moves, node, si, ply, True)
+        moves = self.sort_moves(pseudo_moves, node, si, ply, True)
         for move in moves:
             # if ' '.join(map(str,node.moves)) == "Ng4-e5 Nf3-e5 Nc6-e5 Bc4-f7 Ke8-e7" and str(move) == "Rf1-e1":
             #     print("debug")
@@ -621,14 +665,14 @@ class Engine(threading.Thread):
                 if see_score < 0:
                     continue
 
-            score = -qsearch(child, si, ply+1, -beta, -alpha, int(allowance * move.prob), pv_node, gives_check)
+            score = -self.qsearch(child, ply+1, -beta, -alpha, int(allowance * move.prob), pv_node, gives_check)
 
             if score > best_value:
                 best_value = score
                 if score > alpha:
                     if pv_node and score < beta:
                         alpha = score
-                        print("qs upgrade", node.moves, move, score, ">", best_move)
+                        # print("qs upgrade", node.moves, move, score, ">", best_move)
                         best_move = move
                         si[ply].pv = [move] + si[ply+1].pv
                         si[ply+1].pv = []
@@ -638,8 +682,8 @@ class Engine(threading.Thread):
                             tt.save_tt_entry(tt.TTEntry(node.zobrist_hash, move.compact(),
                                                         tt.BoundType.LO_BOUND, best_value, allowance, static_eval))
                             self.search_stats.update_ply_stat(ply)
-                            if pv_node:
-                                print("qs beta-cutoff", node.moves, move, score, ">=", beta)
+                            # if pv_node:
+                            #     print("qs beta-cutoff", node.moves, move, score, ">=", beta)
                             return score
 
             # print("q", node.moves, move)
@@ -697,13 +741,13 @@ class Engine(threading.Thread):
         us, them = side, side ^ 1
 
         other = position.occupied[them]
-        counter = lookup_counter(them, position.last_move())
+        counter = self.lookup_counter(them, position.last_move())
 
         ep_us_before = next_en_prise(position, us)
         ep_them_before = next_en_prise(position, them)
 
         def sort_crit(move, en_prise_sort=False):
-            entry = lookup_history(us, move)
+            entry = self.lookup_history(us, move)
             see_val = eval_see(position, move)
 
             if en_prise_sort:
@@ -724,7 +768,7 @@ class Engine(threading.Thread):
             return (see_val, hist_val, psqt_val)
 
         for move in moves:
-            if move in find_pv(position):
+            if move in self.find_pv(position):
                 from_pv.append(move)
             elif is_capture(move.to_sq, other):
                 captures.append(move)
@@ -732,7 +776,7 @@ class Engine(threading.Thread):
                 checks.append(move)
             elif counter and counter.move == move:
                 counters.append(move)
-            elif move in killer_moves[ply]:
+            elif move in self.killer_moves[ply]:
                 killers.append(move)
             else:
                 other_moves.append(move)
@@ -802,6 +846,6 @@ class Engine(threading.Thread):
                 else:
                     cnt = perft(child, depth - 1, False)
                 nodes += cnt
-            if is_root:
-                print("move:", str(move), cnt)
+            # if is_root:
+            #     print("move:", str(move), cnt)
         return nodes
