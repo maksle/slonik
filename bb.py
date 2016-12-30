@@ -721,7 +721,7 @@ MAGIC_NUMBER[PieceType.R] = [
     145294587333762
 ]
 
-print("Initializing Magics")
+# print("Initializing Magics")
 for pt in [PieceType.B, PieceType.R]:
     for sq, magic in enumerate(MAGIC_NUMBER[pt]):
         mask = MAGIC_MASKS[pt][sq]

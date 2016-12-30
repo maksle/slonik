@@ -1,21 +1,20 @@
 import cmd
+import sys
 from search import Engine
 
 
 class Entry(cmd.Cmd):
-    intro = ''
-    prompt = ''
+    intro = "Slonik by M. Grinman"
+    prompt = ""
     file = None
-
-    go_params = ['infinite']
 
     def __init__(self):
         super(Entry, self).__init__()
-        self.initialized = False
-
+        
         self.engine = Engine()
         self.engine.info = self.uci_info
-
+        self.engine.start()
+        
         self.movetime_timer = None
 
     def uci_info(self, info_str):
@@ -55,14 +54,15 @@ class Entry(cmd.Cmd):
             fen = args[0]
             args.pop(0)
         moves = [arg for arg in args if arg != "moves"]
+        self.engine.stop()
         self.engine.new_game(fen=fen, uci_moves=moves)
 
     def do_go(self, args):
         params = args.split()
 
         try: index = params.index("searchmoves")
-        except: self.engine.searchmoves = None
-        else: self.engine.searchmoves = params[index+1:]
+        except: pass
+        else: self.engine.init_root_moves(params[index+1:].split())
 
         try: index = params.index("ponder")
         except: self.engine.ponder = False
@@ -97,11 +97,20 @@ class Entry(cmd.Cmd):
         self.engine.ponder = False
 
     def do_quit(self, args):
+        self.cleanup()
+        sys.exit()
+
+    def cleanup(self):
         if self.movetime_timer:
             self.movetime_timer.cancel()
-        self.engine.stop()
+            self.movetime_timer.join()
+        self.engine.quit()
         self.engine.join()
-        sys.exit()
             
 if __name__ == '__main__':
-    Entry().cmdloop()
+    entry = Entry()
+    try:
+        entry.cmdloop()
+    except:
+        entry.cleanup()
+        raise

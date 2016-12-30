@@ -43,7 +43,7 @@ def save_tt_entry(tt_entry):
     found, index, found_entry = get_tt_index(tt_entry.key)
     TT[index] = tt_entry
 
-print("Initializing zobrists")
+# print("Initializing zobrists")
 ZOBRIST_PIECE_SQUARES = []
 for i in range(0,64):
     piece_arr = []

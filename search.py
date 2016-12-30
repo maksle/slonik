@@ -12,6 +12,7 @@ from operator import itemgetter
 import threading
 import itertools
 import tt
+import sys
 
 
 # history moves
@@ -62,13 +63,56 @@ def print_moves(moves):
 class Engine(threading.Thread):
     def __init__(self):
         super(Engine, self).__init__()
+        self.root_position = Position()
+        self.root_moves = None
         self.killer_moves = defaultdict(list)
         self.counter_history = [[[None for sq in range(64)] for piece in range(13)] for side in range(2)]
         self.move_history = [[[None for sq in range(64)] for piece in range(13)] for side in range(2)]
-        self.search_stats = SearchStats()
         self.debug = False
         self.info = print
+        self.ponder = False
+        self.infinite = False
+        self.max_nodes = None
+        self.max_depth = None
+        self.go_event = threading.Event()
+        self.stop_event = threading.Event()
+        self.quit_event = threading.Event()
 
+    def new_game(self, fen="", uci_moves=None):
+        if fen == "":
+            self.root_position = Position()
+        else:
+            self.root_position = Position.from_fen(fen)
+        if uci_moves:
+            for uci_move in uci_moves:
+                move = self.root_position.uci_move_to_move(uci_move)
+                self.root_position.make_move(move)
+    
+    def run(self):
+        while self.go_event.wait():
+            if self.quit_event.is_set():
+                sys.exit()
+            self.iterative_deepening()
+            self.stop_event.clear()
+            self.go_event.clear()
+
+    def stop(self):
+        self.stop_event.set()
+        self.go_event.set() # release the run() lock
+        
+    def quit(self):
+        self.quit_event.set()
+        self.stop()
+        
+    def go(self):
+        self.go_event.set()
+                
+    def init_root_moves(self, uci_moves=None):
+        if uci_moves is None:
+            self.root_moves = self.root_position.generate_moves_all(legal=True)
+        else:
+            self.root_moves = [self.root_position.uci_move_to_move(m) for m in uci_moves]
+            
     # History heuristic
     def update_history(self, side, move, value):
         entry = self.move_history[side][move.piece_type][bit_position(move.to_sq)]

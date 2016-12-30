@@ -227,15 +227,15 @@ class Position():
         all_moves = self.generate_moves_all()
         return next((m for m in all_moves if m.to_uci == uci_move), None)
     
-    def generate_moves_all(self):
+    def generate_moves_all(self, legal=False):
         us = self.side_to_move()
         valid_sqs = FULL_BOARD
-        yield from self.generate_moves_pt(Pt.piece(Pt.P, us), valid_sqs)
-        yield from self.generate_moves_pt(Pt.piece(Pt.N, us), valid_sqs)
-        yield from self.generate_moves_pt(Pt.piece(Pt.B, us), valid_sqs)
-        yield from self.generate_moves_pt(Pt.piece(Pt.R, us), valid_sqs)
-        yield from self.generate_moves_pt(Pt.piece(Pt.Q, us), valid_sqs)
-        yield from self.generate_moves_pt(Pt.piece(Pt.K, us), valid_sqs)
+        yield from self.generate_moves_pt(Pt.piece(Pt.P, us), valid_sqs, legal=legal)
+        yield from self.generate_moves_pt(Pt.piece(Pt.N, us), valid_sqs, legal=legal)
+        yield from self.generate_moves_pt(Pt.piece(Pt.B, us), valid_sqs, legal=legal)
+        yield from self.generate_moves_pt(Pt.piece(Pt.R, us), valid_sqs, legal=legal)
+        yield from self.generate_moves_pt(Pt.piece(Pt.Q, us), valid_sqs, legal=legal)
+        yield from self.generate_moves_pt(Pt.piece(Pt.K, us), valid_sqs, legal=legal)
 
     def generate_moves_violent(self):
         us = self.side_to_move()
@@ -243,7 +243,7 @@ class Position():
         valid_sqs = self.occupied[them]
 
         # include promotions
-        yield from self.generate_moves_pt(Pt.piece(Pt.P, us), valid_sqs, True)
+        yield from self.generate_moves_pt(Pt.piece(Pt.P, us), valid_sqs, promo=True)
 
         yield from self.generate_moves_pt(Pt.piece(Pt.N, us), valid_sqs)
         yield from self.generate_moves_pt(Pt.piece(Pt.B, us), valid_sqs)
@@ -275,7 +275,7 @@ class Position():
                 yield from self.generate_moves_pt(Pt.piece(Pt.R, us), valid_sqs)
                 yield from self.generate_moves_pt(Pt.piece(Pt.Q, us), valid_sqs)
     
-    def generate_moves_pt(self, pt, valid_sqs=None, do_promo=False):
+    def generate_moves_pt(self, pt, valid_sqs=None, do_promo=False, legal=False):
         if valid_sqs is None:
             valid_sqs = FULL_BOARD
 
@@ -316,11 +316,13 @@ class Position():
                             promo_pt = Pt.piece(promo_bt, side)
                             move = Move(pt, from_sq, to_sq, MoveType.promo, promo_pt)
                             if is_capture: move.move_type |= MoveType.capture
-                            yield move
+                            if not legal or self.is_legal(move):
+                                yield move
                     else:
                         move = Move(pt, from_sq, to_sq, MoveType.regular)
                         if is_capture: move.move_type |= MoveType.capture
-                        yield move
+                        if not legal or self.is_legal(move):
+                            yield move
     
     def last_move(self):
         return self.moves[-1] if len(self.moves) else Move(PieceType.NULL, None, None)
