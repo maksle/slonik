@@ -212,6 +212,20 @@ class Position():
             if PieceType.get_side(piece_type) == side:
                 occupied |= piece
         return occupied
+
+    def make_uci_moves(self, uci_moves):
+        """Takes uci move (long algebraic notation), converts to Move objects,
+        and makes the moves"""
+        uci_moves = [m.lower() for m in uci_moves]
+        for uci_move in uci_moves:
+            move = self.uci_move_to_move(uci_move)
+            if move is None: break
+            self.make_move(move)
+                    
+    def uci_move_to_move(self, uci_move):
+        """Converts long algebraic notiation move to Move object"""
+        all_moves = self.generate_moves_all()
+        return next((m for m in all_moves if m.to_uci == uci_move), None)
     
     def generate_moves_all(self):
         us = self.side_to_move()
@@ -453,7 +467,6 @@ class Position():
         self.position_flags ^= 1 << 6
         self.zobrist_hash ^= tt.ZOBRIST_SIDE[0]
         self.zobrist_hash ^= tt.ZOBRIST_SIDE[1]
-
 
     def load_discoveries_and_pins(self, target_piece_type=Pt.K):
         self.discoverers, self.pinned, self.sliding_checkers = self.get_discoveries_and_pins(target_piece_type)

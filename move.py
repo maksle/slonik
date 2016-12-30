@@ -40,6 +40,19 @@ class Move():
         else:
             return False
 
+    @property
+    def to_uci(self):
+        result = ""
+        if self.piece_type == PieceType.NULL:
+            return "0000"
+        from_str = HUMAN_BOARD_INV[self.from_sq]
+        to_str = HUMAN_BOARD_INV[self.to_sq]
+        result += from_str + to_str
+        if self.move_type & MoveType.promo:
+            promo_str = HUMAN_PIECE[self.promo_piece]
+            result += promo_str.lower()
+        return result
+        
     def compact(self):
         # bits 0-5 from_sq
         # bits 6-11 to_sq
