@@ -74,7 +74,7 @@ class Engine(threading.Thread):
         self.infinite = False
         self.max_nodes = None
         self.max_depth = None
-        self.go_event = threading.Event()
+        self.exec_event = threading.Event()
         self.stop_event = threading.Event()
         self.quit_event = threading.Event()
 
@@ -89,23 +89,23 @@ class Engine(threading.Thread):
                 self.root_position.make_move(move)
     
     def run(self):
-        while self.go_event.wait():
+        while self.exec_event.wait():
             if self.quit_event.is_set():
                 sys.exit()
             self.iterative_deepening()
             self.stop_event.clear()
-            self.go_event.clear()
+            self.exec_event.clear()
 
     def stop(self):
         self.stop_event.set()
-        self.go_event.set() # release the run() lock
         
     def quit(self):
         self.quit_event.set()
-        self.stop()
+        self.stop_event.set()
+        self.exec_event.set()
         
     def go(self):
-        self.go_event.set()
+        self.exec_event.set()
                 
     def init_root_moves(self, uci_moves=None):
         if uci_moves is None:
