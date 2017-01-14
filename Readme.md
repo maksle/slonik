@@ -5,7 +5,7 @@ Slonik is a chess engine written in Python. It is command-line driven, and will 
 I chose Python to iterate quickly. It has allowed me to learn and implement more quickly, though Python is considerably slow for this domain.
 
 ## Features / Ideas
-The ideas for this engine are largely the ideas of existing engines out there. Chessprogramming.wikispaces.com has been an especially useful resource. The source code for the well known open-source engine, Stockfish, was also especially useful, as well as various research articles in the field of chess AI. Of note also the chess engine and white-paper for Giraffe, which has a novel and successful approach (purely TDD for evaluation). I took from Giraffe the idea for a probabilistic based search. However, many ideas are implemented from a depth based mindset. The engine features the following:
+The ideas for this engine are largely the ideas of existing engines out there. Chessprogramming.wikispaces.com has been an especially useful resource, in addition to various academic articles in the field of chess AI. The source code for the well known open-source engine, Stockfish, and the recent ground-breaking chess engine, Giraffe (and the white-paper describing it's ideas), were especially useful. I took from Giraffe the idea for a probabilistic based search, though many ideas in Slonik are implemented from a depth based mindset. The engine features the following:
 
 - minimax search (negamax) with alpha-beta pruning
 - quiescence search
