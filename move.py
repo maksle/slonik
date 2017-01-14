@@ -61,13 +61,16 @@ class Move():
         # bits 20-21 move_type
         if self.piece_type == PieceType.NULL:
             return 0
-        from_sq = len(bin(self.from_sq))-3
-        to_sq = (len(bin(self.to_sq))-3) << 6
+        from_sq = bit_position(self.from_sq)
+        to_sq = bit_position(self.to_sq) << 6
         piece_type = self.piece_type << 12
         promo_piece = (self.promo_piece or 0) << 16
         move_type = (self.move_type or 0) << 20
         return from_sq | to_sq | piece_type | promo_piece | move_type
         
+    def is_null_move(self):
+        return self.piece_type == PieceType.NULL
+    
     @classmethod
     def move_uncompacted(cls, compacted):
         from_sq = 1 << (compacted & 0x3f)

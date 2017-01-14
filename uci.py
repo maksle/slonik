@@ -13,10 +13,14 @@ class Entry(cmd.Cmd):
         
         self.engine = Engine()
         self.engine.info = self.uci_info
+        self.engine.debug_info = self.uci_debug
         self.engine.start()
         
     def uci_info(self, *info_str):
         print("info", *info_str, file=self.stdout, flush=True)
+        
+    def uci_debug(self, *info_str):
+        self.uci_info("string", *info_str)
         
     def do_uci(self, args):
         print("id name slonik", file=self.stdout, flush=True)

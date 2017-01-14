@@ -441,8 +441,8 @@ class Evaluation():
     
     def evaluate(self, debug=False):
         position = self.position
-        if ' '.join(map(str, position.moves)) == "e2-e4 e7-e6 Qd1-f3":
-            debug = True
+        # if ' '.join(map(str, position.moves)) == "e2-e4 e7-e6 Qd1-f3":
+        #     debug = True
 
         evals = defaultdict(lambda: [0, 0])
 

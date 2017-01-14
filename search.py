@@ -2,6 +2,7 @@ from IPython import embed
 import time 
 import pprint
 from collections import namedtuple
+from collections import Counter as Cntr
 from position import *
 from constants import *
 from collections import defaultdict
@@ -36,20 +37,21 @@ class SearchInfo():
 class SearchStats():
     def __init__(self):
         self.reset()
-
-    def update_ply_stat(self, ply):
-        self.ply['count'] += ply
-        self.ply['iter'] += 1
-        self.ply['max'] = max(self.ply['max'], ply)
+        self.time_start = 0
+        self.checkpoints = 0
+        self.move_count_pv = Cntr()
+        
+    def update_ply_stat(self, ply, pv_node):
+        if pv_node:
+            self.ply['count'] += ply
+            self.ply['iter'] += 1
+            self.ply['max'] = max(self.ply['max'], ply)
 
     def reset(self):
         self.tb_hits = 0
-        self.node_count = 0
         self.ply = dict(count=0, iter=0, max=0)
-        self.time_start = 0
-        self.checkpoints = 0
+        self.node_count = 0
         
-
 def depth_to_allowance(depth):
     return int(math.ceil(.193006 * math.e ** (1.29829 * depth)))
 
@@ -74,6 +76,7 @@ class Engine(threading.Thread):
         self.move_history = [[[None for sq in range(64)] for piece in range(13)] for side in range(2)]
         self.debug = False
         self.info = print
+        self.debug_info = print
         self.ponder = False
         self.infinite = False
         self.movetime = None
@@ -112,6 +115,7 @@ class Engine(threading.Thread):
         self.exec_event.set()
         
     def go(self):
+        self.search_stats.node_count = 0
         self.search_stats.time_start = time.time()
         self.exec_event.set()
 
@@ -189,6 +193,7 @@ class Engine(threading.Thread):
             allowance = depth_to_allowance(depth)
             finished = False
             fail_factor = 18
+            self.search_stats.reset()
             
             alpha, beta = val - fail_factor, val + fail_factor
             
@@ -199,43 +204,44 @@ class Engine(threading.Thread):
                 val = self.search(self.root_position, 0, alpha, beta, allowance, True, False)
                 if self.stop_event.is_set(): break
                 
-                if self.debug:
-                    if val <= alpha:
-                        self.info("faillow", "a", alpha, "b", beta, "val", val, "factor", fail_factor)
-                    if val >= beta:
-                        self.info("failhigh", "a", alpha, "b", beta, "val", val, "factor", fail_factor)
-
                 if val <= alpha:
+                    self.debug_info("faillow", "a", alpha, "b", beta, "val", val, "factor", fail_factor)
+                if val >= beta:
+                    self.debug_info("failhigh", "a", alpha, "b", beta, "val", val, "factor", fail_factor)
+                
+                if val <= alpha:
+                    bound = " upperbound"
                     alpha = val - fail_factor
                     # beta = (alpha + beta) // 2
                     fail_factor += fail_factor // 3 + 6
                     if len(pv) > 0: # fail low after fail high
                         finshed = True
-                        # if self.debug:
-                        #     self.info("ACCEPTING FAIL-HIGH PV", pv)
                         self.si[0].pv = pv[:]
-                    else:
-                        pv = []
                 elif val >= beta:
+                    bound = " lowerbound"
                     # alpha = (alpha + beta) / 2
                     beta = val + fail_factor
                     fail_factor += fail_factor // 3 + 6
                     pv = self.si[0].pv[:]
                 else:
+                    bound = ""
                     finished = True
                     pv = self.si[0].pv[:]
 
-                if val <= alpha or val >= beta: bound = "upperbound" if val <= alpha else "lowerbound"
-                else: bound = ""
+                pv = self.si[0].pv[:]
+                pv2 = self.find_pv(self.root_position)
+                
                 elapsed = time.time() - self.search_stats.time_start
                 self.info("depth", int(self.search_stats.ply["count"] / self.search_stats.ply["iter"]),
                           "seldepth", int(self.search_stats.ply["max"]),
-                          "score cp", val * 100 / EG_PIECES[Pt.P], bound,
+                          "score cp", str(int(val * 100 / EG_PIECES[Pt.P])) + bound,
                           "nodes", self.search_stats.node_count,
-                          "nps", self.search_stats.node_count * 1000 / elapsed,
+                          "nps", int(self.search_stats.node_count / elapsed),
                           "tbhits", self.search_stats.tb_hits,
-                          "time", elapsed,
-                          "pv", "".join([m.to_uci for m in pv]))
+                          "time", int(elapsed),
+                          "pv", " ".join([m.to_uci for m in pv]))
+                self.info("string most common move_counts:", sum(self.search_stats.move_count_pv.values()), self.search_stats.move_count_pv.most_common(5))
+                # self.info("string", "pv2", " ".join([m.to_uci for m in pv2]))
 
         # some stop condition but stop event didn't come yet, we have to wait
         if not self.stop_event.is_set() and (self.ponder or self.infinite):
@@ -359,6 +365,9 @@ class Engine(threading.Thread):
         #
         # Move iteration
         for move in moves:
+            
+            if list(map(str,node.moves)) == ['e2-e3'] and str(move) == 'e7-e6' and pv_node:
+                print("debug")
 
             if counter is not None and counter.move == move:
                 move.prob *= 1.25
@@ -475,33 +484,19 @@ class Engine(threading.Thread):
             if val > best_val:
                 prev_best = best_move
                 best_val, best_move = val, move
-                # if move_count > 5:
-                #     print("movecount", move_count, move, list(map(str,node.moves)))
                 best_move_is_capture = is_capture
                 if pv_node:
-                    # print("local best move", node.moves, move, "val:", val, "alpha", a_orig, "beta", b)
-                    # if is_root:
-                    #     print("new best move", move, "over", prev_best, "val:", val, "alpha", a_orig, "beta", b)
                     if val > a:
-                        # next_move_prob = None
+                        self.search_stats.move_count_pv[move_count] += 1
+                        # print(node.moves, move)
                         si[ply].pv = [move] + si[ply+1].pv
-                        si[ply+1].pv = []
-                        # if is_root:
-                        #     print_moves(si[ply].pv)
-                            # print("new best move (root,>a)", move, "val:", val, "alpha", a_orig, "beta", b)
-
+                        
             a = max(a, val)
-            # print(node.moves, move)
             if a >= b:
-                # if pv_node:
-                #     print("fail-high", node.moves, "\"", best_move, "\"", val, a_orig, b)
                 if best_move: 
                     self.add_killer(ply, best_move)
                 break
-            # elif a <= a_orig:
-                # if pv_node:
-                #     print("fail-low", node.moves, "\"", move, "\"", val, a_orig, b)
-
+            
         prior_move = node.last_move()
         if move_count == 0:
             if si[ply].excluded_move != Move(PieceType.NULL): best_val = a
@@ -516,38 +511,26 @@ class Engine(threading.Thread):
                 bonus = int(allowance) ** 2
                 # print("rewarding", node.side_to_move(), "for move", best_move, "with", bonus)
                 self.update_history(node.side_to_move(), best_move, bonus)
-                if prior_move and prior_move.piece_type != PieceType.NULL:
+                if prior_move and not prior_move.is_null_move():
                     self.update_counter(node.side_to_move() ^ 1, prior_move, best_move)
                     # penalize prior quiet move that allowed this good move
-                    if len(node.moves) > 1 and prior_move.piece_type != PieceType.NULL and not prior_move.move_type & MoveType.capture:
+                    if len(node.moves) > 1 and not prior_move.is_null_move and not prior_move.move_type & MoveType.capture:
                         # print("penalizing", node.side_to_move() ^ 1, "for move", prior_move, "with", -(bonus + 4))
                         self.update_history(node.side_to_move() ^ 1, prior_move, -(bonus + 4))
         elif best_val <= a_orig and allowance_to_depth(allowance) >= 2.5 and not best_move_is_capture:
             # reward the quiet move that caused this node to fail low
             bonus = int(allowance) ** 2
-            if len(node.moves) > 1 and prior_move.piece_type != PieceType.NULL and not prior_move.move_type & MoveType.capture:
+            if len(node.moves) > 1 and not prior_move.is_null_move() and not prior_move.move_type & MoveType.capture:
                 # print("rewarding", node.side_to_move() ^ 1, "for move", prior_move, "with", bonus)
                 self.update_history(node.side_to_move() ^ 1, prior_move, bonus)
-
-        # if best_val == LOW_BOUND:
-        #     print("best_val is LOW_BOUND, node.moves", node.moves, best_val)
-        # assert(best_val > LOW_BOUND)
-
+        
         best_move = best_move or Move(PieceType.NULL)
         if best_val <= a_orig: bound_type = tt.BoundType.HI_BOUND
         elif best_val >= b: bound_type = tt.BoundType.LO_BOUND
         else: bound_type = tt.BoundType.EXACT
         tt.save_tt_entry(tt.TTEntry(pos_key, best_move.compact(),
                                     bound_type, best_val, allowance, static_eval))
-
-        if is_root:
-            real_pv = a_orig < best_val < b
-            # print("node_count:", self.search_stats.node_count,
-            #       "avg ply:", self.search_stats.ply["count"] / (self.search_stats.ply["iter"] or 1),
-            #       "max ply:", self.search_stats.ply["max"],
-            #       "alpha", a, "beta", b, "val", best_val)
-            # print("REAL PV:" if real_pv else "pv:", si[ply].pv)
-            
+        
         return best_val
 
     def qsearch(self, node, ply, alpha, beta, allowance, pv_node, in_check):
@@ -559,11 +542,8 @@ class Engine(threading.Thread):
         self.search_stats.node_count += 1
 
         si = self.si
+        si[ply+1] = si[ply+1] or SearchInfo()
         
-        if pv_node:
-            si[ply] = SearchInfo()
-            si[ply+1] = SearchInfo()
-
         tt_hit = False
         a_orig = alpha
 
@@ -574,6 +554,7 @@ class Engine(threading.Thread):
         if not pv_node:
             if tt_hit and tt_entry.depth <= allowance:
                 if tt_entry.bound_type == tt.BoundType.EXACT:
+                    self.search_stats.update_ply_stat(ply, pv_node)
                     return tt_entry.value
 
                 if tt_entry.bound_type == tt.BoundType.LO_BOUND and tt_entry.value >= beta:
@@ -582,9 +563,7 @@ class Engine(threading.Thread):
                     beta = min(beta, tt_entry.value)
 
                 if alpha >= beta:
-                    self.search_stats.update_ply_stat(ply)
-                    # print(node.moves, tt_entry.value)
-                    # print(node.moves, "qsearch ttvalue", tt_entry.value)
+                    self.search_stats.update_ply_stat(ply, pv_node)
                     return tt_entry.value
 
         # to stop search of endless checks, including repetition checks
@@ -592,7 +571,7 @@ class Engine(threading.Thread):
             num_moves = len(node.moves)
             if allowance <= 1 and num_moves > 3 \
                and node.moves[-3].move_type & MoveType.check:
-                self.search_stats.update_ply_stat(ply)
+                self.search_stats.update_ply_stat(ply, pv_node)
                 static_eval = Evaluation(node).init_attacks().evaluate()
                 # print(node.moves, static_eval)
                 return static_eval
@@ -614,9 +593,9 @@ class Engine(threading.Thread):
                 # "stand pat"
                 if not tt_hit or tt_entry.bound_type == tt.BoundType.NONE:
                     tt.save_tt_entry(tt.TTEntry(node.zobrist_hash,
-                                            Move(PieceType.NULL, None, None).compact(),
+                                            Move(PieceType.NULL).compact(),
                                             tt.BoundType.LO_BOUND, best_value, allowance, static_eval))
-                self.search_stats.update_ply_stat(ply)
+                self.search_stats.update_ply_stat(ply, pv_node)
                 # if pv_node:
                 #     print("qs stand pat", node.moves, best_value, ">=", beta)
                 return best_value
@@ -672,21 +651,16 @@ class Engine(threading.Thread):
                 if score > alpha:
                     if pv_node and score < beta:
                         alpha = score
-                        # print("qs upgrade", node.moves, move, score, ">", best_move)
                         best_move = move
+                        # self.search_stats.move_count_pv += 1
+                        # embed()
                         si[ply].pv = [move] + si[ply+1].pv
-                        si[ply+1].pv = []
                     else:
-                        # assert score >= beta
                         if score >= beta:
                             tt.save_tt_entry(tt.TTEntry(node.zobrist_hash, move.compact(),
                                                         tt.BoundType.LO_BOUND, best_value, allowance, static_eval))
-                            self.search_stats.update_ply_stat(ply)
-                            # if pv_node:
-                            #     print("qs beta-cutoff", node.moves, move, score, ">=", beta)
+                            self.search_stats.update_ply_stat(ply, pv_node)
                             return score
-
-            # print("q", node.moves, move)
 
         if move_count == 0:
             if in_check and best_value == LOW_BOUND:
@@ -701,8 +675,7 @@ class Engine(threading.Thread):
         tt.save_tt_entry(tt.TTEntry(node.zobrist_hash, best_move.compact(),
                                     bound_type, best_value, allowance, static_eval))
 
-        self.search_stats.update_ply_stat(ply)
-
+        self.search_stats.update_ply_stat(ply, pv_node)
         return best_value
 
     def find_pv(self, root_pos):
@@ -714,14 +687,14 @@ class Engine(threading.Thread):
             found, tt_ind, tt_entry = tt.get_tt_index(pos.zobrist_hash)
             if found:
                 move = Move.move_uncompacted(tt_entry.move)
-                if move != 0 and tt_entry.bound_type in [tt.BoundType.EXACT, tt.BoundType.LO_BOUND]:
+                if not move.is_null_move() and tt_entry.bound_type in [tt.BoundType.EXACT, tt.BoundType.LO_BOUND]:
                     return True, move
                 else:
                     return False, move
             return False, 0
 
         found, move = find_next_move()
-        while found and len(moves) < 20:
+        while found and len(moves) < self.max_depth:
             moves.append(move)
             pos.make_move(move)
             found, move = find_next_move()
