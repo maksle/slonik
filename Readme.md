@@ -1,11 +1,11 @@
 # Slonik - Chess engine
-Slonik is a chess engine written in Python. It is command-line driven, and will soon be able to plug in to chess GUIs, by implementing the UCI interface, which is almost done.
+Slonik is a chess engine written in Python. It is command-line driven, and will soon plug into chess GUIs, by implementing the UCI interface.
 
 ## Why in Python?
-I chose Python because I wanted to try be able to iterate quickly. I now somewhat regret it, because speed is important for a chess program, and Python is considerably slow for this domain. It has allowed me to learn a lot quickly though.
+I chose Python to iterate quickly. It has allowed me to learn and implement more quickly, though Python is considerably slow for this domain.
 
 ## Features / Ideas
-The ideas for this engine are largely the ideas of existing engines out there. Chessprogramming.wikispaces.com is especially useful and the engine would not be as good as it is currently without it. I have also gotten a lot of help by looking at the source code for the well known open-source engine, Stockfish. Research articles on chess have also been read in the development of this engine. Of note was also the chess engine and white paper for Giraffe, which has a very novel and successful approach. I took from it the idea for a probabilistic based search, rather than depth based. Many ideas though are implemented from a depth based mindset. The engine features the following:
+The ideas for this engine are largely the ideas of existing engines out there. Chessprogramming.wikispaces.com has been an especially useful resource. The source code for the well known open-source engine, Stockfish, was also especially useful, as well as various research articles in the field of chess AI. Of note also the chess engine and white-paper for Giraffe, which has a novel and successful approach (purely TDD for evaluation). I took from Giraffe the idea for a probabilistic based search. However, many ideas are implemented from a depth based mindset. The engine features the following:
 
 - minimax search (negamax) with alpha-beta pruning
 - quiescence search
