@@ -23,6 +23,8 @@ The ideas for this engine are largely the ideas of existing engines out there. C
 - history heuristic (piece/square keys of good moves)
 - piece-square table values
 
+Slonik uses magic bitboards, a perfect hashing algorithm using constructive collisions of piece-square and board occupancy combinations. Better magic numbers that encode more collisions with less bits are known, but I find my own magic numbers (see `find_magic.py`). Magic bitboards were a small improvement over the kogge-stone algorithm for sliding piece move generation. Another major change was piece attacks. Previously Slonik used incremental piece attacks, and it now calculates piece attacks at position evaluation time. Unclear to me if that was a win or not.
+
 # Plans
 The major plan for this engine is to try out more novel ideas, probably on top of the current ideas, in a simliar vein to what the chess engine Giraffe has done. That is probably the use of Temporal Difference Learning, and other reinforcement learning ideas. I may also look into porting this to a faster language, or perhaps implement parts of it in Cython.
 
