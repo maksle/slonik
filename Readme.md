@@ -1,5 +1,5 @@
 # Slonik - Chess engine
-Slonik is a chess engine written in Python. It is command-line driven, and will soon plug into chess GUIs, by implementing the UCI interface.
+Slonik is a chess engine, which means that it plays chess. It is written in Python. It is command-line driven, and will soon plug into existing chess GUIs, by implementing the UCI interface. Slonik means "little elephant" in Russian.
 
 ## Why in Python?
 I chose Python to iterate quickly, which has allowed me to learn and implement more ideas, though Python is considerably slow for this domain.
