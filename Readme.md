@@ -1,5 +1,5 @@
 # Slonik - Chess engine
-Slonik is a chess engine, which means that it plays chess. It is written in Python. It is command-line driven, and will soon plug into existing chess GUIs, by implementing the UCI interface. Slonik means "little elephant" in Russian.
+Slonik is a UCI chess engine, which means that it plays chess. It is written in Python. To play against it or analyze positions with it, plug it into a graphical chess interface, such as Scid vs PC or Chessbase. Slonik means "little elephant" in Russian.
 
 ## Why in Python?
 I chose Python to iterate quickly, which has allowed me to learn and implement more ideas, though Python is considerably slow for this domain.
@@ -28,6 +28,5 @@ Slonik uses magic bitboards, a perfect hashing algorithm using constructive coll
 # Plans
 The major plan for this engine is to try out more novel ideas, probably on top of the current ideas, in a simliar vein to what the chess engine Giraffe has done. That is probably the use of Temporal Difference Learning, and other reinforcement learning ideas. I may also look into porting this to a faster language, or perhaps implement parts of it in Cython.
 
-- complete the UCI implementation
 - evaluation tuning, and AI evaluation
 - speed optimizations and/or port to another language
