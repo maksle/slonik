@@ -37,8 +37,15 @@ class SearchInfo():
 class SearchStats():
     def __init__(self):
         self.reset()
+
+        # To keep track of search elapse time and for stop search checks
         self.time_start = 0
+
+        # Keep track of checkpoints to throttle the stop search check
         self.checkpoints = 0
+
+        # Move count at which new best move was found. If the move count is low
+        # we are sorting the candidate moves well
         self.move_count_pv = Cntr()
         
     def update_ply_stat(self, ply, pv_node):
@@ -48,45 +55,78 @@ class SearchStats():
             self.ply['max'] = max(self.ply['max'], ply)
 
     def reset(self):
+        # Table base hits counter for uci output
         self.tb_hits = 0
+        # Depth count stats
         self.ply = dict(count=0, iter=0, max=0)
+        # Node count for uci output
         self.node_count = 0
         
 def depth_to_allowance(depth):
+    """convert depth to approximate equivalent allowance"""
     return int(math.ceil(.193006 * math.e ** (1.29829 * depth)))
 
 def allowance_to_depth(allowance):
+    """convert allowance to approximate equivalent depth"""
     base = allowance / .193006
     if base <= 0: return 0
     return round(math.log(base) / 1.29829, 1)
 
 def print_moves(moves):
-        print(' '.join(map(str,moves)))
+    """Prints the moves to short algebraic notation"""
+    print(' '.join(map(str,moves)))
 
 
 class Engine(threading.Thread):
+    # Engine runs in a thread so we can respond to uci commands while thinking
+
     def __init__(self):
         super(Engine, self).__init__()
+
+        # root position from which to search
         self.root_position = Position()
+
+        # moves available in root position, can be set by uci commands
         self.root_moves = None
+
+        # stack info and for finding principal variations
         self.si = [None] * 64
+
+        # ply counts and other stats
         self.search_stats = SearchStats()
+
+        # heuristics
         self.killer_moves = defaultdict(list)
         self.counter_history = [[[None for sq in range(64)] for piece in range(13)] for side in range(2)]
         self.move_history = [[[None for sq in range(64)] for piece in range(13)] for side in range(2)]
-        self.debug = False
+
+        # to enable debug statements
+        self.debug = True
+        
+        # printing functions, as for uci output
         self.info = print
         self.debug_info = print
+
+        # uci ponder mode
         self.ponder = False
+        # uci infinite thinking mode
         self.infinite = False
+        # uci movetime mode
         self.movetime = None
+        # uci max nodes mode
         self.max_nodes = None
+        # uci max depth mode can set this
         self.max_depth = 64
+
+        # events to respond to uci commands
         self.exec_event = threading.Event()
         self.stop_event = threading.Event()
         self.quit_event = threading.Event()
+        self.is_stopped = threading.Event()
+        self.is_stopped.set()
 
     def new_game(self, fen="", uci_moves=None):
+        """called by uci "position" command to set new root position"""
         if fen == "":
             self.root_position = Position()
         else:
@@ -95,17 +135,19 @@ class Engine(threading.Thread):
             for uci_move in uci_moves:
                 move = self.root_position.uci_move_to_move(uci_move)
                 self.root_position.make_move(move)
-    
+            
     def run(self):
+        """override of threading.Thread method. This kicks off the thread"""
         while self.exec_event.wait():
             if self.quit_event.is_set():
                 sys.exit()
             self.iterative_deepening()
             self.stop_event.clear()
+            self.is_stopped.set()
             self.exec_event.clear()
             if self.quit_event.is_set():
                 sys.exit()
-
+    
     def stop(self):
         self.stop_event.set()
         
@@ -115,17 +157,26 @@ class Engine(threading.Thread):
         self.exec_event.set()
         
     def go(self):
+        """respond to uci "go" command"""
+        # print("is stopped before..?", self.is_stopped.is_set())
+        self.is_stopped.wait()
+        self.is_stopped.clear()
+
         self.search_stats.node_count = 0
         self.search_stats.time_start = time.time()
+        self.stop_event.clear()
         self.exec_event.set()
-
+        
     def checkpoint(self):
+        """Check if we should stop searching"""
         # max_depth is taken care of in iterative_deepening()
         if (self.max_nodes and self.search_stats.node_count >= self.max_nodes) \
            or (self.movetime and (time.time() - self.search_stats.time_start) >= self.movetime):
             self.stop_event.set()
         
     def init_root_moves(self, uci_moves=None):
+        """Set by the "searchmoves" option of the uci "go" command, which limits
+        the moves to search in the root position"""
         if uci_moves is None:
             self.root_moves = self.root_position.generate_moves_all(legal=True)
         else:
@@ -133,6 +184,7 @@ class Engine(threading.Thread):
             
     # History heuristic
     def update_history(self, side, move, value):
+        """Maintain a score for piece/square composite key as a rudimentary heuristic"""
         entry = self.move_history[side][move.piece_type][bit_position(move.to_sq)]
         adjusted_val = value
         if entry:
@@ -145,6 +197,7 @@ class Engine(threading.Thread):
 
     # Counters heuristic
     def update_counter(self, side, move, counter):
+        """Maintain record of refuted/refuter move pairs"""
         entry = self.counter_history[side][move.piece_type][bit_position(move.to_sq)]
         self.counter_history[side][move.piece_type][bit_position(move.to_sq)] = Counter(counter)
 
@@ -154,6 +207,7 @@ class Engine(threading.Thread):
 
     # Killer heuristic
     def add_killer(self, ply, move):
+        """Maintain list of moves found to be strong at the given depth"""
         if move in self.killer_moves[ply]:
             return
         if len(self.killer_moves[ply]) == 3:
@@ -161,7 +215,7 @@ class Engine(threading.Thread):
         self.killer_moves[ply].append(move)
 
     def make_move(self, move):
-        """Book-keeping after move is made"""
+        """Book-keeping after a move is played on the board"""
         for side in range(2): 
             for piece in range(13): 
                 for square in range(64): 
@@ -176,6 +230,7 @@ class Engine(threading.Thread):
     def iterative_deepening(self):
         """Search deeper each iteration until stop condition. If fail high or
         fail low, widen the aspiration window and search again."""
+        
         alpha = LOW_BOUND
         beta = HIGH_BOUND
 
@@ -184,7 +239,7 @@ class Engine(threading.Thread):
         val = 0
 
         pv = []
-        
+
         while not self.stop_event.is_set() \
               and depth < self.max_depth \
               and (not self.max_nodes or self.search_stats.node_count < self.max_nodes) \
@@ -232,7 +287,7 @@ class Engine(threading.Thread):
                 pv2 = self.find_pv(self.root_position)
                 
                 elapsed = time.time() - self.search_stats.time_start
-                self.info("depth", int(self.search_stats.ply["count"] / self.search_stats.ply["iter"]),
+                self.info("depth", int(self.search_stats.ply["count"] / (self.search_stats.ply["iter"] or 1)),
                           "seldepth", int(self.search_stats.ply["max"]),
                           "score cp", str(int(val * 100 / EG_PIECES[Pt.P])) + bound,
                           "nodes", self.search_stats.node_count,
@@ -258,7 +313,7 @@ class Engine(threading.Thread):
         """Search for best move in position `node` within alpha and beta window."""
         assert(pv_node or a == b-1)
 
-        if self.search_stats.checkpoints > 5000:
+        if self.search_stats.checkpoints > 5000: # throttle
            self.search_stats.checkpoints = 0               
            self.checkpoint()
 
@@ -485,11 +540,9 @@ class Engine(threading.Thread):
                 prev_best = best_move
                 best_val, best_move = val, move
                 best_move_is_capture = is_capture
-                if pv_node:
-                    if val > a:
-                        self.search_stats.move_count_pv[move_count] += 1
-                        # print(node.moves, move)
-                        si[ply].pv = [move] + si[ply+1].pv
+                if pv_node and val > a:
+                    self.search_stats.move_count_pv[move_count] += 1
+                    si[ply].pv = [move] + si[ply+1].pv
                         
             a = max(a, val)
             if a >= b:

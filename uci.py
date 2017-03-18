@@ -1,3 +1,5 @@
+#!/usr/bin/env python3 
+
 import cmd
 import sys
 from search import Engine
@@ -6,26 +8,36 @@ from search import Engine
 class Entry(cmd.Cmd):
     intro = "Slonik by M. Grinman"
     prompt = ""
-    file = None
-
+    
     def __init__(self):
         super(Entry, self).__init__()
+
+        self.file = open('output.log', 'w')
         
         self.engine = Engine()
         self.engine.info = self.uci_info
         self.engine.debug_info = self.uci_debug
         self.engine.start()
         
+    def respond(self, *args):
+        print(*args, file=self.stdout, flush=True)
+        # print(*args, file=self.file, flush=True)
+        
+    def precmd(self, line):
+        # print(line, file=self.file, flush=True)
+        return line
+        
     def uci_info(self, *info_str):
-        print("info", *info_str, file=self.stdout, flush=True)
+        self.respond("printing")
+        self.respond("info", *info_str)
         
     def uci_debug(self, *info_str):
         self.uci_info("string", *info_str)
         
     def do_uci(self, args):
-        print("id name slonik", file=self.stdout, flush=True)
-        print("id author Maksim Grinman", file=self.stdout, flush=True)
-        print("uciok", file=self.stdout, flush=True)
+        self.respond("id name slonik")
+        self.respond("id author Maksim Grinman")
+        self.respond("uciok")
 
     def do_debug(self, args):
         params = args.split()
@@ -35,27 +47,27 @@ class Entry(cmd.Cmd):
             elif params[0] == 'off':
                 self.engine.debug = False
 
-    def do_is_ready(self, args):
-        print("readyok", file=self.stdout, flush=True)
+    def do_isready(self, args):
+        self.respond("readyok")
 
     def do_setoption(self, args):
         return
 
     def do_ucinewgame(self, args):
         self.engine.stop()
-        print("readyok", file=self.stdout, flush=True)
+        self.respond("readyok")
 
     def do_position(self, args):
         """position [fen <fenstring> | startpos ]  moves <move1> .... <movei>"""
         params = args.split()
-        if args[0] == "startpos":
-            args.pop(0)
+        if params[0] == "startpos":
+            params.pop(0)
             fen = ""
-        elif args[0] == "fen":
-            args.pop(0)
-            fen = args[0]
-            args.pop(0)
-        moves = [arg for arg in args if arg != "moves"]
+        elif params[0] == "fen":
+            params.pop(0)
+            fen = params[0]
+            params.pop(0)
+        moves = [m for m in params if m != "moves"]
         self.engine.stop()
         self.engine.new_game(fen=fen, uci_moves=moves)
 
@@ -85,7 +97,7 @@ class Entry(cmd.Cmd):
         try: index = params.index("infinite")
         except: pass
         else: self.engine.infinite = True
-
+            
         self.engine.go()
 
     def do_stop(self, args):
