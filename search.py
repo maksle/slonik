@@ -12,9 +12,13 @@ from evals import *
 from operator import itemgetter
 import threading
 import itertools
-import tt
+import logging
+import logging_config
 import sys
+import tt
 
+
+log = logging.getLogger(__name__)
 
 # history moves
 History = namedtuple('History', ['move', 'value'])
@@ -85,6 +89,7 @@ class Engine(threading.Thread):
 
         # root position from which to search
         self.root_position = Position()
+        self.next_root_position = None
 
         # moves available in root position, can be set by uci commands
         self.root_moves = None
@@ -128,13 +133,14 @@ class Engine(threading.Thread):
     def new_game(self, fen="", uci_moves=None):
         """called by uci "position" command to set new root position"""
         if fen == "":
-            self.root_position = Position()
+            next_position = Position()
         else:
-            self.root_position = Position.from_fen(fen)
+            next_position = Position.from_fen(fen)
         if uci_moves:
             for uci_move in uci_moves:
-                move = self.root_position.uci_move_to_move(uci_move)
-                self.root_position.make_move(move)
+                move = next_position.uci_move_to_move(uci_move)
+                next_position.make_move(move)
+        self.next_root_position = next_position
             
     def run(self):
         """override of threading.Thread method. This kicks off the thread"""
@@ -143,11 +149,11 @@ class Engine(threading.Thread):
                 sys.exit()
             self.iterative_deepening()
             self.stop_event.clear()
-            self.is_stopped.set()
             self.exec_event.clear()
+            self.is_stopped.set()
             if self.quit_event.is_set():
                 sys.exit()
-    
+        
     def stop(self):
         self.stop_event.set()
         
@@ -159,11 +165,14 @@ class Engine(threading.Thread):
     def go(self):
         """respond to uci "go" command"""
         # print("is stopped before..?", self.is_stopped.is_set())
+        self.stop_event.set()
         self.is_stopped.wait()
         self.is_stopped.clear()
 
         self.search_stats.node_count = 0
         self.search_stats.time_start = time.time()
+        if self.next_root_position:
+            self.root_position, self.next_root_position = self.next_root_position, None
         self.stop_event.clear()
         self.exec_event.set()
         
@@ -240,7 +249,7 @@ class Engine(threading.Thread):
         val = 0
 
         pv = []
-
+        
         while not self.stop_event.is_set() \
               and depth < self.max_depth \
               and (not self.max_nodes or self.search_stats.node_count < self.max_nodes) \
@@ -257,7 +266,11 @@ class Engine(threading.Thread):
             
             while not finished:
                 if self.stop_event.is_set(): break
-                val = self.search(self.root_position, 0, alpha, beta, allowance, True, False)
+                try:
+                    val = self.search(self.root_position, 0, alpha, beta, allowance, True, False)
+                except:
+                    log.exception("search error")
+                    raise
                 if self.stop_event.is_set(): break
                 
                 if val <= alpha:
@@ -288,25 +301,27 @@ class Engine(threading.Thread):
                 pv2 = self.find_pv(self.root_position)
                 
                 elapsed = time.time() - self.search_stats.time_start
-                self.info("depth", int(self.search_stats.ply["count"] / (self.search_stats.ply["iter"] or 1)),
+                self.info("info depth", int(self.search_stats.ply["count"] / (self.search_stats.ply["iter"] or 1)),
                           "seldepth", int(self.search_stats.ply["max"]),
                           "score cp", str(int(val * 100 / EG_PIECES[Pt.P])) + bound,
                           "nodes", self.search_stats.node_count,
-                          "nps", int(self.search_stats.node_count / elapsed),
+                          "nps", int(self.search_stats.node_count / (elapsed or 1)),
                           "tbhits", self.search_stats.tb_hits,
                           "time", int(elapsed),
                           "pv", " ".join([m.to_uci for m in pv]))
-                self.info("string most common move_counts:", sum(self.search_stats.move_count_pv.values()), self.search_stats.move_count_pv.most_common(5))
+                self.debug_info("most common move_counts:", sum(self.search_stats.move_count_pv.values()), self.search_stats.move_count_pv.most_common(5))
                 # self.info("string", "pv2", " ".join([m.to_uci for m in pv2]))
-
+        
         # some stop condition but stop event didn't come yet, we have to wait
         if not self.stop_event.is_set() and (self.ponder or self.infinite):
             self.stop_event.wait()
-
+            
         if len(pv) > 1:
             self.info("bestmove", pv[0].to_uci, "ponder", pv[1].to_uci)
         elif len(pv) > 0:
             self.info("bestmove", pv[0].to_uci)
+        # else:
+        #     log.debug("no pv, no bestmove, exiting iterative_deepening")
         
         return val, self.si
 
@@ -405,6 +420,7 @@ class Engine(threading.Thread):
         best_move_is_capture = False
         best_val = val = LOW_BOUND
         move_count = 0
+        best_val_move_count = 0
 
         next_move_prob = None
 
@@ -422,9 +438,6 @@ class Engine(threading.Thread):
         # Move iteration
         for move in moves:
             
-            if list(map(str,node.moves)) == ['e2-e3'] and str(move) == 'e7-e6' and pv_node:
-                print("debug")
-
             if counter is not None and counter.move == move:
                 move.prob *= 1.25
             elif not improving:

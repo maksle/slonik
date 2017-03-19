@@ -5,6 +5,9 @@ from move import *
 import tt
 import math
 import itertools
+import logging
+
+log = logging.getLogger(__name__)
 
 Pt = PieceType
 
@@ -353,7 +356,7 @@ class Position():
             moved.make_move(move)
             if moved.in_check():
                 return False
-
+        
         # pinned pieces can only move in line with the king or it's illegal
         if self.pinned[Pt.piece(Pt.K, us)] & move.from_sq \
            and not LINE_SQS[bit_position(self.pieces[Pt.piece(Pt.K, us)])][bit_position(move.from_sq)] & move.to_sq:
@@ -386,7 +389,7 @@ class Position():
             occupied |= move.to_sq
             if Pt.base_type(move.piece_type) == Pt.K:
                 sq = move.to_sq
-
+        
         b = knight_attack(sq)
         if b & self.pieces[Pt.piece(Pt.N, them)]:
             return True

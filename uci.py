@@ -3,11 +3,11 @@
 import cmd
 import sys
 import logging
+import logging_config
+from itertools import takewhile, dropwhile
 from search import Engine
 
-
-LOG_FILENAME = 'logging.log'
-logging.basicConfig(filename=LOG_FILENAME, level=logging.DEBUG)
+log = logging.getLogger(__name__)
 
 
 class Entry(cmd.Cmd):
@@ -33,11 +33,10 @@ class Entry(cmd.Cmd):
         return line
         
     def uci_info(self, *info_str):
-        self.respond("printing")
-        self.respond("info", *info_str)
+        self.respond(*info_str)
         
     def uci_debug(self, *info_str):
-        self.uci_info("string", *info_str)
+        self.uci_info("info string", *info_str)
         
     def do_uci(self, args):
         self.respond("id name slonik")
@@ -70,11 +69,11 @@ class Entry(cmd.Cmd):
             fen = ""
         elif params[0] == "fen":
             params.pop(0)
-            fen = params[0]
-            params.pop(0)
+            fen = takewhile(lambda x: x != "moves", params)
+        params = dropwhile(lambda x: x != "moves", params)
         moves = [m for m in params if m != "moves"]
         self.engine.stop()
-        self.engine.new_game(fen=fen, uci_moves=moves)
+        self.engine.new_game(fen=' '.join(list(fen)), uci_moves=moves)
 
     def do_go(self, args):
         params = args.split()
@@ -124,6 +123,6 @@ if __name__ == '__main__':
     try:
         entry.cmdloop()
     except:
+        log.exception("Top-level exception")
         entry.cleanup()
-        logging.exception("Top-level exception")
         raise
