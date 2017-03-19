@@ -2,7 +2,12 @@
 
 import cmd
 import sys
+import logging
 from search import Engine
+
+
+LOG_FILENAME = 'logging.log'
+logging.basicConfig(filename=LOG_FILENAME, level=logging.DEBUG)
 
 
 class Entry(cmd.Cmd):
@@ -21,10 +26,10 @@ class Entry(cmd.Cmd):
         
     def respond(self, *args):
         print(*args, file=self.stdout, flush=True)
-        # print(*args, file=self.file, flush=True)
+        print(*args, file=self.file, flush=True)
         
     def precmd(self, line):
-        # print(line, file=self.file, flush=True)
+        print(line, file=self.file, flush=True)
         return line
         
     def uci_info(self, *info_str):
@@ -120,4 +125,5 @@ if __name__ == '__main__':
         entry.cmdloop()
     except:
         entry.cleanup()
+        logging.exception("Top-level exception")
         raise

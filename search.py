@@ -186,9 +186,10 @@ class Engine(threading.Thread):
     def update_history(self, side, move, value):
         """Maintain a score for piece/square composite key as a rudimentary heuristic"""
         entry = self.move_history[side][move.piece_type][bit_position(move.to_sq)]
-        adjusted_val = value
+        if PieceType.base_type(move.piece_type) == PieceType.K:
+            value = value - 2
         if entry:
-            adjusted_val = entry.value + .2 * (value - entry.value)
+            adjusted_val = entry.value + .3 * (.9 * value - entry.value)
             self.move_history[side][move.piece_type][bit_position(move.to_sq)] = History(move, adjusted_val)
 
     def lookup_history(self, side, move):
@@ -540,8 +541,8 @@ class Engine(threading.Thread):
                 prev_best = best_move
                 best_val, best_move = val, move
                 best_move_is_capture = is_capture
+                best_val_move_count = move_count
                 if pv_node and val > a:
-                    self.search_stats.move_count_pv[move_count] += 1
                     si[ply].pv = [move] + si[ply+1].pv
                         
             a = max(a, val)
@@ -549,6 +550,8 @@ class Engine(threading.Thread):
                 if best_move: 
                     self.add_killer(ply, best_move)
                 break
+        
+        self.search_stats.move_count_pv[best_val_move_count] += 1
             
         prior_move = node.last_move()
         if move_count == 0:
@@ -561,7 +564,7 @@ class Engine(threading.Thread):
                 best_val = DRAW_VALUE
         elif best_move:
             if best_val > a_orig and not best_move_is_capture:
-                bonus = int(allowance) ** 2
+                bonus = int(allowance)
                 # print("rewarding", node.side_to_move(), "for move", best_move, "with", bonus)
                 self.update_history(node.side_to_move(), best_move, bonus)
                 if prior_move and not prior_move.is_null_move():
@@ -572,7 +575,7 @@ class Engine(threading.Thread):
                         self.update_history(node.side_to_move() ^ 1, prior_move, -(bonus + 4))
         elif best_val <= a_orig and allowance_to_depth(allowance) >= 2.5 and not best_move_is_capture:
             # reward the quiet move that caused this node to fail low
-            bonus = int(allowance) ** 2
+            bonus = int(allowance)
             if len(node.moves) > 1 and not prior_move.is_null_move() and not prior_move.move_type & MoveType.capture:
                 # print("rewarding", node.side_to_move() ^ 1, "for move", prior_move, "with", bonus)
                 self.update_history(node.side_to_move() ^ 1, prior_move, bonus)
