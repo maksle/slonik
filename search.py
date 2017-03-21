@@ -68,13 +68,13 @@ class SearchStats():
         
 def depth_to_allowance(depth):
     """convert depth to approximate equivalent allowance"""
-    return int(math.ceil(.193006 * math.e ** (1.29829 * depth)))
+    return int(math.ceil(.193006 * math.e ** (1.29829 * depth))) * 2
 
 def allowance_to_depth(allowance):
     """convert allowance to approximate equivalent depth"""
     base = allowance / .193006
     if base <= 0: return 0
-    return round(math.log(base) / 1.29829, 1)
+    return round(math.log(base) / 1.29829, 1) / 2
 
 def print_moves(moves):
     """Prints the moves to short algebraic notation"""
@@ -206,8 +206,10 @@ class Engine(threading.Thread):
     def update_history(self, side, move, value):
         """Maintain a score for piece/square composite key as a rudimentary heuristic"""
         entry = self.move_history[side][move.piece_type][bit_position(move.to_sq)]
+        learn_rate = .3
+        discount = .9
         if entry:
-            adjusted_val = entry.value + .3 * (.9 * value - entry.value)
+            adjusted_val = entry.value + learn_rate * (discount * value - entry.value)
             self.move_history[side][move.piece_type][bit_position(move.to_sq)] = History(move, adjusted_val)
 
     def lookup_history(self, side, move):
@@ -233,17 +235,17 @@ class Engine(threading.Thread):
             self.killer_moves[ply].pop()
         self.killer_moves[ply].append(move)
 
-    def make_move(self, move):
-        """Book-keeping after a move is played on the board"""
-        for side in range(2): 
-            for piece in range(13): 
-                for square in range(64): 
-                    entry = self.move_history[side][piece][square] 
-                    if entry is not None:
-                        # Discount current heuristic values
-                        self.move_history[side][piece][square] = History(entry.move, entry.value // 2)
+    # def make_move(self, move):
+    #     """Book-keeping after a move is played on the board"""
+    #     for side in range(2): 
+    #         for piece in range(13): 
+    #             for square in range(64): 
+    #                 entry = self.move_history[side][piece][square] 
+    #                 if entry is not None:
+    #                     # Discount current heuristic values
+    #                     self.move_history[side][piece][square] = History(entry.move, entry.value // 2)
         
-        self.search_stats.reset()
+    #     self.search_stats.reset()
 
     # Search
     def iterative_deepening(self):
@@ -314,6 +316,12 @@ class Engine(threading.Thread):
                           "tbhits", self.search_stats.tb_hits,
                           "time", int(elapsed),
                           "pv", " ".join([m.to_uci for m in pv]))
+
+                # log.info("allowance, avg pv ply, max pv ply: %s, %s, %s",
+                #          allowance,
+                #          int(self.search_stats.ply["count"] / (self.search_stats.ply["iter"] or 1)),
+                #          int(self.search_stats.ply["max"]))
+
                 # self.debug_info("most common move_counts:", sum(self.search_stats.move_count_pv.values()), self.search_stats.move_count_pv.most_common(5))
                 # self.info("string", "pv2", " ".join([m.to_uci for m in pv2]))
 
@@ -439,8 +447,8 @@ class Engine(threading.Thread):
             pseudo_moves = node.generate_moves_all()
         moves = self.sort_moves(pseudo_moves, node, si, ply, False)
 
-        if is_root:
-            log.debug("pv: %s, \nmoves considering: %s", si[ply].pv, moves)
+        # if is_root:
+        #     log.debug("pv: %s, \nmoves considering: %s", si[ply].pv, moves)
             
         counter = None
         if len(node.moves):
@@ -572,7 +580,8 @@ class Engine(threading.Thread):
                         
             a = max(a, val)
             if a >= b:
-                if best_move: 
+                # captures already get searched before killers
+                if move == best_move and not is_capture: 
                     self.add_killer(ply, best_move)
                 break
         
@@ -859,39 +868,32 @@ class Engine(threading.Thread):
             see, hist = cs[0]
             move = cs[1]
             if see > 0:
-                move.prob = .8
+                move.prob = 2
                 cap_see_gt0.append(move)
             elif see == 0:
-                move.prob = .7
+                move.prob = 1.1
                 cap_see_eq0.append(move)
             else:
-                move.prob = .5
+                move.prob = .9
                 cap_see_lt0.append(move)
 
-        for move in from_pv: move.prob = .9
-        for move in checks: move.prob = .65
-        for move in counters: move.prob = .65
-        for move in killers: move.prob = .65
+        for move in from_pv: move.prob = 3
+        for move in checks: move.prob = 2
+        for move in counters: move.prob = 2
+        for (ind, move) in enumerate(killers):
+            move.prob = 1 + (ind * .1)
+        for move in other_moves: move.prob = 1
+        
+        result = list(itertools.chain(from_pv, cap_see_gt0, checks, counters, killers, cap_see_eq0, other_moves, cap_see_lt0))
 
-        rest = other_moves + cap_see_lt0
+        prob_sum = 0
+        for move in result:
+            prob_sum += move.prob
+        for move in result:
+            move.prob /= prob_sum
 
-        # gaussian formula for 'rest' moves
-        if len(rest):
-            a = -.126 * math.log(.001 * len(rest))
-        else:
-            a = 0
-        mu = 0
-        sigma_sq = len(rest)
-
-        total_prob = 0
-        for ind, move in enumerate(rest):
-            move.prob = a * math.e**(-(ind+1 - mu)**2 / (2 * sigma_sq))
-            total_prob += move.prob
-        if len(rest) and total_prob < 1:
-            rest[0].prob += 1 - total_prob
-
-        # print([move.prob for move in result])
-        result = list(itertools.chain(from_pv, cap_see_gt0, cap_see_eq0, checks, counters, killers, other_moves, cap_see_lt0))
+        # log.info([move.prob for move in result])
+            
         return result
     
     def perft(self, pos, depth, is_root):
