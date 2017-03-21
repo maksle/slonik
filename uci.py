@@ -39,6 +39,7 @@ class Entry(cmd.Cmd):
         self.uci_info("info string", *info_str)
         
     def do_uci(self, args):
+        log.debug("got here")
         self.respond("id name slonik")
         self.respond("id author Maksim Grinman")
         self.respond("uciok")

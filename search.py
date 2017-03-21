@@ -103,7 +103,7 @@ class Engine(threading.Thread):
         # heuristics
         self.killer_moves = defaultdict(list)
         self.counter_history = [[[None for sq in range(64)] for piece in range(13)] for side in range(2)]
-        self.move_history = [[[None for sq in range(64)] for piece in range(13)] for side in range(2)]
+        self.move_history = self.init_move_history()
 
         # to enable debug statements
         self.debug = True
@@ -129,7 +129,7 @@ class Engine(threading.Thread):
         self.quit_event = threading.Event()
         self.is_stopped = threading.Event()
         self.is_stopped.set()
-
+    
     def new_game(self, fen="", uci_moves=None):
         """called by uci "position" command to set new root position"""
         if fen == "":
@@ -147,7 +147,11 @@ class Engine(threading.Thread):
         while self.exec_event.wait():
             if self.quit_event.is_set():
                 sys.exit()
-            self.iterative_deepening()
+            try:
+                self.iterative_deepening()
+            except:
+                log.exception("search error")
+                raise
             self.stop_event.clear()
             self.exec_event.clear()
             self.is_stopped.set()
@@ -173,6 +177,7 @@ class Engine(threading.Thread):
         self.search_stats.time_start = time.time()
         if self.next_root_position:
             self.root_position, self.next_root_position = self.next_root_position, None
+            self.init_move_history()
         self.stop_event.clear()
         self.exec_event.set()
         
@@ -183,6 +188,12 @@ class Engine(threading.Thread):
            or (self.movetime and (time.time() - self.search_stats.time_start) >= self.movetime):
             self.stop_event.set()
         
+    def init_move_history(self):
+        return [[[
+            History(Move(piece, to_sq=1<<sq), psqt_value_sq(piece, 1<<sq, side))
+            for sq in range(64)] for piece in range(13)] for side in range(2)
+        ]
+     
     def init_root_moves(self, uci_moves=None):
         """Set by the "searchmoves" option of the uci "go" command, which limits
         the moves to search in the root position"""
@@ -195,8 +206,6 @@ class Engine(threading.Thread):
     def update_history(self, side, move, value):
         """Maintain a score for piece/square composite key as a rudimentary heuristic"""
         entry = self.move_history[side][move.piece_type][bit_position(move.to_sq)]
-        if PieceType.base_type(move.piece_type) == PieceType.K:
-            value = value - 2
         if entry:
             adjusted_val = entry.value + .3 * (.9 * value - entry.value)
             self.move_history[side][move.piece_type][bit_position(move.to_sq)] = History(move, adjusted_val)
@@ -266,11 +275,7 @@ class Engine(threading.Thread):
             
             while not finished:
                 if self.stop_event.is_set(): break
-                try:
-                    val = self.search(self.root_position, 0, alpha, beta, allowance, True, False)
-                except:
-                    log.exception("search error")
-                    raise
+                val = self.search(self.root_position, 0, alpha, beta, allowance, True, False)
                 if self.stop_event.is_set(): break
                 
                 if val <= alpha:
@@ -298,7 +303,7 @@ class Engine(threading.Thread):
                     pv = self.si[0].pv[:]
 
                 pv = self.si[0].pv[:]
-                pv2 = self.find_pv(self.root_position)
+                # pv2 = self.find_pv(self.root_position)
                 
                 elapsed = time.time() - self.search_stats.time_start
                 self.info("info depth", int(self.search_stats.ply["count"] / (self.search_stats.ply["iter"] or 1)),
@@ -309,8 +314,10 @@ class Engine(threading.Thread):
                           "tbhits", self.search_stats.tb_hits,
                           "time", int(elapsed),
                           "pv", " ".join([m.to_uci for m in pv]))
-                self.debug_info("most common move_counts:", sum(self.search_stats.move_count_pv.values()), self.search_stats.move_count_pv.most_common(5))
+                # self.debug_info("most common move_counts:", sum(self.search_stats.move_count_pv.values()), self.search_stats.move_count_pv.most_common(5))
                 # self.info("string", "pv2", " ".join([m.to_uci for m in pv2]))
+
+                # log.info("allowance, nodes, elapsed: %s %s %s", allowance, self.search_stats.node_count, elapsed)
         
         # some stop condition but stop event didn't come yet, we have to wait
         if not self.stop_event.is_set() and (self.ponder or self.infinite):
@@ -327,17 +334,18 @@ class Engine(threading.Thread):
 
     def search(self, node, ply, a, b, allowance, pv_node, cut_node):
         """Search for best move in position `node` within alpha and beta window."""
-        assert(pv_node or a == b-1)
 
+        self.search_stats.node_count += 1
+        
         if self.search_stats.checkpoints > 5000: # throttle
            self.search_stats.checkpoints = 0               
            self.checkpoint()
 
         if self.stop_event.is_set():
             return STOP_VALUE #Evaluation(node).init_attacks().evaluate()
-                          
-        self.search_stats.node_count += 1
 
+        assert(pv_node or a == b-1)
+        
         a_orig = a
         is_root = pv_node and ply == 0
 
@@ -364,6 +372,7 @@ class Engine(threading.Thread):
 
         if found and tt_entry.static_eval is not None:
             si[ply].static_eval = static_eval = tt_entry.static_eval
+            self.search_stats.tb_hits += 1
         else:
             if node.last_move() == Move(PieceType.NULL):
                 si[ply].static_eval = static_eval = -si[ply-1].static_eval + 40
@@ -430,6 +439,9 @@ class Engine(threading.Thread):
             pseudo_moves = node.generate_moves_all()
         moves = self.sort_moves(pseudo_moves, node, si, ply, False)
 
+        if is_root:
+            log.debug("pv: %s, \nmoves considering: %s", si[ply].pv, moves)
+            
         counter = None
         if len(node.moves):
             counter = self.lookup_counter(node.side_to_move() ^ 1, node.moves[-1])
@@ -605,11 +617,18 @@ class Engine(threading.Thread):
     def qsearch(self, node, ply, alpha, beta, allowance, pv_node, in_check):
         """Find best resulting quiet position within the alpha-beta window and
         return the evaluation."""
-        
-        assert(pv_node or alpha == beta-1)
 
         self.search_stats.node_count += 1
+        
+        if self.search_stats.checkpoints > 5000: # throttle
+           self.search_stats.checkpoints = 0               
+           self.checkpoint()
 
+        if self.stop_event.is_set():
+            return STOP_VALUE
+
+        assert(pv_node or alpha == beta-1)
+        
         si = self.si
         si[ply+1] = si[ply+1] or SearchInfo()
         
@@ -620,6 +639,9 @@ class Engine(threading.Thread):
         #     print("debug")
 
         tt_hit, tt_ind, tt_entry = tt.get_tt_index(node.zobrist_hash)
+        if tt_hit:
+            self.search_stats.tb_hits += 1
+
         if not pv_node:
             if tt_hit and tt_entry.depth <= allowance:
                 if tt_entry.bound_type == tt.BoundType.EXACT:
@@ -806,8 +828,8 @@ class Engine(threading.Thread):
                 see_val += gain
 
             hist_val = entry.value if entry else 0
-            psqt_val = psqt_value_sq(move.piece_type, move.to_sq, us)
-            return (see_val, hist_val, psqt_val)
+            # psqt_val = psqt_value_sq(move.piece_type, move.to_sq, us)
+            return (see_val, hist_val)
 
         for move in moves:
             if move in self.find_pv(position):
@@ -834,7 +856,7 @@ class Engine(threading.Thread):
         cap_see_lt0 = []
         cap_see_eq0 = []
         for cs in sorted_cap_see:
-            see, hist, psqt = cs[0]
+            see, hist = cs[0]
             move = cs[1]
             if see > 0:
                 move.prob = .8
