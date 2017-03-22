@@ -81,6 +81,30 @@ def print_moves(moves):
     print(' '.join(map(str,moves)))
 
 
+class TimeManagement():
+    def __init__(self):
+        # time in seconds
+        self.wtime = 0
+        self.btime = 0
+        self.movestogo = None
+
+    def calculate_movetime(self, root_position):
+        side = root_position.side_to_move()
+        current_move_number = (len(root_position.moves) + 1) // 2
+        if side == Side.WHITE:
+            time = self.wtime
+        else:
+            time = self.btime
+        moves_to_go = self.movestogo
+        out_of_book_move_number = 0
+        if moves_to_go is None:
+            return time * .05
+        if moves_to_go == 0:
+            return .95 * time
+        moves_out_of_book = min(10, current_move_number - out_of_book_move_number)
+        return int(.95 * (self.wtime / moves_to_go) * (2 - moves_out_of_book / 10))
+
+        
 class Engine(threading.Thread):
     # Engine runs in a thread so we can respond to uci commands while thinking
 
@@ -112,12 +136,13 @@ class Engine(threading.Thread):
         self.info = print
         self.debug_info = print
 
+        self.time_management = TimeManagement()
+        self.movetime = None
+        
         # uci ponder mode
         self.ponder = False
         # uci infinite thinking mode
         self.infinite = False
-        # uci movetime mode
-        self.movetime = None
         # uci max nodes mode
         self.max_nodes = None
         # uci max depth mode can set this
@@ -168,16 +193,23 @@ class Engine(threading.Thread):
         
     def go(self):
         """respond to uci "go" command"""
-        # print("is stopped before..?", self.is_stopped.is_set())
         self.stop_event.set()
         self.is_stopped.wait()
         self.is_stopped.clear()
 
+        # reset stats
         self.search_stats.node_count = 0
         self.search_stats.time_start = time.time()
+
+        # initialize position
         if self.next_root_position:
             self.root_position, self.next_root_position = self.next_root_position, None
             self.init_move_history()
+
+        # time management
+        if (not (self.infinite or self.ponder)) and self.movetime is None:
+            self.movetime = self.time_management.calculate_movetime(self.root_position)
+
         self.stop_event.clear()
         self.exec_event.set()
         
@@ -185,7 +217,7 @@ class Engine(threading.Thread):
         """Check if we should stop searching"""
         # max_depth is taken care of in iterative_deepening()
         if (self.max_nodes and self.search_stats.node_count >= self.max_nodes) \
-           or (self.movetime and (time.time() - self.search_stats.time_start) >= self.movetime):
+           or (self.movetime is not None and (time.time() - self.search_stats.time_start) >= self.movetime):
             self.stop_event.set()
         
     def init_move_history(self):
@@ -264,7 +296,7 @@ class Engine(threading.Thread):
         while not self.stop_event.is_set() \
               and depth < self.max_depth \
               and (not self.max_nodes or self.search_stats.node_count < self.max_nodes) \
-              and (not self.movetime or (time.time() - self.search_stats.time_start) < self.movetime):
+              and (not self.movetime is not None or (time.time() - self.search_stats.time_start) < self.movetime):
             depth += .5
             allowance = depth_to_allowance(depth)
             finished = False

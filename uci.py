@@ -39,7 +39,6 @@ class Entry(cmd.Cmd):
         self.uci_info("info string", *info_str)
         
     def do_uci(self, args):
-        log.debug("got here")
         self.respond("id name slonik")
         self.respond("id author Maksim Grinman")
         self.respond("uciok")
@@ -95,13 +94,41 @@ class Entry(cmd.Cmd):
         except: pass
         else: self.engine.max_nodes = params[index+1]
 
+        movetime = False
         try: index = params.index("movetime")
         except: pass
-        else: self.engine.movetime = float(params[index+1]) / 1000
+        else:
+            self.engine.movetime = float(params[index+1]) / 1000
+            movetime = True
             
         try: index = params.index("infinite")
         except: pass
         else: self.engine.infinite = True
+
+        time = False
+        try: index = params.index("wtime")
+        except: pass
+        else:
+            self.engine.time_management.wtime = float(params[index+1]) / 1000
+            time = True
+        try: index = params.index("btime")
+        except: pass
+        else:
+            self.engine.time_management.btime = float(params[index+1]) / 1000
+            time = True
+
+        movestogo = False
+        try: index = params.index("movestogo")
+        except: pass
+        else:
+            self.engine.time_management.movestogo = int(params[index+1])
+            movestogo = True
+
+        if time and not movestogo:
+            self.engine.time_management.movestogo = None
+
+        if time and not movetime:
+            self.engine.movetime = None
             
         self.engine.go()
 
