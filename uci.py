@@ -83,15 +83,15 @@ class Entry(cmd.Cmd):
         else: self.engine.init_root_moves(params[index+1:].split())
 
         try: index = params.index("ponder")
-        except: pass
+        except: self.engine.ponder = False
         else: self.engine.ponder = True
 
         try: index = params.index("depth")
-        except: pass
-        else: self.engine.max_depth = params[index+1]
+        except: self.engine.max_depth = None
+        else: self.engine.max_depth = int(params[index+1])
         
         try: index = params.index("nodes")
-        except: pass
+        except: self.engine.max_nodes = None
         else: self.engine.max_nodes = params[index+1]
 
         movetime = False
@@ -102,7 +102,7 @@ class Entry(cmd.Cmd):
             movetime = True
             
         try: index = params.index("infinite")
-        except: pass
+        except: self.engine.infinite = False
         else: self.engine.infinite = True
 
         time = False

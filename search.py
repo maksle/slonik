@@ -146,7 +146,7 @@ class Engine(threading.Thread):
         # uci max nodes mode
         self.max_nodes = None
         # uci max depth mode can set this
-        self.max_depth = 64
+        self.max_depth = None
 
         # events to respond to uci commands
         self.exec_event = threading.Event()
@@ -207,8 +207,10 @@ class Engine(threading.Thread):
             self.init_move_history()
 
         # time management
-        if (not (self.infinite or self.ponder)) and self.movetime is None:
+        if (not (self.infinite or self.ponder or self.movetime or self.max_depth)):
             self.movetime = self.time_management.calculate_movetime(self.root_position)
+        if self.max_depth is None:
+            self.max_depth = 64
 
         self.stop_event.clear()
         self.exec_event.set()
@@ -266,19 +268,7 @@ class Engine(threading.Thread):
         if len(self.killer_moves[ply]) == 3:
             self.killer_moves[ply].pop()
         self.killer_moves[ply].append(move)
-
-    # def make_move(self, move):
-    #     """Book-keeping after a move is played on the board"""
-    #     for side in range(2): 
-    #         for piece in range(13): 
-    #             for square in range(64): 
-    #                 entry = self.move_history[side][piece][square] 
-    #                 if entry is not None:
-    #                     # Discount current heuristic values
-    #                     self.move_history[side][piece][square] = History(entry.move, entry.value // 2)
-        
-    #     self.search_stats.reset()
-
+    
     # Search
     def iterative_deepening(self):
         """Search deeper each iteration until stop condition. If fail high or
@@ -287,16 +277,18 @@ class Engine(threading.Thread):
         alpha = LOW_BOUND
         beta = HIGH_BOUND
 
-        depth = 0
+        depth = .5
 
         val = 0
 
         pv = []
         
+        log.debug("max_depth %s", self.max_depth)
         while not self.stop_event.is_set() \
-              and depth < self.max_depth \
+              and depth <= self.max_depth \
               and (not self.max_nodes or self.search_stats.node_count < self.max_nodes) \
               and (not self.movetime is not None or (time.time() - self.search_stats.time_start) < self.movetime):
+            log.debug("searching depth %s, max_depth %s", depth, self.max_depth)
             depth += .5
             allowance = depth_to_allowance(depth)
             finished = False
@@ -304,6 +296,7 @@ class Engine(threading.Thread):
             self.search_stats.reset()
             
             alpha, beta = val - fail_factor, val + fail_factor
+            bound = ""
             
             # print ("\n>> depth:", depth, ", allowance:", allowance)
             
@@ -318,13 +311,14 @@ class Engine(threading.Thread):
                     self.debug_info("failhigh", "a", alpha, "b", beta, "val", val, "factor", fail_factor)
                 
                 if val <= alpha:
-                    bound = " upperbound"
-                    alpha = val - fail_factor
-                    # beta = (alpha + beta) // 2
-                    fail_factor += fail_factor // 3 + 6
-                    if len(pv) > 0: # fail low after fail high
+                    if bound == " lowerbound": # fail low after fail high
                         finshed = True
                         self.si[0].pv = pv[:]
+                    else: 
+                        bound = " upperbound"
+                        alpha = val - fail_factor
+                        # beta = (alpha + beta) // 2
+                        fail_factor += fail_factor // 3 + 6
                 elif val >= beta:
                     bound = " lowerbound"
                     # alpha = (alpha + beta) / 2
@@ -367,8 +361,9 @@ class Engine(threading.Thread):
             self.info("bestmove", pv[0].to_uci, "ponder", pv[1].to_uci)
         elif len(pv) > 0:
             self.info("bestmove", pv[0].to_uci)
-        # else:
-        #     log.debug("no pv, no bestmove, exiting iterative_deepening")
+        else:
+            # position fen 6Q1/5Nb1/7k/5K2/P6p/1B4P1/7P/8 b - - 1 51
+            log.debug("no pv, no bestmove, exiting iterative_deepening")
         
         return val, self.si
 
@@ -500,6 +495,9 @@ class Engine(threading.Thread):
 
             if not node.is_legal(move):
                 continue
+
+            if is_root and len(si[ply].pv) == 0:
+                si[ply].pv = [move]
 
             child = Position(node)
             child.make_move(move)
