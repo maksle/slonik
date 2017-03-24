@@ -80,11 +80,13 @@ class Position():
         self.squares[2] = self.squares[5] = PieceType.W_BISHOP
         self.squares[3] = PieceType.W_KING
         self.squares[4] = PieceType.W_QUEEN
+        for ind in range(8, 16): self.squares[ind] = PieceType.W_PAWN
         self.squares[56] = self.squares[63] = PieceType.B_ROOK
         self.squares[57] = self.squares[62] = PieceType.B_KNIGHT
         self.squares[58] = self.squares[61] = PieceType.B_BISHOP
         self.squares[59] = PieceType.B_KING
         self.squares[60] = PieceType.B_QUEEN
+        for ind in range(48, 56): self.squares[ind] = PieceType.B_PAWN
 
     def init_pieces(self):
         self.pieces = [None] * 13
@@ -209,6 +211,15 @@ class Position():
         
         return position
 
+    def __str__(self):
+        res = ''
+        for ind, pt in enumerate(reversed(self.squares)):
+            res += ' ' + PICTURE_PIECES[pt] + ' '
+            if (ind+1) % 8 == 0:
+                res += '\n'
+        print('{} to move'.format('W' if self.side_to_move() else 'B'))
+        return res
+                
     def get_occupied(self, side):
         occupied = 0
         for piece_type, piece in enumerate(self.pieces):

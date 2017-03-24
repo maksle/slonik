@@ -8,7 +8,7 @@ class PieceType():
     B = BISHOP = W_BISHOP = 3
     R = ROOK = W_ROOK = 4
     Q = QUEEN = W_QUEEN = 5
-    K = W_KING = 6
+    K = KING = W_KING = 6
     B_PAWN = 7
     B_KNIGHT = 8
     B_BISHOP = 9

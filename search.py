@@ -205,7 +205,7 @@ class Engine(threading.Thread):
         if self.next_root_position:
             self.root_position, self.next_root_position = self.next_root_position, None
             self.init_move_history()
-
+        
         # time management
         if (not (self.infinite or self.ponder or self.movetime or self.max_depth)):
             self.movetime = self.time_management.calculate_movetime(self.root_position)
@@ -282,13 +282,15 @@ class Engine(threading.Thread):
         val = 0
 
         pv = []
+
+        log.debug("Side to move: %s", self.root_position.side_to_move())
         
-        log.debug("max_depth %s", self.max_depth)
+        # log.debug("max_depth %s", self.max_depth)
         while not self.stop_event.is_set() \
               and depth <= self.max_depth \
               and (not self.max_nodes or self.search_stats.node_count < self.max_nodes) \
               and (not self.movetime is not None or (time.time() - self.search_stats.time_start) < self.movetime):
-            log.debug("searching depth %s, max_depth %s", depth, self.max_depth)
+            # log.debug("searching depth %s, max_depth %s", depth, self.max_depth)
             depth += .5
             allowance = depth_to_allowance(depth)
             finished = False
@@ -357,10 +359,10 @@ class Engine(threading.Thread):
         if not self.stop_event.is_set() and (self.ponder or self.infinite):
             self.stop_event.wait()
             
-        if len(pv) > 1:
-            self.info("bestmove", pv[0].to_uci, "ponder", pv[1].to_uci)
-        elif len(pv) > 0:
-            self.info("bestmove", pv[0].to_uci)
+        if len(self.si[0].pv) > 1:
+            self.info("bestmove", self.si[0].pv[0].to_uci, "ponder", self.si[0].pv[1].to_uci)
+        elif len(self.si[0].pv) > 0:
+            self.info("bestmove", self.si[0].pv[0].to_uci)
         else:
             # position fen 6Q1/5Nb1/7k/5K2/P6p/1B4P1/7P/8 b - - 1 51
             log.debug("no pv, no bestmove, exiting iterative_deepening")

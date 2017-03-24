@@ -121,6 +121,22 @@ HUMAN_BOARD_INV = {v: k for k, v in HUMAN_BOARD.items()}
 
 SQS = [1<<x for x in range(64)]
 
+PICTURE_PIECES = {
+    PieceType.NULL: '·',
+    PieceType.PAWN: '♙',
+    PieceType.KNIGHT: '♘',
+    PieceType.BISHOP: '♗',
+    PieceType.ROOK: '♖',
+    PieceType.QUEEN: '♕',
+    PieceType.KING: '♔',
+    PieceType.B_PAWN: '♟',
+    PieceType.B_KNIGHT: '♞',
+    PieceType.B_BISHOP: '♝',
+    PieceType.B_ROOK: '♜',
+    PieceType.B_QUEEN: '♛',
+    PieceType.B_KING: '♚',
+}
+
 # BETWEEN_SQS = [[0] * 64 for i in range(64)]
 # offset = 1
 # c = -1
