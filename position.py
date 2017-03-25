@@ -350,14 +350,14 @@ class Position():
     def black_to_move(self):
         return black_to_move(self.position_flags)
 
-    def is_legal(self, move):
+    def is_legal(self, move, in_check=None):
         side = self.side_to_move()
         us = side
         them = side ^ 1
 
         # king moves
         if Pt.base_type(move.piece_type) == Pt.K:
-            return self.is_legal_king_move(move)
+            return self.is_legal_king_move(move, in_check)
 
         # en pessant move
         if Pt.base_type(move.piece_type) == Pt.P \
@@ -374,12 +374,16 @@ class Position():
             return False
         return True
 
-    def is_legal_king_move(self, move):
+    def is_legal_king_move(self, move, in_check):
         assert Pt.base_type(move.piece_type) == Pt.K
-        castle_params = [[E1, G1, 0xe], [E1, C1, 0x70], [E8, G8, 0xe << 56], [E8, C8, 0x70 << 56]]
+        if in_check is None:
+            in_check = self.in_check()
+        castle_params = [[E1, G1, 0x6], [E1, C1, 0x30], [E8, G8, 0x6 << 56], [E8, C8, 0x30 << 56]]
         for params in castle_params:
             from_sq, to_sq, check_sqs = params
             if move.from_sq == from_sq and move.to_sq == to_sq:
+                if in_check:
+                    return False
                 for sq in iterate_pieces(check_sqs):
                     if self.in_check(Move(move.piece_type, move.from_sq, sq)):
                         return False
@@ -401,6 +405,14 @@ class Position():
             if Pt.base_type(move.piece_type) == Pt.K:
                 sq = move.to_sq
         
+        if sq == 0 or sq is None:
+            log.debug("sq: %s", sq)
+            log.debug(self)
+            log.debug("self.moves: %s", self.moves)
+            log.debug("self.pieces: %s", self.pieces)
+            log.debug("self.squares: %s", self.squares)
+            log.debug("self.occupied: %s", self.occupied)
+                
         b = knight_attack(sq)
         if b & self.pieces[Pt.piece(Pt.N, them)]:
             return True

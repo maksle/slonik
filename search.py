@@ -496,7 +496,7 @@ class Engine(threading.Thread):
             if si[ply].excluded_move == move:
                 continue
 
-            if not node.is_legal(move):
+            if not node.is_legal(move, in_check):
                 continue
             
             child = Position(node)
@@ -606,7 +606,8 @@ class Engine(threading.Thread):
                 best_val, best_move = val, move
                 best_move_is_capture = is_capture
                 best_val_move_count = move_count
-                if pv_node and val > a:
+                # if pv_node and val > a:
+                if pv_node:
                     si[ply].pv = [move] + si[ply+1].pv
                         
             a = max(a, val)
@@ -744,7 +745,7 @@ class Engine(threading.Thread):
             # if ' '.join(map(str,node.moves)) == "Ng4-e5 Nf3-e5 Nc6-e5 Bc4-f7 Ke8-e7" and str(move) == "Rf1-e1":
             #     print("debug")
 
-            if not node.is_legal(move):
+            if not node.is_legal(move, in_check):
                 continue
 
             child = Position(node)
