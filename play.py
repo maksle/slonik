@@ -73,9 +73,7 @@ def get_user_move(side):
     return move
 
 # pos = Position.from_fen("r1bqk2r/ppp2ppp/2n5/4P3/2Bp2n1/5N1P/PP1N1PP1/R2Q1RK1 b kq - 1 10")
-pos = Position.from_fen("r1b1kb1r/pp2ppp1/n1p3qp/3pPn2/3P1BP1/P1NB1N1P/1PP2P2/R2Q1RK1 w kq - 0 14")
-print(pos.pieces)
-print(pos.position_flags)
+# pos = Position.from_fen("r1bqkb1r/ppp2ppp/3p1n2/4n3/8/2N1P1Q1/PPP2PPP/R1B1KBNR b KQkq - 1 6")
 # print(pos.is_legal(Move(1, G4, F5)))
 
 # ng4xe5 nf3xe5 nxe5 re1 f6 f4
@@ -86,12 +84,15 @@ print(pos.position_flags)
 # pos = Position.from_fen("r1b1k2r/ppp1qppp/8/4n3/2Bp4/7P/PP1N1PP1/R2QR1K1 w kq - 2 13")
 # Evaluation(pos).init_attacks().evaluate(True)
 
-# engine = Engine()
-# engine.debug = True
-# engine.movetime = 24
-# engine.new_game(fen="r1b1kb1r/pp2ppp1/n1p3qp/3pPn2/3P1BP1/P1NB1N1P/1PP2P2/R2Q1RK1 w kq - 0 14")
-# engine.search_stats.time_start = time.time()
-# engine.iterative_deepening()
+engine = Engine()
+engine.debug = True
+engine.infinite = True
+engine.max_depth = 64
+pos = Position.from_fen("r1bqkb1r/ppp2ppp/3p1n2/4n3/8/2N1P1Q1/PPP2PPP/R1B1KBNR b KQkq - 1 6")
+engine.root_position = pos
+engine.init_move_history()
+engine.search_stats.time_start = time.time()
+engine.iterative_deepening()
 
 # import time 
 # now = time.time()
