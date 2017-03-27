@@ -184,7 +184,7 @@ class Evaluation():
             if c & opposed:
                 val >> 1
             score += val
-        score -= count_bits(doubled) * 20
+        score -= count_bits(doubled) * 25
         # TODO: add backward pawns
         # don't recount these if backward
         score -= count_bits(pawns_us ^ protected) * 15

@@ -88,8 +88,10 @@ engine = Engine()
 engine.debug = True
 engine.infinite = True
 engine.max_depth = 64
-pos = Position.from_fen("r3kb1r/p1Nbpppp/2p5/4pP2/4P1n1/5N2/PPP3PP/3RKB1R b Kkq - 5 13")
-pos.is_legal(Move(PieceType.B_KING, E8, C8))
+pos = Position.from_fen("2r1k2r/2pq2p1/pn1bp3/8/pn2PP1p/2N1B1PB/1P2Q2P/R2R3K w k - 0 26")
+pos.make_move(Move(PieceType.BISHOP, H3, G4))
+pos.make_move(Move(PieceType.B_PAWN, H4, G3))
+pos.get_discoveries_and_pins()
 engine.root_position = pos
 engine.init_move_history()
 engine.search_stats.time_start = time.time()

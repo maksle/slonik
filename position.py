@@ -56,6 +56,9 @@ class Position():
             self.init_pieces()
             self.init_occupied()
             self.init_zobrist()
+
+            # updated only when king moves
+            self.load_king_lines()
             
             self.moves = []
 
@@ -63,10 +66,7 @@ class Position():
             self.pinned = [0 for i in range(13)]
             self.discoverers = [0 for i in range(13)]
             self.sliding_checkers = [0 for i in range(13)]
-
-            # updated only when king moves
-            self.load_king_lines()
-
+            
     def load_king_lines(self):
         wk = self.pieces[Pt.piece(Pt.K, Side.WHITE)]
         bk = self.pieces[Pt.piece(Pt.K, Side.BLACK)]
@@ -208,6 +208,7 @@ class Position():
         position.init_occupied()
         position.load_discoveries_and_pins()
         position.init_zobrist()
+        position.load_king_lines()
         
         return position
 
@@ -512,9 +513,10 @@ class Position():
             us = side
             them = side ^ 1
 
-            sq = bit_position(self.pieces[Pt.piece(target_piece_type, us)])
-            
-            if sq and sq > 0:
+            target_pieces = self.pieces[Pt.piece(target_piece_type, us)]
+
+            for target in iterate_pieces(target_pieces):
+                sq = bit_position(target)
                 occ = self.occupied[us] | self.occupied[them]
 
                 diag_snipers = self.pieces[Pt.piece(Pt.B, them)] | self.pieces[Pt.piece(Pt.Q, them)]
