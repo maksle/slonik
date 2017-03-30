@@ -84,18 +84,23 @@ def get_user_move(side):
 # pos = Position.from_fen("r1b1k2r/ppp1qppp/8/4n3/2Bp4/7P/PP1N1PP1/R2QR1K1 w kq - 2 13")
 # Evaluation(pos).init_attacks().evaluate(True)
 
-engine = Engine()
-engine.debug = True
-engine.infinite = True
-engine.max_depth = 64
+import features
 pos = Position.from_fen("2r1k2r/2pq2p1/pn1bp3/8/pn2PP1p/2N1B1PB/1P2Q2P/R2R3K w k - 0 26")
-pos.make_move(Move(PieceType.BISHOP, H3, G4))
-pos.make_move(Move(PieceType.B_PAWN, H4, G3))
-pos.get_discoveries_and_pins()
-engine.root_position = pos
-engine.init_move_history()
-engine.search_stats.time_start = time.time()
-engine.iterative_deepening()
+tf = features.ToFeature(pos)
+print(len(tf.ann_features()))
+
+# engine = Engine()
+# engine.debug = True
+# engine.infinite = True
+# engine.max_depth = 64
+# pos = Position.from_fen("2r1k2r/2pq2p1/pn1bp3/8/pn2PP1p/2N1B1PB/1P2Q2P/R2R3K w k - 0 26")
+# pos.make_move(Move(PieceType.BISHOP, H3, G4))
+# pos.make_move(Move(PieceType.B_PAWN, H4, G3))
+# pos.get_discoveries_and_pins()
+# engine.root_position = pos
+# engine.init_move_history()
+# engine.search_stats.time_start = time.time()
+# engine.iterative_deepening()
 
 # import time 
 # now = time.time()

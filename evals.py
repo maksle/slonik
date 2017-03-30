@@ -240,21 +240,24 @@ class Evaluation():
 
         for base_pt in piece_types:
             pt = Pt.piece(base_pt, side)
-
-            # if attacked by lower weight piece, it doesn't count
-            lower_wts = (pt for pt in piece_types if pt < base_pt)
-            opp_attacks = 0
-            for piece_type in lower_wts:
-                opp_pt = Pt.piece(piece_type, side ^ 1)
-                opp_attacks |= self.piece_attacks[opp_pt]
-            attacks = self.piece_attacks[pt]
-            attacks &= invert(opp_attacks)
-            attacks &= invert(position.occupied[side])
+            safe_attacks = self.safe_attacks(base_pt, side)
             mobility_factor = base_pt if base_pt < Pt.K else 1
             mobility += count_bits(attacks) * mobility_factor
 
         return mobility
 
+    def safe_attacks(self, bt, stm):
+        # if attacked by lower weight piece, it doesn't count
+        lower_wts = (pt for pt in [Pt.P, Pt.N, Pt.B, Pt.R, Pt.Q] if pt < bt)
+        opp_attacks = 0
+        for piece_type in lower_wts:
+            opp_pt = Pt.piece(piece_type, stm^1)
+            opp_attacks |= self.piece_attacks[opp_pt]
+        attacks = self.piece_attacks[Pt.piece(bt, stm)]
+        attacks &= invert(opp_attacks)
+        # attacks &= invert(self.position.occupied[stm])
+        return attacks
+    
     def attacked_pieces(self, side):
         position = self.position
         return position.occupied[side] & self.all_attacks[side ^ 1]
