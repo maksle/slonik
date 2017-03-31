@@ -6,3 +6,4 @@ python is slow, profile on nps
 finish the tablebase hits counter for uci output
 allowance <> depth conversion needs to be updated, is not accurate anymore
 finish root_moves implementation
+tt_entry.depth in qsearch is wrong (can have 9 allowance due to init allowance in qsearch)

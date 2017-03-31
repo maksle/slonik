@@ -1,3 +1,4 @@
+from IPython import embed
 from piece_type import *
 from move_gen import *
 from bb import *
@@ -260,10 +261,10 @@ class Position():
         # include promotions
         yield from self.generate_moves_pt(Pt.piece(Pt.P, us), valid_sqs, do_promo=True)
 
-        yield from self.generate_moves_pt(Pt.piece(Pt.N, us), valid_sqs)
-        yield from self.generate_moves_pt(Pt.piece(Pt.B, us), valid_sqs)
-        yield from self.generate_moves_pt(Pt.piece(Pt.R, us), valid_sqs)
         yield from self.generate_moves_pt(Pt.piece(Pt.Q, us), valid_sqs)
+        yield from self.generate_moves_pt(Pt.piece(Pt.R, us), valid_sqs)
+        yield from self.generate_moves_pt(Pt.piece(Pt.B, us), valid_sqs)
+        yield from self.generate_moves_pt(Pt.piece(Pt.N, us), valid_sqs)
         yield from self.generate_moves_pt(Pt.piece(Pt.K, us), valid_sqs)
         
     def generate_moves_in_check(self):
@@ -539,6 +540,7 @@ class Position():
         return discoverers, pinned, sliding_checkers
 
     def make_move(self, move):
+        
         piece_type = move.piece_type
         base_type = PieceType.base_type(piece_type)
         from_sq = move.from_sq
@@ -681,7 +683,7 @@ class Position():
             self.load_discoveries_and_pins(target_piece_type=Pt.K)
 
         self.squares[bit_position(from_sq)] = PieceType.NULL
-        self.squares[bit_position(to_sq)] = piece_type if not move.move_type == MoveType.promo else move.promo_piece
+        self.squares[bit_position(to_sq)] = piece_type if not (move.move_type & MoveType.promo) else move.promo_piece
 
         self.moves.append(move)
 

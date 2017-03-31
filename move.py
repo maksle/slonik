@@ -35,8 +35,8 @@ class Move():
             return self.piece_type == other.piece_type \
                 and self.from_sq == other.from_sq \
                 and self.to_sq == other.to_sq \
-                and self.promo_piece == other.promo_piece \
-                and self.move_type == other.move_type
+                and self.promo_piece == other.promo_piece
+                # move_type depends on the position and we may lazily assign movetype.check
         else:
             return False
 
@@ -58,7 +58,7 @@ class Move():
         # bits 6-11 to_sq
         # bits 12-15 piece_type
         # bits 16-19 promo_piece
-        # bits 20-21 move_type
+        # bits 20-22 move_type
         if self.piece_type == PieceType.NULL:
             return 0
         from_sq = bit_position(self.from_sq)
@@ -77,7 +77,7 @@ class Move():
         to_sq = 1 << ((compacted >> 6) & 0x3f)
         piece_type = (compacted >> 12) & 0xf
         promo_piece = (compacted >> 16) & 0xf
-        move_type = (compacted >> 20) & 0x3
+        move_type = (compacted >> 20) & 0xf
         return cls(piece_type, from_sq, to_sq, move_type or 0, promo_piece or None)
         
     @classmethod

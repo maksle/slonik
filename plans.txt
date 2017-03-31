@@ -1,0 +1,29 @@
+get # features
+set NN layers (inputs, outputs, activation functions, gradient functions)
+add dropout functionality or user keras
+create training mode in slonik which plays against itself, samples moves, calculates TD, averages the error over many iterations
+call the NN from slonik in a training mode after errors are calculated with the old target + error => new target
+call the NN from slonik for evaluating the moves during the TD episodes..
+get db of games, get random positions from the sample
+slonik can load the games, play a few quick moves and start the episode
+setup training evaluator (test positions suite to be run after every some # of epochs)
+
+for each iteration
+  if iteration is 0 train the nn on the static eval (just material counts f.e.)
+  else
+    for each position
+      make one random move
+      play 64 ply with 512 node budget each ply in iterative deepining fashion starting from 1
+      for each move get the leaf of the pv and store it with stm, score, and fen
+      for each leaf store the (old score) and the (new score + td errors) as target
+      append the X and y to the growing X and y vector
+
+    for each position
+      convert the position to nn features
+    
+    mix up the data and batch them
+    batches = num_positions / batchsize
+    for each epoch (10)
+      for each batch
+        run the ann on a batch
+    for every some # of iterations test on a test positions suite
