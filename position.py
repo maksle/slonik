@@ -16,7 +16,7 @@ class Position():
     def __init__(self, pos = None):
         if pos is not None:
             self.position_flags = pos.position_flags
-
+            
             self.squares = pos.squares[:]
             self.pieces = pos.pieces[:]
             self.occupied = pos.occupied[:]
@@ -34,24 +34,27 @@ class Position():
             self.b_king_castle_ply = pos.b_king_castle_ply
             self.b_kr_move_ply = pos.b_kr_move_ply
             self.b_qr_move_ply = pos.b_qr_move_ply
-
-            self.en_pessant_sq = -1
+            self.en_pessant_sq = pos.en_pessant_sq
+            self.halfmove_clock = pos.halfmove_clock
+            self.fullmove_clock = pos.fullmove_clock
 
             self.zobrist_hash = pos.zobrist_hash
 
         else:
             self.position_flags = Side.WHITE << 6
 
-            self.w_king_move_ply = -1
-            self.w_king_castle_ply = -1
-            self.w_kr_move_ply = -1
-            self.w_qr_move_ply = -1
-            self.b_king_move_ply = -1
-            self.b_king_castle_ply = -1
-            self.b_kr_move_ply = -1
-            self.b_qr_move_ply = -1
+            self.w_king_move_ply = None
+            self.w_king_castle_ply = None
+            self.w_kr_move_ply = None
+            self.w_qr_move_ply = None
+            self.b_king_move_ply = None
+            self.b_king_castle_ply = None
+            self.b_kr_move_ply = None
+            self.b_qr_move_ply = None
 
-            self.en_pessant_sq = -1
+            self.en_pessant_sq = None
+            self.halfmove_clock = 0
+            self.fullmove_clock = 1
             
             self.init_squares()
             self.init_pieces()
@@ -123,15 +126,60 @@ class Position():
         self.zobrist_hash ^= tt.ZOBRIST_SIDE[self.side_to_move()]
 
         # castling
-        if self.w_kr_move_ply == -1 and self.w_king_move_ply == -1:
+        if self.w_kr_move_ply is None and self.w_king_move_ply is None:
             self.zobrist_hash ^= tt.ZOBRIST_CASTLE[0]
-        if self.w_qr_move_ply == -1 and self.w_king_move_ply == -1:
+        if self.w_qr_move_ply is None and self.w_king_move_ply is None:
             self.zobrist_hash ^= tt.ZOBRIST_CASTLE[1]
-        if self.b_kr_move_ply == -1 and self.b_king_move_ply == -1:
+        if self.b_kr_move_ply is None and self.b_king_move_ply is None:
             self.zobrist_hash ^= tt.ZOBRIST_CASTLE[2]
-        if self.b_qr_move_ply == -1 and self.b_king_move_ply == -1:
+        if self.b_qr_move_ply is None and self.b_king_move_ply is None:
             self.zobrist_hash ^= tt.ZOBRIST_CASTLE[3]
 
+    def fen(self):
+        sans = ['','P','N','B','R','Q','K','p','n','b','r','q','k']
+        rows = chunks(list(reversed(self.squares)), 8)
+        string = ''
+        for row in rows:
+            empty = 0
+            for pt in row:
+                san = sans[pt]
+                if pt == Pt.NULL:
+                    empty += 1
+                else: 
+                    if empty:
+                        string += str(empty)
+                        empty = 0
+                    string += san
+            if empty:
+                string += str(empty)
+            string += '/'
+        string = string[:-1] + ' '
+
+        string += 'w ' if self.white_to_move() else 'b '
+        
+        flags = self.position_flags
+        w00 = not (flags & 5)
+        w000 = not (flags & 9)
+        b00 = not (flags & 0x12)
+        b000 = not (flags & 0x22)
+        if w00: string += 'K'
+        if w000: string += 'Q'
+        if b00: string += 'k'
+        if b000: string += 'q'
+        if not (w00 or w000 or b00 or b000):
+            string += '-'
+            
+        string += ' '
+        if self.en_pessant_sq:
+            string += HUMAN_BOARD_INV[self.en_pessant_sq]
+        else:
+            string += '-'
+
+        string += ' ' + str(self.halfmove_clock)
+        string += ' ' + str(self.fullmove_clock)
+        
+        print(string)
+            
     @classmethod
     def from_fen(cls, fen):
         pieces, color, castling, en_pessant, halfmove_clock, move_num = fen.split()
@@ -584,19 +632,21 @@ class Position():
                 self.pieces[pawn_them] ^= last_move.to_sq
                 self.occupied[side ^ 1] ^= last_move.to_sq
                 self.squares[bit_position(last_move.to_sq)] = PieceType.NULL
-                self.en_pessant_sq = -1
                 en_pessant_capture = True
-            if shift_south(shift_south(from_sq, side), side) == to_sq:
-                self.en_pessant_sq = shift_south(from_sq, side)
 
+        if base_type == Pt.P and get_rank(from_sq, side) == 1 and get_rank(to_sq, side) == 3:
+            self.en_pessant_sq = shift_north(from_sq, side)
+        else:
+            self.en_pessant_sq = None
+                
         # castling
         if base_type == Pt.K:
             if side == Side.WHITE:
                 self.w_king_move_ply = this_move_num
                 self.position_flags |= 1
-                if self.w_kr_move_ply == -1 and self.w_king_move_ply == -1:
+                if self.w_kr_move_ply is None and self.w_king_move_ply is None:
                     self.zobrist_hash ^= tt.ZOBRIST_CASTLE[0]
-                elif self.w_qr_move_ply == -1 and self.w_king_move_ply == -1:
+                elif self.w_qr_move_ply is None and self.w_king_move_ply is None:
                     self.zobrist_hash ^= tt.ZOBRIST_CASTLE[1]
 
                 if from_sq == E1 and to_sq == G1:
@@ -622,9 +672,9 @@ class Position():
             else: # Black
                 self.b_king_move_ply = this_move_num
                 self.position_flags |= 2
-                if self.b_kr_move_ply == -1 and self.b_king_move_ply == -1:
+                if self.b_kr_move_ply is None and self.b_king_move_ply is None:
                     self.zobrist_hash ^= tt.ZOBRIST_CASTLE[2]
-                elif self.b_qr_move_ply == -1 and self.b_king_move_ply == -1:
+                elif self.b_qr_move_ply is None and self.b_king_move_ply is None:
                     self.zobrist_hash ^= tt.ZOBRIST_CASTLE[3]
 
                 if from_sq == E8 and to_sq == G8:
@@ -651,20 +701,20 @@ class Position():
         # castling rights
         if base_type == Pt.R:
             if side == Side.WHITE:
-                if from_sq == H1 and self.w_kr_move_ply == -1:
+                if from_sq == H1 and self.w_kr_move_ply is None:
                     self.zobrist_hash ^= tt.ZOBRIST_CASTLE[0]
                     self.position_flags |= 4
                     self.w_kr_move_ply = this_move_num
-                elif from_sq == A1 and self.w_qr_move_ply == -1:
+                elif from_sq == A1 and self.w_qr_move_ply is None:
                     self.zobrist_hash ^= tt.ZOBRIST_CASTLE[1]
                     self.position_flags |= 8
                     self.w_qr_move_ply = this_move_num
             else: # Black
-                if from_sq == H8 and self.b_kr_move_ply == -1:
+                if from_sq == H8 and self.b_kr_move_ply is None:
                     self.zobrist_hash ^= tt.ZOBRIST_CASTLE[2]
                     self.position_flags |= 16
                     self.b_kr_move_ply = this_move_num
-                elif from_sq == A8 and self.b_qr_move_ply == -1:
+                elif from_sq == A8 and self.b_qr_move_ply is None:
                     self.zobrist_hash ^= tt.ZOBRIST_CASTLE[3]
                     self.position_flags |= 32
                     self.b_qr_move_ply = this_move_num
@@ -685,8 +735,19 @@ class Position():
         self.squares[bit_position(from_sq)] = PieceType.NULL
         self.squares[bit_position(to_sq)] = piece_type if not (move.move_type & MoveType.promo) else move.promo_piece
 
+        if captured_pt or base_type == Pt.P: self.halfmove_clock = 0
+        else: self.halfmove_clock += 1
+
+        if side == Side.B:
+            self.fullmove_clock += 1
+        
         self.moves.append(move)
 
+def chunks(l, n):
+    """Yield successive n-sized chunks from l."""
+    for i in range(0, len(l), n):
+        yield l[i:i + n]
+        
 def zobrist_pieces(pieces, piece_type):
     zobrist_hash = 0
     for piece in iterate_pieces(pieces):
