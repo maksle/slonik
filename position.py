@@ -7,10 +7,11 @@ import tt
 import math
 import itertools
 import logging
+import logging_config
 
-log = logging.getLogger(__name__)
 
 Pt = PieceType
+log = logging.getLogger(__name__)
 
 class Position():
     def __init__(self, pos = None):
@@ -177,8 +178,7 @@ class Position():
 
         string += ' ' + str(self.halfmove_clock)
         string += ' ' + str(self.fullmove_clock)
-        
-        print(string)
+        return string
             
     @classmethod
     def from_fen(cls, fen):
@@ -294,7 +294,7 @@ class Position():
     def generate_moves_all(self, legal=False):
         us = self.side_to_move()
         valid_sqs = FULL_BOARD
-        yield from self.generate_moves_pt(Pt.piece(Pt.P, us), valid_sqs, legal=legal)
+        yield from self.generate_moves_pt(Pt.piece(Pt.P, us), valid_sqs, do_promo=True, legal=legal)
         yield from self.generate_moves_pt(Pt.piece(Pt.N, us), valid_sqs, legal=legal)
         yield from self.generate_moves_pt(Pt.piece(Pt.B, us), valid_sqs, legal=legal)
         yield from self.generate_moves_pt(Pt.piece(Pt.R, us), valid_sqs, legal=legal)
@@ -305,22 +305,20 @@ class Position():
         us = self.side_to_move()
         them = us ^ 1
         valid_sqs = self.occupied[them]
-
-        # include promotions
+        
         yield from self.generate_moves_pt(Pt.piece(Pt.P, us), valid_sqs, do_promo=True)
-
         yield from self.generate_moves_pt(Pt.piece(Pt.Q, us), valid_sqs)
         yield from self.generate_moves_pt(Pt.piece(Pt.R, us), valid_sqs)
         yield from self.generate_moves_pt(Pt.piece(Pt.B, us), valid_sqs)
         yield from self.generate_moves_pt(Pt.piece(Pt.N, us), valid_sqs)
         yield from self.generate_moves_pt(Pt.piece(Pt.K, us), valid_sqs)
         
-    def generate_moves_in_check(self):
+    def generate_moves_in_check(self, legal=False):
         us = self.side_to_move()
         them = us ^ 1
         occ = self.occupied[0] | self.occupied[1]
         
-        yield from self.generate_moves_pt(Pt.piece(Pt.K, us), invert(us))
+        yield from self.generate_moves_pt(Pt.piece(Pt.K, us), invert(us), legal=legal)
 
         ksq = self.pieces[Pt.piece(Pt.K, us)]
         step_checkers = piece_attack(Pt.N, ksq, occ) & self.pieces[Pt.piece(Pt.N, them)]
@@ -333,11 +331,11 @@ class Position():
                 valid_sqs = checker
                 if checker & sliding_checkers:
                     valid_sqs |= BETWEEN_SQS[bit_position(ksq)][bit_position(checker)]
-                yield from self.generate_moves_pt(Pt.piece(Pt.P, us), valid_sqs)
-                yield from self.generate_moves_pt(Pt.piece(Pt.N, us), valid_sqs)
-                yield from self.generate_moves_pt(Pt.piece(Pt.B, us), valid_sqs)
-                yield from self.generate_moves_pt(Pt.piece(Pt.R, us), valid_sqs)
-                yield from self.generate_moves_pt(Pt.piece(Pt.Q, us), valid_sqs)
+                yield from self.generate_moves_pt(Pt.piece(Pt.P, us), valid_sqs, legal=legal)
+                yield from self.generate_moves_pt(Pt.piece(Pt.N, us), valid_sqs, legal=legal)
+                yield from self.generate_moves_pt(Pt.piece(Pt.B, us), valid_sqs, legal=legal)
+                yield from self.generate_moves_pt(Pt.piece(Pt.R, us), valid_sqs, legal=legal)
+                yield from self.generate_moves_pt(Pt.piece(Pt.Q, us), valid_sqs, legal=legal)
     
     def generate_moves_pt(self, pt, valid_sqs=None, do_promo=False, legal=False):
         if valid_sqs is None:
@@ -404,24 +402,49 @@ class Position():
         side = self.side_to_move()
         us = side
         them = side ^ 1
+        if in_check is None:
+            in_check = self.in_check()
 
         # king moves
         if Pt.base_type(move.piece_type) == Pt.K:
             return self.is_legal_king_move(move, in_check)
 
+        ksq = self.pieces[Pt.piece(Pt.K, us)]
+        
+        # pinned pieces can only move in line with the king
+        if self.pinned[Pt.piece(Pt.K, us)] & move.from_sq \
+           and not LINE_SQS[bit_position(ksq)][bit_position(move.from_sq)] & move.to_sq:
+            return False
+        
+        if in_check:
+            checkers = self.checkers()
+            # double check, only king moves are legal
+            if count_bits(checkers) > 1:
+                return False
+
+            # knight checks, only king moves or capture are legal
+            b = checkers & self.pieces[Pt.piece(Pt.N, them)]
+            if b: return bool(b & move.to_sq)
+            
+            block_squares = BETWEEN_SQS[bit_position(checkers)][bit_position(ksq)] if checkers else 0
+
+            # we can only block the check or capture the slider
+            b = checkers & self.sliding_checkers[Pt.piece(Pt.K, us)]
+            if b: return bool(move.to_sq & (block_squares | checkers))
+                
+            # the check is from a pawn, only capture/en-pessant is legal
+            en_pessant = Pt.base_type(move.piece_type) == Pt.P and self.en_pessant_sq and move.to_sq & self.en_pessant_sq
+            if not (move.to_sq & checkers or (en_pessant and checker & shift_south(self.en_pessant_sq, us))):
+                return False
+        
         # en pessant move
-        if Pt.base_type(move.piece_type) == Pt.P \
-           and move.to_sq & (shift_ne(move.from_sq, us) | shift_nw(move.from_sq, us)) \
-           and self.last_move() == Move(Pt.piece(Pt.P, them), shift_north(move.to_sq, us), shift_south(move.to_sq, us)):
+        if Pt.base_type(move.piece_type) == Pt.P and self.en_pessant_sq and move.to_sq & self.en_pessant_sq:
+            # Real implementation is a little tricky. This is simpler but more expensive. However this is the rarer code path
             moved = Position(self)
             moved.make_move(move)
             if moved.in_check():
                 return False
-        
-        # pinned pieces can only move in line with the king or it's illegal
-        if self.pinned[Pt.piece(Pt.K, us)] & move.from_sq \
-           and not LINE_SQS[bit_position(self.pieces[Pt.piece(Pt.K, us)])][bit_position(move.from_sq)] & move.to_sq:
-            return False
+
         return True
 
     def is_legal_king_move(self, move, in_check):
@@ -442,6 +465,17 @@ class Position():
             return False
         return True
 
+    def checkers(self):
+        us = self.side_to_move()
+        them = us ^ 1
+        kpt = Pt.piece(Pt.K, us)
+        ksq = self.pieces[kpt]
+        checkers = 0
+        checkers |= knight_attack(ksq) & self.pieces[Pt.piece(Pt.N, them)]
+        checkers |= pawn_attack(ksq, us) & self.pieces[Pt.piece(Pt.P, them)]
+        checkers |= self.sliding_checkers[kpt]
+        return checkers
+        
     def in_check(self, move=None):
         side = self.side_to_move()
         us, them = side, side ^ 1
@@ -586,9 +620,8 @@ class Position():
                         sliding_checkers[Pt.piece(target_piece_type, us)] |= sniper
 
         return discoverers, pinned, sliding_checkers
-
+    
     def make_move(self, move):
-        
         piece_type = move.piece_type
         base_type = PieceType.base_type(piece_type)
         from_sq = move.from_sq

@@ -649,7 +649,7 @@ def lowest_attacker(pos, square, side=None, highest_attacker=Pt.NULL):
     skip attacks of higher or equal value of given pt"""
     position = Position(pos)
     side = position.side_to_move() if side is None else side
-    highest_attacker = Pt.K if highest_attacker == Pt.NULL else highest_attacker
+    highest_attacker = Pt.K+1 if highest_attacker == Pt.NULL else highest_attacker
 
     # pawn
     if Pt.P < highest_attacker:

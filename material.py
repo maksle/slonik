@@ -7,7 +7,7 @@ MG_PIECES[PieceType.N] = 753
 MG_PIECES[PieceType.B] = 826
 MG_PIECES[PieceType.R] = 1285
 MG_PIECES[PieceType.Q] = 2513
-MG_PIECES[PieceType.K] = 0
+MG_PIECES[PieceType.K] = 10000
 
 EG_PIECES = [None for i in range(0, 7)]
 EG_PIECES[PieceType.NULL] = 0
@@ -16,7 +16,7 @@ EG_PIECES[PieceType.N] = 832
 EG_PIECES[PieceType.B] = 897
 EG_PIECES[PieceType.R] = 1371
 EG_PIECES[PieceType.Q] = 2650
-EG_PIECES[PieceType.K] = 0
+EG_PIECES[PieceType.K] = 10000
 
 def material_eval(counts, piece_t, side):
     if piece_t == PieceType.P:

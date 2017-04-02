@@ -2,6 +2,7 @@ from search import *
 from constants import *
 from bb import *
 
+
 # root_pos = Position()
 # root = SearchPos(root_pos)
 # val, final, child = negamax(root, -100000, 100000, 3, 1)
@@ -93,10 +94,9 @@ engine = Engine()
 engine.debug = True
 engine.infinite = True
 engine.max_depth = 64
-pos = Position.from_fen("3rk2r/2P3p1/pn2p3/8/p4P2/2NqB2B/1P5p/R6K w k - 0 31")
-# pos.make_move(Move(PieceType.PAWN, H3, G4))
-# pos.make_move(Move(PieceType.B_PAWN, H4, G3))
-# pos.get_discoveries_and_pins()
+pos = Position.from_fen("2kr2nr/ppp2ppp/8/8/1b1n4/1N1B1P2/PP3P1P/R1B2K1R b - - 5 13")
+print(list(pos.generate_moves_all(legal=True)))
+print(engine.sort_moves(list(pos.generate_moves_all(legal=True)), pos, engine.si, 0, False))
 engine.root_position = pos
 engine.init_move_history()
 engine.search_stats.time_start = time.time()

@@ -60,7 +60,7 @@ class ToFeature():
         return [int(self.pos.side_to_move() == Side.WHITE)]
 
     def in_check(self):
-        return [int(pos.in_check())]
+        return [int(self.pos.in_check())]
         
     def lowest_attacker(self, side):
         f = []
