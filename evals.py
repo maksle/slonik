@@ -7,14 +7,22 @@ from piece_type import PieceType as Pt
 from position import Position
 from bb import *
 
-class Evaluation():
-    def __init__(self, position):
+class BaseEvaluator():
+    def __init__(self, position=None):
+        if position:
+            self.set_position(position)
+        else:
+            self.position = None
+            self.piece_attacks = [0] * 13
+            self.all_attacks = [0] * 2
+            self.double_attacks = [0] * 2
+            
+    def set_position(self, position):
         self.position = position
         self.piece_attacks = [0] * 13
         self.all_attacks = [0] * 2
         self.double_attacks = [0] * 2
 
-    def init_attacks(self):
         occ = self.position.occupied[Side.WHITE] | self.position.occupied[Side.BLACK]
         for side in [Side.WHITE, Side.BLACK]:
             pinned = self.position.pinned[Pt.piece(Pt.K, side)]
@@ -442,11 +450,15 @@ class Evaluation():
             bonus += value
         return bonus * 5
     
-    def evaluate(self, debug=False):
-        position = self.position
+    def evaluate(self, position=None, debug=False):
         # if ' '.join(map(str, position.moves)) == "e2-e4 e7-e6 Qd1-f3":
         #     debug = True
 
+        if position:
+            self.set_position(position)
+            
+        position = self.position
+        
         evals = defaultdict(lambda: [0, 0])
 
         # Check for mate
@@ -456,8 +468,6 @@ class Evaluation():
         # TODO: implement stalemate
 
         evaluations = [0, 0]
-
-        # self.init_attacks()
         
         counts = piece_counts(position)
 

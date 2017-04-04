@@ -1,4 +1,4 @@
-from evals import lowest_attacker, Evaluation
+from evals import lowest_attacker, BaseEvaluator
 from side import Side
 from piece_type import PieceType as Pt
 from bb import *
@@ -9,11 +9,17 @@ def normalize_coord(x):
     return x / 8
 
 class ToFeature():
-    def __init__(self, position):
+    def __init__(self, position=None):
+        if position:
+            self.set_position(position)
+        else:
+            self.pos = None
+            self.base_evaluator = None
+        
+    def set_position(self, position):
         self.pos = position
-        self.evals = Evaluation(position)
-        self.evals.init_attacks()
-    
+        self.base_evaluator = BaseEvaluator(position)
+        
     def ann_features(self):
         # neural net features
         g = [] # global
@@ -22,7 +28,7 @@ class ToFeature():
         g.extend(self.in_check())
     
         p = [] # pawn-centric
-        np = [] # centric
+        np = [] # piece-centric
         s = [] # square-centric
         for side in [Side.W, Side.B]:
             g.extend(self.counts(side))
@@ -39,7 +45,7 @@ class ToFeature():
                 if bt != Pt.P:
                     s.extend(self.mobility(bt, side))
             s.extend(self.lowest_attacker(side))
-        return f
+        return [g, p, np, s]
             
     def sq(self, sq, stm):
         x = get_file(sq) if sq else -1
@@ -86,8 +92,8 @@ class ToFeature():
         # attacks count, safe attacks count
         pos = self.pos
         pt = Pt.piece(bt, stm)
-        attacks = self.evals.piece_attacks[pt]
-        safe_attacks = self.evals.safe_attacks(bt, stm)
+        attacks = self.base_evaluator.piece_attacks[pt]
+        safe_attacks = self.base_evaluator.safe_attacks(bt, stm)
         return [count_bits(attacks) / 16, count_bits(safe_attacks) / 16]
         
     def queens(self, side):
@@ -135,7 +141,9 @@ class ToFeature():
             b = reset_ls1b(b)
             features.extend(self.sq(ls1b(b), side))
         else:
-            features.extend([0,0, self.sq(0, side), self.sq(0, side)])
+            features.extend([0,0])
+            features.extend(self.sq(0, side))
+            features.extend(self.sq(0, side))
         return features
 
     def pawn_exists(self, side):

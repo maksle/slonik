@@ -105,7 +105,12 @@ class TimeManagement():
         moves_out_of_book = min(10, current_move_number - out_of_book_move_number)
         return int(.95 * (self.wtime / moves_to_go) * (2 - moves_out_of_book / 10))
 
-        
+
+baseEvaluator = BaseEvaluator()        
+def static_evaluate(position):
+    baseEvaluator.set_position(position)
+    return baseEvaluator.evaluate()
+
 class Engine(threading.Thread):
     # Engine runs in a thread so we can respond to uci commands while thinking
 
@@ -122,6 +127,9 @@ class Engine(threading.Thread):
         # stack info and for finding principal variations
         self.si = [None] * 64
 
+        # Evaluator (static or nn)
+        self.evaluate = static_evaluate
+        
         # ply counts and other stats
         self.search_stats = SearchStats()
 
@@ -418,7 +426,7 @@ class Engine(threading.Thread):
             if node.last_move() == Move(PieceType.NULL):
                 si[ply].static_eval = static_eval = -si[ply-1].static_eval + 40
             else:
-                si[ply].static_eval = static_eval = Evaluation(node).init_attacks().evaluate()
+                si[ply].static_eval = static_eval = self.evaluate(node)
             tt.save_tt_entry(tt.TTEntry(pos_key, 0, tt.BoundType.NONE, 0, 0, static_eval))
 
         in_check = node.in_check()
@@ -724,7 +732,7 @@ class Engine(threading.Thread):
         if tt_hit:
             static_eval = tt_entry.static_eval
         if static_eval is None:
-            static_eval = Evaluation(node).init_attacks().evaluate()
+            static_eval = self.evaluate(node)
         
         if static_eval >= beta:
             # "stand pat"

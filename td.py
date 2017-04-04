@@ -1,3 +1,4 @@
+from IPython import embed
 import random
 import time
 from search import allowance_to_depth
@@ -6,19 +7,30 @@ from side import Side
 from search import Engine
 from collections import namedtuple
 from features import ToFeature
-from evals import Evaluation
+from evals import BaseEvaluator
+from nn import nn_fit, nn_predict
+import numpy as np
 import logging
 import logging_config
 
 
 log = logging.getLogger(__name__)
 
-def ann_train(a,b):
-    return 0
-    
+toFeature = ToFeature()
+
+def get_features(position):
+    toFeature.set_position(position)
+    return toFeature.ann_features()
+
 def has_moves(pos):
     moves = pos.generate_moves_all(legal=True)
     return len(list(moves)) > 0
+
+def initialize_weights(positions):
+    features = [get_features(psn) for psn in positions]
+    scores = [BaseEvaluator(psn).evaluate() for psn in positions]
+    scores = [min(1, max(-1, score / 1000)) for score in scores]
+    nn_fit(features, scores, 10, batch_size)
 
 # root_positions = total_fens = 700000
 # plies_to_play = 12
@@ -26,16 +38,15 @@ def has_moves(pos):
 # num_targets_per_iteration = batch * plies_to_play = 3072        
 # num_iterations = total_fens / batch = 2734
 
-iterations = 10000
-batch_size = 32
-
 depth = 4.5
 td_lambda = 0.7
 position_value = namedtuple('position_value', ['fen', 'leaf_val', 'features'])
 
+iterations = 10000
 total_fens = 700762
 plies_to_play = 16
-positions_per_iteration = 256
+batch_size = 2 #32
+positions_per_iteration = 12 #256
 num_iterations = total_fens // positions_per_iteration + 1
 
 offset = 0
@@ -56,18 +67,19 @@ for itern in range(num_iterations):
         offset += positions_per_iteration
 
     if itern == 0:
-        features = [ToFeature(psn).ann_features() for psn in positions]
-        scores = [Evaluation(psn).init_attacks().evaluate() for psn in positions]
-        data = list(zip(features, scores))
-        nbatches = len(features) // batch_size + 1
-        for i in range(3):
-            total_error = 0
-            for j in range(nbatches):
-                sample = random.sample(data, batch_size)
-                f, s = zip(*sample)
-                error = ann_train(f, s)
-                total_error += error
-            print("Epoch:", i, "error:", total_error / nbatches)
+        initialize_weights(positions)
+        # data = list(zip(features, scores))
+        # nbatches = len(features) // batch_size + 1
+        # for i in range(3):
+        #     total_error = 0
+        #     for j in range(nbatches):
+        #         sample = random.sample(data, batch_size)
+        #         f, s = zip(*sample)
+        #         # embed()
+        #         error = nn_fit(f, s)
+        #         embed()
+        #         total_error += error
+        #     print("Epoch:", i, "error:", total_error / nbatches)
     else:
         for psn in positions:
             print(psn.fen())
@@ -96,6 +108,7 @@ for itern in range(num_iterations):
                 psn.make_move(pv[0])
 
             targets = []
+            features = []
             T = len(timesteps) - 1
             for t, data in enumerate(timesteps):
                 fen, target, _ = data
@@ -106,22 +119,25 @@ for itern in range(num_iterations):
                     target += (timesteps[j+1].leaf_val - timesteps[j].leaf_val) * L
                     j += 1
                     L *= td_lambda
-                targets.append(position_value(fen, target, ToFeature(psn).ann_features()))
-            
-        epochs = 10
-        epoch_iterations = len(targets) // batch_size + 1
-        for i in range(epochs):
-            total_error = 0
-            for j in range(epoch_iterations):
-                ann_features = []
-                ann_targets = []
-                sample = random.sample(targets, batch_size)
-                for k in range(batch_size):
-                    ann_features.append(sample.features)
-                    ann_targets.append(sample.target)
-                error = ann_train(ann_features, ann_targets)
-                total_error += error
-            print("Epoch error:", total_error / epoch_iterations)
+                # targets.append(position_value(fen, target, ToFeature(psn).ann_features()))
+                features.append(get_features(psn))
+                targets.append(target)
+        
+        error = nn_fit(features, targets, 10, batch_size)
+        
+        # epoch_iterations = len(targets) // batch_size + 1
+        # for i in range(epochs):
+        #     total_error = 0
+        #     for j in range(epoch_iterations):
+        #         ann_features = []
+        #         ann_targets = []
+        #         sample = random.sample(targets, batch_size)
+        #         for k in range(batch_size):
+        #             ann_features.append(sample.features)
+        #             ann_targets.append(sample.target)
+        #         history = ann_fit(ann_features, ann_targets)
+        #         total_error += history
+        #     print("Epoch error:", total_error / epoch_iterations)
 
     if itern % 20 == 0:
         pass # do a test
