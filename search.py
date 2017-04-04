@@ -839,7 +839,7 @@ class Engine(threading.Thread):
             found, move = find_next_move()
 
         return moves
-
+    
     def sort_moves(self, moves, position, si, ply, quiescence):
         """Sort the moves to optimize the alpha-beta search"""
         from_pv = [] 
@@ -907,37 +907,37 @@ class Engine(threading.Thread):
         
         # checks = sorted(checks, key=sort_crit, reverse=True)
 
-        # other_moves.sort(key=lambda m: sort_crit(m, en_prise_sort=False), reverse=True)
+        other_moves.sort(key=lambda m: sort_crit(m, en_prise_sort=True), reverse=True)
         
-        # captures_see = map(lambda c: (sort_crit(c, en_prise_sort=False), c), captures)
-        # sorted_cap_see = sorted(captures_see, key=itemgetter(0), reverse=True)
-        # cap_see_gt0 = []
-        # cap_see_lt0 = []
-        # cap_see_eq0 = []
-        # for cs in sorted_cap_see:
-        #     see, hist = cs[0]
-        #     move = cs[1]
-        #     if see > 0:
-        #         move.prob = 2.5
-        #         cap_see_gt0.append(move)
-        #     elif see == 0:
-        #         move.prob = 1.1
-        #         cap_see_eq0.append(move)
-        #     else:
-        #         move.prob = .75
-        #         cap_see_lt0.append(move)
+        captures_see = map(lambda c: (sort_crit(c, en_prise_sort=False), c), captures)
+        sorted_cap_see = sorted(captures_see, key=itemgetter(0), reverse=True)
+        cap_see_gt0 = []
+        cap_see_lt0 = []
+        cap_see_eq0 = []
+        for cs in sorted_cap_see:
+            see, hist = cs[0]
+            move = cs[1]
+            if see > 0:
+                move.prob = 2.5
+                cap_see_gt0.append(move)
+            elif see == 0:
+                move.prob = 1.5
+                cap_see_eq0.append(move)
+            else:
+                move.prob = .75
+                cap_see_lt0.append(move)
         
         for move in from_pv: move.prob = 3
         for move in checks: move.prob = 2
         for move in counters: move.prob = 2
-        for move in captures: move.prob = 1.9
+        # for move in captures: move.prob = 1.9
         for move in from_tt: move.prob = 1.8
         for (ind, move) in enumerate(killers):
             move.prob = 1 + (ind * .1)
         for move in other_moves: move.prob = 1
         
-        # result = list(itertools.chain(from_pv, cap_see_gt0, checks, counters, killers, cap_see_eq0, other_moves, cap_see_lt0))
-        result = list(itertools.chain(from_pv, checks, counters, captures, from_tt, killers, other_moves))
+        result = list(itertools.chain(from_pv, cap_see_gt0, checks, counters, from_tt, killers, cap_see_eq0, other_moves, cap_see_lt0))
+        # result = list(itertools.chain(from_pv, checks, counters, captures, from_tt, killers, other_moves))
 
         prob_sum = 0
         for move in result:

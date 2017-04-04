@@ -3,10 +3,14 @@ import tensorflow as tf
 import keras
 import numpy as np
 import random
+import os
 from keras.layers import Input, Dense
 from keras.models import Model
 
+
 tf.logging.set_verbosity(tf.logging.WARN)
+
+cached_model = None
 
 def make_model():
     input_global = Input(shape=(18,))
@@ -30,17 +34,22 @@ def make_model():
     model.compile(optimizer='adam', loss='mean_absolute_error')
 
     model.summary()
-    model.save('learnedmodel.h5py')
+    model.save('learnedmodel.h5')
     return model
 
-def load_model():
-    try:
-        model = keras.models.load_model('learnedmodel.h5py')
-    except ImportError as e:
-        print(e)
-        model = make_model()
+def get_model():
+    global cached_model
+    if cached_model is None:
+        if os.path.exists('learnedmodel.h5'):
+            model = keras.models.load_model('learnedmodel.h5')
+        else:
+            model = make_model()
+        cached_model = model
+    else:
+        model = cached_model
+    return model
     
-def nn_fit(features, targets, epochs, batch_size):
+def transform_features(features):
     m = len(features)
     dgs = np.zeros((m, 18))
     dpws = np.zeros((m, 18))
@@ -48,11 +57,18 @@ def nn_fit(features, targets, epochs, batch_size):
     dsqs = np.zeros((m, 148))
     for n, f in enumerate(features):
         dgs[n], dpws[n], dpcs[n], dsqs[n] = f
-    res = model.fit([dgs, dpws, dpcs, dsqs], np.asarray(targets), batch_size=batch_size, epochs=epochs)
+    return [dgs, dpws, dpcs, dsqs]
+
+def nn_fit(features, targets, epochs, batch_size):
+    model = get_model()
+    f = transform_features(features)
+    res = model.fit(f, np.asarray(targets), batch_size=batch_size, epochs=epochs)
     return np.asarray(res.history['loss']).mean()
 
 def nn_predict(features):
-    return model.predict(features, verbose=0)
+    model = get_model()
+    f = transform_features([features])
+    return model.predict(f, verbose=0)[0][0]
 
     
 

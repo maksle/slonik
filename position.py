@@ -434,7 +434,7 @@ class Position():
                 
             # the check is from a pawn, only capture/en-pessant is legal
             en_pessant = Pt.base_type(move.piece_type) == Pt.P and self.en_pessant_sq and move.to_sq & self.en_pessant_sq
-            if not (move.to_sq & checkers or (en_pessant and checker & shift_south(self.en_pessant_sq, us))):
+            if not (move.to_sq & checkers or (en_pessant and checkers & shift_south(self.en_pessant_sq, us))):
                 return False
         
         # en pessant move

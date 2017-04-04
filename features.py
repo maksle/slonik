@@ -68,12 +68,12 @@ class ToFeature():
     def in_check(self):
         return [int(self.pos.in_check())]
         
-    def lowest_attacker(self, side):
+    def lowest_attacker(self, side): 
         f = []
         for sqind in range(64):
             sq = 1 << sqind
             lowest = lowest_attacker(self.pos, sq, side)
-            if lowest: pt, attacker = lowest
+            if lowest: pt, attacker = lowest # optimize this
             pt = pt if lowest else 0
             bt = Pt.base_type(pt)
             f.extend([(7 - bt) / 6]) # lower pt gives higher "score"
