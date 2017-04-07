@@ -1,4 +1,3 @@
-from bb import *
 from print_bb import *
 from move_gen import *
 from piece_type import *
@@ -443,7 +442,7 @@ def test_king_attack_3():
     attacker = int(''.join(g_arr), 2)
     res = king_attack(attacker)
     # print_bb(res)
-    assert res == 2365848970648778440704
+    assert res == 4665729213955833856
 
 def test_king_attack_4():
     g_arr = [
@@ -459,7 +458,7 @@ def test_king_attack_4():
     attacker = int(''.join(g_arr), 2)
     res = king_attack(attacker)
     # print_bb(res)
-    assert res == 18591703686715539456
+    assert res == 144959613005987840
 
 def test_pawn_attack():
     g_arr = [
@@ -679,8 +678,7 @@ def test_pawn_moves():
     other = int(''.join(other_arr), 2)
     e7 = 0x8000000000000
     e5 = 0x800000000
-    assert list(pawn_moves(pawns, own, other,
-               Side.WHITE, PieceType.B_PAWN, e7, e5)) == [(512, 65536), (512, 131072), (512, 33554432), (16384, 2097152), (262144, 67108864), (4194304, 1073741824), (68719476736, 8796093022208), (68719476736, 17592186044416), (137438953472, 35184372088832), (36028797018963968, 9223372036854775808)]
+    assert list(pawn_moves(pawns, own, other, E6, Side.WHITE)) == [(512, 65536), (512, 131072), (512, 33554432), (16384, 2097152), (262144, 67108864), (4194304, 1073741824), (68719476736, 8796093022208), (68719476736, 17592186044416), (137438953472, 35184372088832), (36028797018963968, 9223372036854775808)]
 if __name__ == "__main__":
     import sys
     from inspect import getmembers, isfunction

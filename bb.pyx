@@ -1,4 +1,4 @@
-# cython: profile=False
+# cython: profile=True
 
 """Parallel prefix routines (kogge-stone) for calculating ray attacks, and other
 piece attacks"""
@@ -351,9 +351,11 @@ cpdef ULL pawn_attack_calc(ULL pawn, int side_to_move):
 
 cpdef piece_attack(int pt, ULL sq, ULL occupied):
     cdef int bt
+    cdef int side
     bt = Pt.base_type(pt)
     if bt == Pt.P:
-        return pawn_attack(sq, Pt.get_side(pt))
+        side = Pt.get_side(pt)
+        return pawn_attack(sq, side)
     elif bt == Pt.N:
         return knight_attack(sq)
     elif bt == Pt.B:
@@ -457,13 +459,13 @@ def shift_nw(n, side):
     else:
         return south_east(n)
 
-def shift_se(n, side):
+def shift_se(ULL n, int side):
     if side == Side.WHITE:
         return south_east(n)
     else:
         return north_west(n)
 
-def shift_sw(n, side):
+def shift_sw(ULL n, int side):
     if side == Side.WHITE:
         return south_west(n)
     else:
@@ -585,14 +587,17 @@ cpdef line_sqs(int sq1, int sq2):
     return LINE_SQS_V[sq1, sq2]
 
 cpdef ULL knight_attack(ULL sq) except -1:
-    return ATTACKS[Pt.N][bit_position(sq)]
+    cdef int ptn = Pt.N
+    cdef int bitpos = bit_position(sq)
+    return ATTACKS_V[ptn, bitpos]
 
 cpdef ULL king_attack(ULL sq) except -1:
-    cdef int ptk
+    cdef int ptk, bitpos
     ptk = Pt.K
-    return ATTACKS[ptk, bit_position(sq)]
+    bitpos = bit_position(sq)
+    return ATTACKS_V[ptk, bitpos]
 
-cpdef ULL pawn_attack(ULL sq, ULL side) except -1:
+cpdef ULL pawn_attack(ULL sq, int side) except -1:
     return pawn_attack_calc(sq, side)
 
 cpdef ULL bishop_attack(ULL sq, ULL occupied) except -1:

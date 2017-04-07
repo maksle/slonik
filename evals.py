@@ -615,26 +615,27 @@ class BaseEvaluator():
             return -res_value
 
 
-def eval_see(pos, move):
-    position = Position(pos)
+def eval_see(position, move):
+    # position = Position(pos)
     balance = 0
     gains = []
 
+    # cache it once
+    orig_pieces = position.pieces[:]
+    orig_squares = position.squares[:]
+    orig_stm = position.side_to_move()
+    
     side = position.side_to_move()
     square = move.to_sq
-    captured_piece_type = position.squares[len(bin(square))-3]
+    captured_piece_type = position.squares[bit_position(square)]
     if captured_piece_type:
         balance += MG_PIECES[Pt.base_type(captured_piece_type)]
     
     # light make move
-    captured_piece_type = position.squares[bit_position(square)]
     position.pieces[move.piece_type] ^= move.from_sq ^ square
     position.squares[bit_position(square)] = move.piece_type
     position.pieces[captured_piece_type] ^= square
-
-    orig_pieces = None
-    orig_squares = None
-    orig_stm = position.side_to_move()
+    position.toggle_side_to_move()
     
     gains.append(balance)
 
@@ -651,10 +652,6 @@ def eval_see(pos, move):
         if max(gains[-1], -gains[-2]) < 0:
             break
         
-        # cache it once
-        if not orig_pieces: 
-            orig_pieces = position.pieces[:]
-            orig_squares = position.squares[:]
         # update the position
         position.pieces[piece_type_stm] ^= attacker ^ square
         position.squares[len(bin(square))-3] = piece_type_stm

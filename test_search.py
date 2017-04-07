@@ -13,6 +13,7 @@ def test_lowest_attacker():
     assert(lowest_attacker(position, E4)[1] == 68719476736)
     
     move = Move(PieceType.B_PAWN, D5, E4)
+    print(eval_see(position, move))
     assert(eval_see(position, move) == 0)
     position.make_move(move)
     assert(lowest_attacker(position, E4)[1]) == 262144

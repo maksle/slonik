@@ -349,16 +349,17 @@ class Engine(threading.Thread):
                 # log.debug(pv)
                 # pv2 = self.find_pv(self.root_position)
                 
-                elapsed = time.time() - self.search_stats.time_start
-                self.info("info depth", int(self.search_stats.ply["count"] / (self.search_stats.ply["iter"] or 1)),
-                          "seldepth", int(self.search_stats.ply["max"]),
-                          "score cp", str(int(val * 100 / EG_PIECES[Pt.P])) + bound,
-                          "nodes", self.search_stats.node_count,
-                          "nps", int(self.search_stats.node_count / (elapsed or 1)),
-                          "tbhits", self.search_stats.tb_hits,
-                          "time", int(elapsed),
-                          "pv", " ".join([m.to_uci for m in pv]))
-                
+                if bound == "":
+                    elapsed = time.time() - self.search_stats.time_start
+                    self.info("info depth", int(self.search_stats.ply["count"] / (self.search_stats.ply["iter"] or 1)),
+                              "seldepth", int(self.search_stats.ply["max"]),
+                              "score cp", str(int(val * 100 / EG_PIECES[Pt.P])) + bound,
+                              "nodes", self.search_stats.node_count,
+                              "nps", int(self.search_stats.node_count / (elapsed or 1)),
+                              "tbhits", self.search_stats.tb_hits,
+                              "time", int(elapsed),
+                              "pv", " ".join([m.to_uci for m in pv]))
+
                 # log.info("allowance, avg pv ply, max pv ply: %s, %s, %s",
                 #          allowance,
                 #          int(self.search_stats.ply["count"] / (self.search_stats.ply["iter"] or 1)),
@@ -403,11 +404,11 @@ class Engine(threading.Thread):
         assert(pv_node or a == b-1)
         
         si = self.si
-        if is_root:
-            si[ply] = si[ply] or SearchInfo()
-        else:
-            si[ply] = SearchInfo()
-        si[ply+1] = SearchInfo()
+        si[ply] = si[ply] or SearchInfo()
+        si[ply+1] = si[ply+1] or SearchInfo()
+        if not is_root:
+            si[ply].pv.clear()
+        si[ply+1].pv.clear()
         
         pos_key = node.zobrist_hash ^ si[ply].excluded_move.compact()
         
@@ -497,6 +498,14 @@ class Engine(threading.Thread):
         counter = None
         if len(node.moves):
             counter = self.lookup_counter(node.side_to_move() ^ 1, node.moves[-1])
+
+        if 'c6d4 e2e3 g4f3 g2f3' in " ".join([m.to_uci for m in node.moves]):
+        # if 'Nc6-d4' in str(node.moves):
+            log.debug("pos: %s", node.moves)
+            log.debug("moves: %s", moves)
+            for i in range(ply+1):
+                log.debug("si[%s].pv: %s", i, si[i].pv)
+            
         #
         # Move iteration
         for move in moves:
@@ -685,7 +694,10 @@ class Engine(threading.Thread):
         assert(pv_node or alpha == beta-1)
         
         si = self.si
+        si[ply] = si[ply] or SearchInfo()
         si[ply+1] = si[ply+1] or SearchInfo()
+        si[ply].pv.clear()
+        si[ply+1].pv.clear()
         
         tt_hit = False
         a_orig = alpha

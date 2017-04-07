@@ -267,7 +267,7 @@ class Position():
             res += ' ' + PICTURE_PIECES[pt] + ' '
             if (ind+1) % 8 == 0:
                 res += '\n'
-        print('{} to move'.format('W' if self.side_to_move() else 'B'))
+        print('{} to move'.format('W' if self.side_to_move() == 0 else 'B'))
         return res
                 
     def get_occupied(self, side):
