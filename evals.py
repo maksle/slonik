@@ -34,7 +34,7 @@ class BaseEvaluator():
                     sq_bb = 1 << sq
                     attacks = piece_attack(pt, sq_bb, occ)
                     if pinned & sq_bb:
-                        attacks &= LINE_SQS[bit_position(king_us)][sq]
+                        attacks &= line_sqs(bit_position(king_us), sq)
                     self.piece_attacks[pt] |= attacks
                     self.double_attacks[side] |= self.all_attacks[side] & attacks
                     self.all_attacks[side] |= attacks
@@ -93,8 +93,8 @@ class BaseEvaluator():
         # safe positions to check from b/c protected by their queen only 
         safe2 = safe | self.piece_attacks[Pt.piece(Pt.Q, them)] & invert(self.double_attacks[them]) & self.double_attacks[us]
 
-        bishop_rays = PSEUDO_ATTACKS[Pt.B][bit_position(their_king)]
-        rook_rays = PSEUDO_ATTACKS[Pt.R][bit_position(their_king)]
+        bishop_rays = pseudo_attacks(Pt.B, bit_position(their_king))
+        rook_rays = pseudo_attacks(Pt.R, bit_position(their_king))
 
         # potential safe knight check squares
         safe_n_checks = knight_attack(their_king) & safe2 & self.piece_attacks[Pt.piece(Pt.N, us)]
@@ -250,7 +250,7 @@ class BaseEvaluator():
             pt = Pt.piece(base_pt, side)
             safe_attacks = self.safe_attacks(base_pt, side)
             mobility_factor = base_pt if base_pt < Pt.K else 1
-            mobility += count_bits(attacks) * mobility_factor
+            mobility += count_bits(safe_attacks) * mobility_factor
 
         return mobility
 
@@ -625,8 +625,17 @@ def eval_see(pos, move):
     captured_piece_type = position.squares[len(bin(square))-3]
     if captured_piece_type:
         balance += MG_PIECES[Pt.base_type(captured_piece_type)]
-    position.make_move(move)
+    
+    # light make move
+    captured_piece_type = position.squares[bit_position(square)]
+    position.pieces[move.piece_type] ^= move.from_sq ^ square
+    position.squares[bit_position(square)] = move.piece_type
+    position.pieces[captured_piece_type] ^= square
 
+    orig_pieces = None
+    orig_squares = None
+    orig_stm = position.side_to_move()
+    
     gains.append(balance)
 
     while True:
@@ -641,7 +650,11 @@ def eval_see(pos, move):
 
         if max(gains[-1], -gains[-2]) < 0:
             break
-
+        
+        # cache it once
+        if not orig_pieces: 
+            orig_pieces = position.pieces[:]
+            orig_squares = position.squares[:]
         # update the position
         position.pieces[piece_type_stm] ^= attacker ^ square
         position.squares[len(bin(square))-3] = piece_type_stm
@@ -651,13 +664,19 @@ def eval_see(pos, move):
     for i in reversed(range(1, len(gains))):
         gains[i-1] = -max(gains[i], -gains[i-1])
 
+    # restore position
+    position.pieces = orig_pieces
+    position.squares = orig_squares
+    if position.side_to_move() != orig_stm:
+        position.toggle_side_to_move()
+        
     move.see_score = gains[0]
     return gains[0]
 
 def lowest_attacker(pos, square, side=None, highest_attacker=Pt.NULL):
     """Finds lowest piece of `side` attacking a square. `highest_attacker` means
     skip attacks of higher or equal value of given pt"""
-    position = Position(pos)
+    position = pos
     side = position.side_to_move() if side is None else side
     highest_attacker = Pt.K+1 if highest_attacker == Pt.NULL else highest_attacker
 

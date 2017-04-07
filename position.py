@@ -330,7 +330,7 @@ class Position():
             for checker in iterate_pieces(sliding_checkers | step_checkers):
                 valid_sqs = checker
                 if checker & sliding_checkers:
-                    valid_sqs |= BETWEEN_SQS[bit_position(ksq)][bit_position(checker)]
+                    valid_sqs |= between_sqs(bit_position(ksq), bit_position(checker))
                 yield from self.generate_moves_pt(Pt.piece(Pt.P, us), valid_sqs, legal=legal)
                 yield from self.generate_moves_pt(Pt.piece(Pt.N, us), valid_sqs, legal=legal)
                 yield from self.generate_moves_pt(Pt.piece(Pt.B, us), valid_sqs, legal=legal)
@@ -350,12 +350,9 @@ class Position():
         
         for p in iterate_pieces(self.pieces[pt]):
             if bt == PieceType.P:
-                moves = pawn_moves(p, own, other, side, last_move.piece_type, last_move.from_sq, last_move.to_sq)
+                moves = pawn_moves(p, own, other, self.en_pessant_sq or 0, side)
                 # include en-pessant
-                if last_move.piece_type != Pt.NULL \
-                   and last_move.to_sq & valid_sqs \
-                   and shift_north(shift_north(last_move.to_sq, side), side) == last_move.from_sq:
-                    valid_sqs |= shift_north(last_move.to_sq, side)
+                valid_sqs |= self.en_pessant_sq or 0
                 # include promo
                 if do_promo:
                     valid_sqs |= RANKS[0] | RANKS[7]
@@ -413,7 +410,7 @@ class Position():
         
         # pinned pieces can only move in line with the king
         if self.pinned[Pt.piece(Pt.K, us)] & move.from_sq \
-           and not LINE_SQS[bit_position(ksq)][bit_position(move.from_sq)] & move.to_sq:
+           and not line_sqs(bit_position(ksq), bit_position(move.from_sq)) & move.to_sq:
             return False
         
         if in_check:
@@ -426,7 +423,7 @@ class Position():
             b = checkers & self.pieces[Pt.piece(Pt.N, them)]
             if b: return bool(b & move.to_sq)
             
-            block_squares = BETWEEN_SQS[bit_position(checkers)][bit_position(ksq)] if checkers else 0
+            block_squares = between_sqs(bit_position(checkers), bit_position(ksq)) if checkers else 0
 
             # we can only block the check or capture the slider
             b = checkers & self.sliding_checkers[Pt.piece(Pt.K, us)]
@@ -603,14 +600,14 @@ class Position():
                 occ = self.occupied[us] | self.occupied[them]
 
                 diag_snipers = self.pieces[Pt.piece(Pt.B, them)] | self.pieces[Pt.piece(Pt.Q, them)]
-                diag_snipers &= PSEUDO_ATTACKS[PieceType.B][sq]
+                diag_snipers &= pseudo_attacks(PieceType.B, sq)
 
                 line_snipers = self.pieces[Pt.piece(Pt.R, them)] | self.pieces[Pt.piece(Pt.Q, them)]
-                line_snipers &= PSEUDO_ATTACKS[PieceType.R][sq]
+                line_snipers &= pseudo_attacks(PieceType.R, sq)
 
                 for sniper in iterate_pieces(diag_snipers | line_snipers):
                     sniper_sq = bit_position(sniper)
-                    b = BETWEEN_SQS[sq][sniper_sq] & occ
+                    b = between_sqs(sq, sniper_sq) & occ
                     if b and reset_ls1b(b) == 0:
                         if self.occupied[us] & b:
                             pinned[Pt.piece(target_piece_type, us)] |= b

@@ -1,7 +1,8 @@
 from search import *
 from constants import *
 from bb import *
-
+import cProfile
+import pstats
 
 # root_pos = Position()
 # root = SearchPos(root_pos)
@@ -91,23 +92,34 @@ def get_user_move(side):
 # print([len(a) for a in tf])
 # print(tf)
 
-# engine = Engine()
-# engine.debug = True
-# engine.infinite = True
-# engine.max_depth = 64
-# pos = Position.from_fen("r3kbnr/ppp2ppp/2n5/8/2BP2b1/5N2/PP2KPPP/RNB4R w kq - 1 9")
-# # print(list(pos.generate_moves_all(legal=True)))
-# # print(engine.sort_moves(list(pos.generate_moves_all(legal=True)), pos, engine.si, 0, False))
-# engine.root_position = pos
-# engine.init_move_history()
-# engine.search_stats.time_start = time.time()
-# engine.iterative_deepening()
+def goprofile():
+    now = time.time()
+    engine = Engine()
+    engine.debug = True
+    engine.infinite = False
+    engine.max_depth = 7
+    pos = Position.from_fen("r3kbnr/ppp2ppp/2n5/8/2BP2b1/5N2/PP2KPPP/RNB4R w kq - 1 9")
+    print(pos)
+    # print(list(pos.generate_moves_all(legal=True)))
+    # print(engine.sort_moves(list(pos.generate_moves_all(legal=True)), pos, engine.si, 0, False))
+    engine.root_position = pos
+    engine.init_move_history()
+    engine.search_stats.time_start = time.time()
+    engine.iterative_deepening()
+    print(time.time() - now)
 
-pos = Position.from_fen("r3kbnr/ppp2ppp/2n5/8/2BP2b1/5N2/PP2KPPP/RNB4R w kq - 1 9")
-from evals import BaseEvaluator
-from td import nn_evaluator
-# print(BaseEvaluator(pos).evaluate())
-print(nn_evaluator(pos))
+goprofile()
+    
+# cProfile.run("goprofile()", filename="outprofile")
+# pstats.Stats("outprofile").strip_dirs().sort_stats("time").print_stats(15)
+# print()
+# pstats.Stats("outprofile").strip_dirs().sort_stats("cumulative").print_stats(15)
+    
+# pos = Position.from_fen("r3kbnr/ppp2ppp/2n5/8/2BP2b1/5N2/PP2KPPP/RNB4R w kq - 1 9")
+# from evals import BaseEvaluator
+# from td import nn_evaluator
+# # print(BaseEvaluator(pos).evaluate())
+# print(nn_evaluator(pos))
 
 # import time 
 # now = time.time()

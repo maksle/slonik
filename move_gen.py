@@ -1,3 +1,5 @@
+import pyximport
+pyximport.install()
 from bb import *
 
 def knight_moves(knights, own):
@@ -18,12 +20,9 @@ def queen_moves(b, own, other):
     for queen in iterate_pieces(b):
         yield from attacks_generic(queen, own, other, queen_attack)
 
-def pawn_moves(pawns, own, other,
-               side, last_move_piece,
-               last_from_sq, last_to_sq):
+def pawn_moves(pawns, own, other, en_pessant_sq, side):
     for pawn in iterate_pieces(pawns):
-        en_pessant_squares = en_pessant_sq(side, last_move_piece, last_from_sq, last_to_sq)
-        other |= en_pessant_squares
+        other |= en_pessant_sq or 0
         captures = pawn_capture(pawn, side, other)
         non_capture_moves = pawn_move_non_capture(pawn, side, own, other)
         moves = captures | non_capture_moves

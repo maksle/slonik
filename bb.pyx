@@ -1,10 +1,17 @@
+# cython: profile=False
+
 """Parallel prefix routines (kogge-stone) for calculating ray attacks, and other
 piece attacks"""
 
 from print_bb import *
 from side import Side
 from piece_type import PieceType
+
 import gmpy2
+cimport numpy as np
+import numpy as np
+from numpy import uint64
+from numpy cimport uint64_t
 
 Pt = PieceType
 
@@ -18,6 +25,23 @@ NOT_A_FILE = A_FILE ^ FULL_BOARD
 NOT_H_FILE = H_FILE ^ FULL_BOARD
 NOT_B_FILE = B_FILE ^ FULL_BOARD
 NOT_G_FILE = G_FILE ^ FULL_BOARD
+
+
+ctypedef unsigned long long ULL
+cdef:
+    ULL _AFILE, _B_FILE, _G_FILE, _H_FILE
+    ULL _NOT_A_FILE, _NOT_B_FILE, _NOT_G_FILE, _NOT_H_FILE
+    ULL _FULL_BOARD
+_A_FILE = 0x8080808080808080
+_B_FILE = 0x4040404040404040
+_G_FILE = 0x0202020202020202
+_H_FILE = 0x0101010101010101
+_FULL_BOARD = 0xffffffffffffffff
+_NOT_A_FILE = A_FILE ^ FULL_BOARD
+_NOT_H_FILE = H_FILE ^ FULL_BOARD
+_NOT_B_FILE = B_FILE ^ FULL_BOARD
+_NOT_G_FILE = G_FILE ^ FULL_BOARD
+
 
 # bottom up 0-7
 RANKS = [0xff << (8*i) for i in range(8)]
@@ -137,67 +161,64 @@ PICTURE_PIECES = {
     PieceType.B_QUEEN: '♛',
     PieceType.B_KING: '♚',
 }
-
-# BETWEEN_SQS = [[0] * 64 for i in range(64)]
-# offset = 1
-# c = -1
-# while offset < 65:
-#     y = 1 << offset
-#     c += 1
-#     BETWEEN_SQS[offset][y] = c
-#     BETWEEN_SQS[y][offset] = c
     
-def north(b):
+cpdef ULL north(ULL b):
     return b << 8
 
-def south(b):
+cpdef ULL south(ULL b):
     return b >> 8
 
-def east(b):
-    return b >> 1 & NOT_A_FILE
+cdef ULL east(ULL b):
+    return b >> 1 & _NOT_A_FILE
 
-def west(b):
-    return b << 1 & NOT_H_FILE
+cpdef ULL west(ULL b):
+    return b << 1 & _NOT_H_FILE
 
-def north_east(b):
-    return b << 7 & NOT_A_FILE
+cpdef ULL north_east(ULL b):
+    return b << 7 & _NOT_A_FILE
 
-def north_west(b):
-    return b << 9 & NOT_H_FILE & FULL_BOARD
+cpdef ULL north_west(ULL b):
+    return b << 9 & _NOT_H_FILE & FULL_BOARD
 
-def south_east(b):
-    return b >> 9 & NOT_A_FILE
+cpdef ULL south_east(ULL b):
+    return b >> 9 & _NOT_A_FILE
 
-def south_west(b):
-    return b >> 7 & NOT_H_FILE
+cpdef ULL south_west(ULL b):
+    return b >> 7 & _NOT_H_FILE
 
-def west_attack(g, p):
+cpdef ULL west_attack(ULL g, ULL p):
     """ (g: int, p: int) -> int
     g: attacker
     p: free squares
     """
-    pr0 = p & NOT_H_FILE
+    cdef ULL pr0
+    cdef ULL pr1
+    cdef ULL pr2
+    pr0 = p & _NOT_H_FILE
     pr1 = pr0 & (pr0 << 1)
     pr2 = pr1 & (pr1 << 2)
     g |= pr0 & g << 1
     g |= pr1 & g << 2
     g |= pr2 & g << 4
-    return (g << 1) & NOT_H_FILE & ((1 << 64) - 1)
+    return (g << 1) & _NOT_H_FILE
 
-def east_attack(g, p):
+cpdef ULL east_attack(ULL g, ULL p):
     """ (g: int, p: int) -> int
     g: attacker
     p: free squares
     """
-    pr0 = p & NOT_A_FILE
+    cdef ULL pr0
+    cdef ULL pr1
+    cdef ULL pr2
+    pr0 = p & _NOT_A_FILE
     pr1 = pr0 & (pr0 >> 1)
     pr2 = pr1 & (pr1 >> 2)
     g |= pr0 & g >> 1
     g |= pr1 & g >> 2
     g |= pr2 & g >> 4
-    return (g >> 1) & NOT_A_FILE
+    return (g >> 1) & _NOT_A_FILE
 
-def north_attack(g, p):
+cpdef ULL north_attack(ULL g, ULL p):
     """ (g: int, p: int) -> int
     g: attacker
     p: free squares
@@ -207,9 +228,9 @@ def north_attack(g, p):
     g |= p & (g << 16)
     p &= (p << 16)
     g |= p & (g << 32)
-    return (g << 8) & ((1 << 64) - 1)
+    return (g << 8)
 
-def south_attack(g, p):
+cpdef ULL south_attack(ULL g, ULL p):
     """ (g: int, p: int) -> int
     g: attacker
     p: free squares
@@ -221,103 +242,115 @@ def south_attack(g, p):
     g |= p & (g >> 32)
     return g >> 8
 
-def ne_attack(g, p):
+cpdef ULL ne_attack(ULL g, ULL p):
     """ (g: int, p: int) -> int
     g: attacker
     p: free squares
     """
-    pr0 = p & NOT_A_FILE
+    cdef ULL pr0
+    cdef ULL pr1
+    cdef ULL pr2
+    pr0 = p & _NOT_A_FILE
     pr1 = pr0 & (pr0 << 7)
     pr2 = pr1 & (pr1 << 14)
     g |= pr0 & g << 7
     g |= pr1 & g << 14
     g |= pr2 & g << 28
-    return (g << 7) & NOT_A_FILE & ((1 << 64) - 1)
+    return (g << 7) & _NOT_A_FILE
 
-def nw_attack(g, p):
+cpdef nw_attack(ULL g, ULL p):
     """ (g: int, p: int) -> int
     g: attacker
     p: free squares
     """
-    pr0 = p & NOT_H_FILE
+    cdef ULL pr0
+    cdef ULL pr1
+    cdef ULL pr2
+    pr0 = p & _NOT_H_FILE
     pr1 = pr0 & (pr0 << 9)
     pr2 = pr1 & (pr1 << 18)
     g |= pr0 & g << 9
     g |= pr1 & g << 18
     g |= pr2 & g << 36
-    return (g << 9) & NOT_H_FILE & ((1 << 64) - 1)
+    return (g << 9) & _NOT_H_FILE
 
-def se_attack(g, p):
+cpdef ULL se_attack(ULL g, ULL p):
     """ (g: int, p: int) -> int
     g: attacker
     p: free squares
     """
-    pr0 = p & NOT_A_FILE
+    cdef ULL pr0
+    cdef ULL pr1
+    cdef ULL pr2
+    pr0 = p & _NOT_A_FILE
     pr1 = pr0 & (pr0 >> 9)
     pr2 = pr1 & (pr1 >> 18)
     g |= pr0 & g >> 9
     g |= pr1 & g >> 18
     g |= pr2 & g >> 36
-    return g >> 9 & NOT_A_FILE
+    return g >> 9 & _NOT_A_FILE
 
-def sw_attack(g, p):
+cpdef ULL sw_attack(ULL g, ULL p):
     """ (g: int, p: int) -> int
     g: attacker
     p: free squares
     """
-    pr0 = p & NOT_H_FILE
+    cdef ULL pr0, pr1, pr2
+    pr0 = p & _NOT_H_FILE
     pr1 = pr0 & (pr0 >> 7)
     pr2 = pr1 & (pr1 >> 14)
     g |= pr0 & g >> 7
     g |= pr1 & g >> 14
     g |= pr2 & g >> 28
-    return g >> 7 & NOT_H_FILE
+    return g >> 7 & _NOT_H_FILE
 
-def rook_attack_calc(g, p):
+cpdef ULL rook_attack_calc(ULL g, ULL p):
     return north_attack(g, p) \
         | east_attack(g, p) \
         | south_attack(g, p) \
         | west_attack(g, p)
 
-def queen_attack_calc(g, p):
+cpdef ULL queen_attack_calc(ULL g, ULL p):
     return rook_attack_calc(g, p) | bishop_attack_calc(g, p)
 
-def bishop_attack_calc(g, p):
+cpdef ULL bishop_attack_calc(ULL g, ULL p):
     return nw_attack(g, p) \
         | ne_attack(g, p) \
         | se_attack(g, p) \
         | sw_attack(g, p)
 
-def knight_attack_calc(g):
-    attacks = ((g << 6) & NOT_A_FILE & NOT_B_FILE) \
-        | ((g >> 10) & NOT_A_FILE & NOT_B_FILE) \
-        | ((g >> 17) & NOT_A_FILE) \
-        | ((g >> 15) & NOT_H_FILE) \
-        | ((g >> 6) & NOT_G_FILE & NOT_H_FILE) \
-        | ((g << 10) & NOT_G_FILE & NOT_H_FILE) \
-        | ((g << 15) & NOT_A_FILE) \
-        | ((g << 17) & NOT_H_FILE)
-    return attacks & ((1 << 64) - 1)
+cpdef ULL knight_attack_calc(ULL g):
+    cdef ULL attacks
+    attacks = ((g << 6) & _NOT_A_FILE & _NOT_B_FILE) \
+        | ((g >> 10) & _NOT_A_FILE & _NOT_B_FILE) \
+        | ((g >> 17) & _NOT_A_FILE) \
+        | ((g >> 15) & _NOT_H_FILE) \
+        | ((g >> 6) & _NOT_G_FILE & _NOT_H_FILE) \
+        | ((g << 10) & _NOT_G_FILE & _NOT_H_FILE) \
+        | ((g << 15) & _NOT_A_FILE) \
+        | ((g << 17) & _NOT_H_FILE)
+    return attacks
 
-def king_attack_calc(g):
-    return ((g << 9) & NOT_H_FILE) \
+cpdef ULL king_attack_calc(ULL g):
+    return ((g << 9) & _NOT_H_FILE) \
         | g << 8 \
-        | ((g << 7) & NOT_A_FILE) \
-        | ((g << 1) & NOT_H_FILE) \
-        | ((g >> 1) & NOT_A_FILE) \
-        | ((g >> 7) & NOT_H_FILE) \
+        | ((g << 7) & _NOT_A_FILE) \
+        | ((g << 1) & _NOT_H_FILE) \
+        | ((g >> 1) & _NOT_A_FILE) \
+        | ((g >> 7) & _NOT_H_FILE) \
         | g >> 8 \
-        | ((g >> 9) & NOT_A_FILE)
+        | ((g >> 9) & _NOT_A_FILE)
 
-def pawn_attack_calc(pawn, side_to_move):
+cpdef ULL pawn_attack_calc(ULL pawn, int side_to_move):
     if side_to_move == Side.WHITE:
-        return ((pawn << 9) & NOT_H_FILE) \
-            | ((pawn << 7) & NOT_A_FILE)
+        return ((pawn << 9) & _NOT_H_FILE) \
+            | ((pawn << 7) & _NOT_A_FILE)
     else:
-        return ((pawn >> 9) & NOT_A_FILE) \
-            | ((pawn >> 7) & NOT_H_FILE)
+        return ((pawn >> 9) & _NOT_A_FILE) \
+            | ((pawn >> 7) & _NOT_H_FILE)
 
-def piece_attack(pt, sq, occupied):
+cpdef piece_attack(int pt, ULL sq, ULL occupied):
+    cdef int bt
     bt = Pt.base_type(pt)
     if bt == Pt.P:
         return pawn_attack(sq, Pt.get_side(pt))
@@ -332,19 +365,21 @@ def piece_attack(pt, sq, occupied):
     elif bt == Pt.K:
         return king_attack(sq)
     
-def exclude_own(attacks, own):
-    not_own = own ^ FULL_BOARD
+cpdef ULL exclude_own(ULL attacks, ULL own):
+    cdef ULL not_own
+    not_own = own ^ _FULL_BOARD
     return attacks & not_own
 
-def ls1b(p):
+cpdef ULL ls1b(ULL p):
     # Least significant 1 bit
     return p & -p
 
-def reset_ls1b(p):
+cpdef ULL reset_ls1b(ULL p):
     # flip least significant 1 bit
     return p & (p-1)
 
-def iterate_pieces(b):
+def iterate_pieces(ULL b):
+    cdef ULL board
     board = b
     while board > 0:
         yield ls1b(board)
@@ -360,24 +395,11 @@ def iterate_pieces(b):
 # def count_bits(b):
 #     return bin(b).count("1")
 
-def count_bits(b):
+cpdef ULL count_bits(ULL b):
     return gmpy2.popcount(b)
 
-def en_pessant_sq(side_to_move, last_move_piece, from_sq, to_sq):
-    if side_to_move == Side.WHITE \
-       and last_move_piece == PieceType.B_PAWN \
-       and from_sq & 0xff000000000000 > 0 \
-       and to_sq & 0xff00000000 > 0:
-        return to_sq << 8
-    if side_to_move == Side.BLACK \
-       and last_move_piece == PieceType.W_PAWN \
-       and from_sq & 0xff00 > 0 \
-       and to_sq & 0xff000000 > 0:
-        return from_sq << 8
-    return 0
-
-def invert(b):
-    return b ^ FULL_BOARD
+cpdef ULL invert(ULL b):
+    return b ^ _FULL_BOARD
 
 # de_bruijn_bitpos = [
 #     63,  0, 58,  1, 59, 47, 53,  2,
@@ -396,7 +418,7 @@ def invert(b):
 # def bit_position(square):
 #     return len(bin(square))-3
 
-def bit_position(square):
+cpdef bit_position(ULL square):
     return gmpy2.bit_scan1(square)
 
 def shift_north(n, side):
@@ -469,35 +491,60 @@ def edge_mask(sq):
     if not fl == 7: edges |= FILES[7]
     return edges
 
-def rook_mask(sq):
-    attacks = PSEUDO_ATTACKS[PieceType.R][sq]
+cdef ULL rook_mask(int sq):
+    cdef ULL attacks, edges
+    cdef int ptr
+    ptr = PieceType.R
+    attacks = PSEUDO_ATTACKS[ptr, sq]
     edges = edge_mask(sq)
-    return attacks & (FULL_BOARD ^ edges)
+    return attacks & (_FULL_BOARD ^ edges)
 
-def bishop_mask(sq):
-    attacks = PSEUDO_ATTACKS[PieceType.B][sq]
+cdef ULL bishop_mask(int sq):
+    cdef ULL attacks, edges
+    cdef int ptb
+    ptb = PieceType.B
+    attacks = PSEUDO_ATTACKS[ptb][sq]
     edges = edge_mask(sq)
-    return attacks & (FULL_BOARD ^ edges)
+    return attacks & (_FULL_BOARD ^ edges)
 
     
-BETWEEN_SQS = [[0] * 65 for i in range(64)]
-LINE_SQS = [[0] * 65 for i in range(64)]
+# BETWEEN_SQS = [[0] * 65 for i in range(64)]
+BETWEEN_SQS = np.zeros((64, 65), dtype='Q')
+# LINE_SQS = [[0] * 65 for i in range(64)]
+LINE_SQS = np.zeros((64, 65), dtype='Q')
 
-PSEUDO_ATTACKS = [[0] * 64 for i in range(7)]
-MAGIC_MASKS = [[0] * 64 for i in range(7)]
+# PSEUDO_ATTACKS = [[0] * 64 for i in range(7)]
+PSEUDO_ATTACKS = np.zeros((7, 64), dtype='Q')
+# MAGIC_MASKS = [[0] * 64 for i in range(7)]
+MAGIC_MASKS = np.zeros((7, 64), dtype='Q')
+# AHEAD_SQS = [[0 for i in range(64)] for s in range(2)]
+AHEAD_SQS = np.zeros((2, 64), dtype='Q')
+# ATTACKS = [[0] * 64 for i in range(7)]
+ATTACKS = np.zeros((7, 64), dtype='Q')
+cdef:
+    int pt, qpt, side, last_rank, sq_orig, sq2_orig
+    ULL sq, sq2, attacks, mask, magic
+    ULL[:,:] BETWEEN_SQS_V = BETWEEN_SQS
+    ULL[:,:] LINE_SQS_V = LINE_SQS
+    ULL[:,:] PSEUDO_ATTACKS_V = PSEUDO_ATTACKS
+    ULL[:,:] MAGIC_MASKS_V = MAGIC_MASKS
+    ULL[:,:] AHEAD_SQS_V = AHEAD_SQS
+    ULL[:,:] ATTACKS_V = ATTACKS
+qpt = PieceType.Q
 for sq_ind in range(64):
     for pt in [PieceType.B, PieceType.R]:
         sq = 1 << sq_ind
-
+        sq_orig = sq_ind
+        
         attack_fn = bishop_attack_calc if pt == PieceType.B else rook_attack_calc
         attacks = attack_fn(sq, FULL_BOARD)
-        PSEUDO_ATTACKS[pt][sq_ind] = attacks
-        PSEUDO_ATTACKS[PieceType.Q][sq_ind] |= attacks
+        PSEUDO_ATTACKS_V[pt, sq_orig] = attacks
+        PSEUDO_ATTACKS_V[qpt, sq_orig] |= attacks
 
         mask_fn = bishop_mask if pt == PieceType.B else rook_mask
         mask = mask_fn(sq_ind)
-        MAGIC_MASKS[pt][sq_ind] = mask
-        MAGIC_MASKS[PieceType.Q][sq_ind] |= mask
+        MAGIC_MASKS_V[pt, sq_orig] = mask
+        MAGIC_MASKS_V[qpt, sq_orig] |= mask
 
 for sq_ind in range(64):
     for sq2_ind in range(64):
@@ -505,54 +552,77 @@ for sq_ind in range(64):
             attack_fn = bishop_attack_calc if pt == PieceType.B else rook_attack_calc
             sq = 1 << sq_ind
             sq2 = 1 << sq2_ind
-            if PSEUDO_ATTACKS[pt][sq_ind] & sq2 == 0:
+            sq_orig = sq_ind
+            sq2_orig = sq2_ind
+            if PSEUDO_ATTACKS_V[pt, sq_orig] & sq2 == 0:
                 continue
-            BETWEEN_SQS[sq_ind][sq2_ind] = attack_fn(sq, sq2 ^ FULL_BOARD) & attack_fn(sq2, sq ^ FULL_BOARD)
-            LINE_SQS[sq_ind][sq2_ind] = (attack_fn(sq, FULL_BOARD) & attack_fn(sq2, FULL_BOARD)) | sq | sq2
+            BETWEEN_SQS_V[sq_orig, sq2_orig] = attack_fn(sq, sq2 ^ _FULL_BOARD) & attack_fn(sq2, sq ^ _FULL_BOARD)
+            LINE_SQS_V[sq_orig, sq2_orig] = (attack_fn(sq, FULL_BOARD) & attack_fn(sq2, FULL_BOARD)) | sq | sq2
 
-AHEAD_SQS = [[0 for i in range(64)] for s in range(2)]
+cdef int bp_last_sq
 for sq_ind in range(64):
     for side in [Side.WHITE, Side.BLACK]:
         last_rank = 7 if side == Side.WHITE else 0
         f = 7 - (sq_ind % 8)
         last_sq = FILES[f] & RANKS[last_rank]
-        AHEAD_SQS[side][sq_ind] = BETWEEN_SQS[sq_ind][bit_position(last_sq)] | last_sq
+        sq_orig = sq_ind
+        bp_last_sq = bit_position(last_sq)
+        AHEAD_SQS_V[side, sq_orig] = BETWEEN_SQS_V[sq_orig, bp_last_sq] | last_sq
 
-ATTACKS = [[0] * 64 for i in range(7)]
 for pt in [Pt.N, Pt.K]:
-    for sq in range(64):
-        if pt == Pt.N: ATTACKS[pt][sq] = knight_attack_calc(1 << sq)
-        elif pt == Pt.K: ATTACKS[pt][sq] = king_attack_calc(1 << sq)
+    for sq_ind in range(64):
+        sq_orig = sq_ind
+        if pt == Pt.N: ATTACKS_V[pt, sq_orig] = knight_attack_calc(1 << sq_ind)
+        elif pt == Pt.K: ATTACKS_V[pt, sq_orig] = king_attack_calc(1 << sq_ind)
 
-def knight_attack(sq):
+cpdef ULL pseudo_attacks(int pt, int sq):
+    return PSEUDO_ATTACKS_V[pt, sq]
+
+cpdef between_sqs(int sq1, int sq2):
+    return BETWEEN_SQS_V[sq1, sq2]
+
+cpdef line_sqs(int sq1, int sq2):
+    return LINE_SQS_V[sq1, sq2]
+
+cpdef ULL knight_attack(ULL sq) except -1:
     return ATTACKS[Pt.N][bit_position(sq)]
 
-def king_attack(sq):
-    return ATTACKS[Pt.K][bit_position(sq)]
+cpdef ULL king_attack(ULL sq) except -1:
+    cdef int ptk
+    ptk = Pt.K
+    return ATTACKS[ptk, bit_position(sq)]
 
-def pawn_attack(sq, side):
+cpdef ULL pawn_attack(ULL sq, ULL side) except -1:
     return pawn_attack_calc(sq, side)
 
-def bishop_attack(sq, occupied):
+cpdef ULL bishop_attack(ULL sq, ULL occupied) except -1:
+    cdef int ptb, bitpos, hash_index
+    cdef ULL occ
+    ptb = PieceType.B
     bitpos = bit_position(sq)
-    occ = occupied & MAGIC_MASKS[PieceType.B][bitpos]
-    occ *= MAGIC_NUMBER[PieceType.B][bitpos]
-    occ &= FULL_BOARD
-    hash_index = occ >> (64 - MASK_BIT_LENGTH[PieceType.B][bitpos])
-    return MAGIC_ATTACKS[PieceType.B][bitpos][hash_index]
+    occ = occupied & MAGIC_MASKS_V[ptb, bitpos]
+    occ *= MAGIC_NUMBER_V[ptb, bitpos]
+    # occ &= FULL_BOARD
+    hash_index = occ >> (64 - MASK_BIT_LENGTH_V[ptb, bitpos])
+    return MAGIC_ATTACKS_B_V[bitpos, hash_index]
 
-def rook_attack(sq, occupied):
+cpdef ULL rook_attack(ULL sq, ULL occupied) except -1:
+    cdef int ptr, bitpos, hash_index
+    cdef ULL occ
     bitpos = bit_position(sq)
-    occ = occupied & MAGIC_MASKS[PieceType.R][bitpos]
-    occ *= MAGIC_NUMBER[PieceType.R][bitpos]
-    occ &= FULL_BOARD
-    hash_index = occ >> (64 - MASK_BIT_LENGTH[PieceType.R][bitpos])
-    return MAGIC_ATTACKS[PieceType.R][bitpos][hash_index]
+    ptr = PieceType.R
+    occ = occupied & MAGIC_MASKS_V[ptr, bitpos]
+    occ *= MAGIC_NUMBER_V[ptr, bitpos]
+    # occ &= FULL_BOARD
+    hash_index = occ >> (64 - MASK_BIT_LENGTH_V[ptr, bitpos])
+    return MAGIC_ATTACKS_R_V[bitpos, hash_index]
 
-def queen_attack(sq, occupied):
+cpdef ULL queen_attack(ULL sq, ULL occupied) except -1:
     return bishop_attack(sq, occupied) | rook_attack(sq, occupied)
 
-MASK_BIT_LENGTH = [[] for i in range(7)]
+# MASK_BIT_LENGTH = [[] for i in range(7)]
+MASK_BIT_LENGTH = np.zeros((7, 64), dtype='int32')
+cdef int[:,:] MASK_BIT_LENGTH_V = MASK_BIT_LENGTH
 MASK_BIT_LENGTH[PieceType.B] = [
   6, 5, 5, 5, 5, 5, 5, 6,
   5, 5, 5, 5, 5, 5, 5, 5,
@@ -575,11 +645,17 @@ MASK_BIT_LENGTH[PieceType.R] = [
   12, 11, 11, 11, 11, 11, 11, 12
 ];
 
-MAGIC_ATTACKS = [[] for i in range(7)]
-MAGIC_ATTACKS[PieceType.B] = [[None] * 512 for i in range(64)]
-MAGIC_ATTACKS[PieceType.R] = [[None] * 4096 for i in range(64)]
+# MAGIC_ATTACKS = [[] for i in range(7)]
+MAGIC_ATTACKS_B = np.zeros((64, 512), dtype='uint64')
+MAGIC_ATTACKS_R = np.zeros((64, 4096), dtype='uint64')
+# MAGIC_ATTACKS[PieceType.B] = [[None] * 512 for i in range(64)]
+# MAGIC_ATTACKS[PieceType.R] = [[None] * 4096 for i in range(64)]
+cdef ULL[:,:] MAGIC_ATTACKS_B_V = MAGIC_ATTACKS_B
+cdef ULL[:,:] MAGIC_ATTACKS_R_V = MAGIC_ATTACKS_R
 
-def index_to_occupation(index, bits, mask):
+cdef ULL index_to_occupation(ULL index, int bits, ULL mask):
+    cdef ULL m, j, result
+    cdef int i
     m = mask
     result = 0
     for i in range(bits):
@@ -589,7 +665,10 @@ def index_to_occupation(index, bits, mask):
             result |= j
     return result
             
-MAGIC_NUMBER = [[] for i in range(7)]
+# MAGIC_NUMBER = [[] for i in range(7)]
+MAGIC_NUMBER = np.zeros((5,64), dtype='ulonglong')
+cdef ULL[:,:] MAGIC_NUMBER_V = MAGIC_NUMBER
+
 MAGIC_NUMBER[PieceType.B] = [
     9304441232522551809,
     5197197952615010356,
@@ -738,14 +817,19 @@ MAGIC_NUMBER[PieceType.R] = [
     145294587333762
 ]
 
-# print("Initializing Magics")
+cdef int bits, index_hash
+cdef ULL free, occupation
+print("Initializing Magics")
 for pt in [PieceType.B, PieceType.R]:
-    for sq, magic in enumerate(MAGIC_NUMBER[pt]):
-        mask = MAGIC_MASKS[pt][sq]
-        bits = MASK_BIT_LENGTH[pt][sq]
+    for sq_ind, magic in enumerate(MAGIC_NUMBER[pt]):
+        sq_orig = sq_ind
+        mask = MAGIC_MASKS_V[pt, sq_orig]
+        bits = MASK_BIT_LENGTH_V[pt, sq_orig]
         for index in range(1 << bits):
             occupation = index_to_occupation(index, bits, mask)
             free = invert(occupation) # calc funcs take free, not occupied
-            index_hash = ((occupation * magic) & FULL_BOARD) >> (64 - bits)
-            attack_fn = bishop_attack_calc if pt == PieceType.B else rook_attack_calc
-            MAGIC_ATTACKS[pt][sq][index_hash] = attack_fn(1 << sq, free)
+            index_hash = (occupation * magic) >> (64 - bits)
+            if pt == Pt.B:
+                MAGIC_ATTACKS_B_V[sq_orig, index_hash] = bishop_attack_calc(1 << sq_ind, free)
+            else:
+                MAGIC_ATTACKS_R_V[sq_orig, index_hash] = rook_attack_calc(1 << sq_ind, free)
