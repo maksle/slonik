@@ -100,24 +100,27 @@ def goprofile():
     engine.infinite = False
     engine.max_depth = 9
     pos = Position.from_fen("r3kbnr/ppp2ppp/2n5/8/2BP2b1/5N2/PP2KPPP/RNB4R w kq - 1 9")
-    print(pos)
-    for i in range(100000):
-        sq = random.randint(0,63)
-        lowest_attacker(pos, 1<<sq)
+    # print(pos)
+    # for i in range(100000):
+    #     sq = random.randint(0,63)
+    #     lowest_attacker(pos, 1<<sq)
     # print(list(pos.generate_moves_all(legal=True)))
     # print(engine.sort_moves(list(pos.generate_moves_all(legal=True)), pos, engine.si, 0, False))
-    # engine.root_position = pos
-    # engine.init_move_history()
-    # engine.search_stats.time_start = time.time()
+    engine.root_position = pos
+    engine.init_move_history()
+    engine.search_stats.time_start = time.time()
+    print(engine.evaluate(pos))
+    pos.toggle_side_to_move()
+    print(engine.evaluate(pos))
     # engine.iterative_deepening()
     print(time.time() - now)
 
-# goprofile()
+goprofile()
     
-cProfile.run("goprofile()", filename="outprofile")
-pstats.Stats("outprofile").strip_dirs().sort_stats("time").print_stats(15)
-print()
-pstats.Stats("outprofile").strip_dirs().sort_stats("cumulative").print_stats(15)
+# cProfile.run("goprofile()", filename="outprofile")
+# pstats.Stats("outprofile").strip_dirs().sort_stats("time").print_stats(15)
+# print()
+# pstats.Stats("outprofile").strip_dirs().sort_stats("cumulative").print_stats(15)
 
 # pos = Position.from_fen("r3kbnr/ppp2ppp/2n5/8/2BP2b1/5N2/PP2KPPP/RNB4R w kq - 1 9")
 # from evals import BaseEvaluator

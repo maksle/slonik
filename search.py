@@ -1,15 +1,15 @@
 from IPython import embed
 import time 
 import pprint
-from collections import namedtuple
-from collections import Counter as Cntr
+from collections import namedtuple, Counter as Cntr, defaultdict
 from position import *
 from constants import *
-from collections import defaultdict
 from material import *
 from psqt import *
 from evals import *
 from operator import itemgetter
+from features import ToFeature
+import nn_evaluate
 import threading
 import itertools
 import logging
@@ -105,7 +105,6 @@ class TimeManagement():
         moves_out_of_book = min(10, current_move_number - out_of_book_move_number)
         return int(.95 * (self.wtime / moves_to_go) * (2 - moves_out_of_book / 10))
 
-
 baseEvaluator = BaseEvaluator()        
 def static_evaluate(position):
     baseEvaluator.set_position(position)
@@ -128,7 +127,8 @@ class Engine(threading.Thread):
         self.si = [None] * 64
 
         # Evaluator (static or nn)
-        self.evaluate = static_evaluate
+        # self.evaluate = static_evaluate
+        self.evaluate = nn_evaluate.evaluate
         
         # ply counts and other stats
         self.search_stats = SearchStats()
@@ -236,7 +236,15 @@ class Engine(threading.Thread):
             History(Move(piece, to_sq=1<<sq), psqt_value_sq(piece, 1<<sq, side))
             for sq in range(64)] for piece in range(13)] for side in range(2)
         ]
-     
+
+    def rotate_killers(self):
+        d = defaultdict(list)
+        for ply, v in self.killer_moves.items():
+            d[ply-1] = self.killer_moves[ply]
+        if -1 in d:
+            del d[-1]
+        self.killer_moves = d
+        
     def init_root_moves(self, uci_moves=None):
         """Set by the "searchmoves" option of the uci "go" command, which limits
         the moves to search in the root position"""
@@ -288,7 +296,7 @@ class Engine(threading.Thread):
 
         depth = allowance_to_depth(35)
 
-        val = 0
+        val = self.evaluate(self.root_position)
 
         pv = []
 
