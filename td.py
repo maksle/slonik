@@ -55,7 +55,7 @@ if __name__ == "__main__":
         positions = []
         lines_read = 0
         if itern == 0:
-            npos = 5000
+            npos = 100
             # npos = positions_per_iteration
         else:
             npos = positions_per_iteration
@@ -75,7 +75,8 @@ if __name__ == "__main__":
         if itern == 0:
             # pass
             initialize_weights(positions)
-            # model.save_model()
+            model.save_model()
+            break
         else:
             for psn in positions:
                 print("================")
@@ -113,6 +114,7 @@ if __name__ == "__main__":
                     if psn.side_to_move() == Side.B:
                         leaf_val = -leaf_val
                     leaf_val /= 1000
+                    leaf_val = min(max(leaf_val, -2), 2) # mate score
 
                     timesteps.append(leaf_val)
                     if len(timesteps) > 2:

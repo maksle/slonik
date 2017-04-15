@@ -1,3 +1,4 @@
+# from IPython import embed
 from features import ToFeature
 from nn import model
 
@@ -10,6 +11,7 @@ def get_features(position):
 
 def evaluate(position, train=False):
     features = get_features(position)
+    # embed()
     res_value = model.predict(features)
     if position.white_to_move():
         val = res_value

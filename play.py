@@ -109,11 +109,12 @@ def goprofile():
     engine.root_position = pos
     engine.init_move_history()
     engine.search_stats.time_start = time.time()
-    print(engine.evaluate(pos))
+    for i in range(5):
+        print(engine.evaluate(pos))
     pos.toggle_side_to_move()
-    print(engine.evaluate(pos))
+    # print(engine.evaluate(pos))
     # engine.iterative_deepening()
-    print(time.time() - now)
+    # print(time.time() - now)
 
 goprofile()
     

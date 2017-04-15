@@ -9,18 +9,20 @@ from keras.models import Model as KModel
 import keras.backend as K
 
 
-tf.logging.set_verbosity(tf.logging.WARN)
+FLAGS = tf.app.flags.FLAGS
+tf.logging.set_verbosity(tf.logging.DEBUG)
 
 
 class Model(object):
-    def __init__(self, restore=False):
+    def __init__(self, sess, graph, restore=False):
         if os.path.exists('learnedmodel.h5'):
             self.model = keras.models.load_model('learnedmodel.h5')
         else:
             self.model = self.make_model()
-        self.sess = tf.Session()
+        self.sess = sess
+        self.graph = graph
 
-        self.checkpoint_path = '.'
+        self.checkpoint_path = './'
 
         self.model.summary()
         
@@ -98,14 +100,22 @@ class Model(object):
 
     def save_model(self):
         # self.model.save('learnedmodel.h5')
-        self.saver.save(self.sess, self.checkpoint_path + 'checkpoint') 
+        with self.sess.as_default():
+            self.sess.run(self.global_step.assign(100))
+            print(self.global_step.eval(session=self.sess))
+            print("saved")
+            self.saver.save(self.sess, self.checkpoint_path + 'tfcheckpoint') 
             
     def restore(self):
         latest_checkpoint_path = tf.train.latest_checkpoint(self.checkpoint_path)
         if latest_checkpoint_path:
             print('Restoring checkpoint: {0}'.format(latest_checkpoint_path))
+            # print("before restore", self.model.layers[4].get_weights()[0][0])
             self.saver.restore(self.sess, latest_checkpoint_path)
-
+            print(self.global_step.eval(session=self.sess))
+            embed()
+            # print("after restore", self.model.layers[4].get_weights()[0][0])
+                
     def make_model(self):
         input_global = Input(shape=(18,), name='input_global')
         hidden_global = Dense(18, activation='relu', name='hidden_global')(input_global)
@@ -143,13 +153,16 @@ class Model(object):
         return { 'input_global': dgs, 'input_pawn': dpws, 'input_piece': dpcs, 'input_square': dsqs }
         
     def fit(self, features, targets, epochs, batch_size):
-        f = self.transform_features(features)
-        res = self.model.fit(f, np.asarray(targets), batch_size=batch_size, epochs=epochs)
-        return np.asarray(res.history['loss']).mean()
+        with self.graph.as_default():
+            f = self.transform_features(features)
+            res = self.model.fit(f, np.asarray(targets), batch_size=batch_size, epochs=epochs)
+            return np.asarray(res.history['loss']).mean()
 
     def predict(self, features):
-        f = self.transform_features([features])
-        return self.model.predict(f, verbose=0)[0][0]
+        with self.sess.as_default(), self.graph.as_default():
+            # embed()
+            f = self.transform_features([features])
+            return self.model.predict(f, verbose=0)[0][0]
 
     def train(self, features, v, v_next):
         f = self.transform_features([features])
@@ -166,4 +179,7 @@ class Model(object):
     def reset_eligibility_trace(self):
         self.sess.run(self.reset_op)
 
-model = Model()
+graph = tf.Graph()
+sess = tf.Session(graph=graph)
+with sess.as_default(), graph.as_default():
+    model = Model(sess, graph, restore=True)

@@ -6,6 +6,13 @@ import logging
 import logging_config
 from itertools import takewhile, dropwhile
 from search import Engine
+import tensorflow as tf
+
+# flags = tf.app.flags
+# FLAGS = flags.FLAGS
+
+# flags.DEFINE_boolean('restore', False, 'If true, restore a checkpoint before training.')
+
 
 log = logging.getLogger(__name__)
 
