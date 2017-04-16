@@ -12,6 +12,7 @@ import nn_evaluate
 import numpy as np
 import logging
 import logging_config
+import sts
 
 
 log = logging.getLogger(__name__)
@@ -46,7 +47,7 @@ iterations = 10000
 total_fens = 700762
 plies_to_play = 16
 batch_size = 32
-positions_per_iteration = 15 #128 #256
+positions_per_iteration = 20 #128 #256
 num_iterations = total_fens // positions_per_iteration + 1
 
 if __name__ == "__main__":
@@ -55,8 +56,8 @@ if __name__ == "__main__":
         positions = []
         lines_read = 0
         if itern == 0:
-            npos = 100
-            # npos = positions_per_iteration
+            # npos = 10000
+            npos = positions_per_iteration
         else:
             npos = positions_per_iteration
         with open('../allfens.txt') as fens:
@@ -73,17 +74,17 @@ if __name__ == "__main__":
             offset += npos
 
         if itern == 0:
-            # pass
-            initialize_weights(positions)
-            model.save_model()
-            break
+            pass
+            # initialize_weights(positions)
+            # model.save_model()
+            # break
         else:
             for psn in positions:
-                print("================")
-                print(psn.fen())
+                print("============================")
+                print("New Game")
                 moves = list(psn.generate_moves_all(legal=True))
                 move = random.choice(moves)
-                print(move)
+                print("Random move:", move)
                 psn.make_move(move)
                 print(psn)
                 
@@ -104,7 +105,8 @@ if __name__ == "__main__":
                 model.reset_eligibility_trace()
                 
                 timesteps = []
-                for ply in range(plies_to_play):
+                # for ply in range(plies_to_play):
+                while True:
                     if not has_moves(psn):
                         break
                     engine.stop_event.clear()
@@ -114,17 +116,23 @@ if __name__ == "__main__":
                     if psn.side_to_move() == Side.B:
                         leaf_val = -leaf_val
                     leaf_val /= 1000
-                    leaf_val = min(max(leaf_val, -2), 2) # mate score
+                    leaf_val = min(max(leaf_val, -1), 1) # mate score
 
-                    timesteps.append(leaf_val)
+                    timesteps.append([leaf_val, psn.fen()])
                     if len(timesteps) > 2:
-                        model.train(nn_evaluate.get_features(psn), timesteps[-3], timesteps[-1])
-                    
+                        t0_val, t0_fen = timesteps[-3]
+                        t0_pos = Position.from_fen(t0_fen)
+                        t1_val, t1_fen = timesteps[-1]
+                        print('             ', format(t0_val, '.4f'), format(t1_val, '.4f'))
+                        model.train(nn_evaluate.get_features(t0_pos), t0_val, t1_val)
+                        
                     pv = si[0].pv
-                    print(pv[0])
                     psn.make_move(pv[0])
+                    print(pv[0])
+                    if len(timesteps) % 10 == 0:
+                        print(psn)
+
                 model.save_model()
-                # error = model.train(features, errors)
-        
-        # if itern % 20 == 0:
-        #     pass # do a test and or save model
+
+        if itern % 20 == 0:
+            sts.run_sts_test()

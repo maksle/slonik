@@ -1,4 +1,6 @@
 from IPython import embed
+from collections import defaultdict
+from copy import copy
 from piece_type import *
 from move_gen import *
 from bb import *
@@ -22,6 +24,7 @@ class Position():
             self.pieces = pos.pieces[:]
             self.occupied = pos.occupied[:]
             self.moves = pos.moves[:]
+            self.three_fold_hack = copy(pos.three_fold_hack)
             self.pinned = pos.pinned[:]
             self.sliding_checkers = pos.sliding_checkers[:]
             self.discoverers = pos.discoverers[:]
@@ -66,6 +69,8 @@ class Position():
             self.load_king_lines()
             
             self.moves = []
+            self.three_fold_hack = defaultdict(int)
+            self.three_fold_hack[self.fen(timeless=True)] += 1
 
             # filled during evaluation
             self.pinned = [0 for i in range(13)]
@@ -136,7 +141,7 @@ class Position():
         if self.b_qr_move_ply is None and self.b_king_move_ply is None:
             self.zobrist_hash ^= tt.ZOBRIST_CASTLE[3]
 
-    def fen(self):
+    def fen(self, timeless=False):
         sans = ['','P','N','B','R','Q','K','p','n','b','r','q','k']
         rows = chunks(list(reversed(self.squares)), 8)
         string = ''
@@ -176,8 +181,10 @@ class Position():
         else:
             string += '-'
 
-        string += ' ' + str(self.halfmove_clock)
-        string += ' ' + str(self.fullmove_clock)
+        if not timeless:
+            string += ' ' + str(self.halfmove_clock)
+            string += ' ' + str(self.fullmove_clock)
+
         return string
             
     @classmethod
@@ -772,6 +779,7 @@ class Position():
             self.fullmove_clock += 1
         
         self.moves.append(move)
+        self.three_fold_hack[self.fen(timeless=True)] += 1
 
 def chunks(l, n):
     """Yield successive n-sized chunks from l."""

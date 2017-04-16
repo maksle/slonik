@@ -1,3 +1,4 @@
+from IPython import embed
 from evals import lowest_attacker, BaseEvaluator
 from side import Side
 from piece_type import PieceType as Pt
@@ -31,7 +32,7 @@ class ToFeature():
         np = [] # piece-centric
         s = [] # square-centric
         for side in [Side.W, Side.B]:
-            g.extend(self.counts(side))
+            g.extend(self.counts_and_values(side))
             
             p.extend(self.pawn_exists(side))
             p.extend(self.pawn_count(side))
@@ -53,13 +54,26 @@ class ToFeature():
         y_alt = get_rank(sq, stm) if sq else -1
         return [normalize_coord(c+1) for c in [x, y, y_alt]]
 
-    def counts(self, side):
+    def counts_and_values(self, side):
         f = []
-        max_counts = [0] + [8,2,2,2,1,1] * 2
+        max_counts = [0] + [8,2,2,2,1,0]
+        values = [0] + [1, 3.25, 3.25, 5, 9.75, 0]
+        non_pawn_sum = 0
+        pawn_sum = 0
         for pt in Pt.piece_types(side=side):
+            bt = Pt.base_type(pt)
+            if bt == Pt.K:
+                continue
             count = count_bits(self.pos.pieces[pt])
-            mc = max_counts[pt]
-            f.extend([count / mc])
+            f.append(count / max_counts[bt])
+            if bt == Pt.P:
+                pawn_sum += count * values[bt]
+            else:
+                non_pawn_sum += count * values[bt]
+        npv = non_pawn_sum / (2 * values[Pt.N] + 2 * values[Pt.B] + 2 * values[Pt.R] + values[Pt.Q])
+        f.append(npv)
+        pv = pawn_sum / (8 * values[Pt.P])
+        f.append(pv)
         return f
     
     def side_to_move(self):

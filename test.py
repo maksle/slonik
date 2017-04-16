@@ -14,7 +14,7 @@ with model.sess:
     for v in tvars:
         # if v.name == 'global_step:0':
         #     print(v.eval())
-        print(v.name)
+        print(v.name, v)
     gc.collect()
 
 
