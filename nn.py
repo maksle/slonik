@@ -87,6 +87,9 @@ class Model(object):
             loss_sum_op = loss_sum.assign_add(loss_op)
             loss_avg_op = loss_sum / tf.maximum(game_step, 1.0)
             tf.summary.scalar('game/loss_avg', loss_avg_op)
+
+        self.sts_score = tf.Variable(0.0, name='STS_score', trainable=False)
+        tf.summary.scalar('test/sts_score', self.sts_score)
         
         delta_op = tf.reduce_sum(self.leaf_next - self.leaf)
         
@@ -201,6 +204,10 @@ class Model(object):
 
     def reset_eligibility_trace(self):
         self.sess.run(self.reset_op)
+
+    def update_sts_score(self, score):
+        self.sess.run(self.sts_score.assign(score))
+        
 
 graph = tf.Graph()
 sess = tf.Session(graph=graph)

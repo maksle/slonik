@@ -28,7 +28,7 @@ def parse_epd(epd):
     uci_moves = uci_moves.split(' ')
     return (fen, uci_moves[0], dict(zip(uci_moves, scores)))
 
-def run_sts_test(args):
+def run_sts_test():
     total_scores = defaultdict(int)
     best_counts = defaultdict(int)
     n = 0
@@ -75,6 +75,7 @@ def run_sts_test(args):
     print("Final score:", final_score)
     a, b = .359226, 10.402545
     print("Estimated ELO rating:", a * final_score + b)
+    return final_score
 
 if __name__ == "__main__":
     run_sts_test()

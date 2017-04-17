@@ -92,43 +92,45 @@ def get_user_move(side):
 # print([len(a) for a in tf])
 # print(tf)
 
-# import random
-# def goprofile():
-#     now = time.time()
-#     engine = Engine()
-#     engine.debug = True
-#     engine.infinite = False
-#     engine.max_depth = 9
-#     # pos = Position.from_fen("r3kbnr/ppp2ppp/2n5/8/2BP2b1/5N2/PP2KPPP/RNB4R w kq - 1 9")
-#     pos = Position()
-#     # print(pos)
-#     # for i in range(100000):
-#     #     sq = random.randint(0,63)
-#     #     lowest_attacker(pos, 1<<sq)
-#     # print(list(pos.generate_moves_all(legal=True)))
-#     # print(engine.sort_moves(list(pos.generate_moves_all(legal=True)), pos, engine.si, 0, False))
-#     engine.root_position = pos
-#     engine.init_move_history()
-#     engine.search_stats.time_start = time.time()
-#     print(engine.evaluate(pos))
-#     pos.toggle_side_to_move()
-#     # print(engine.evaluate(pos))
-#     # engine.iterative_deepening()
-#     # print(time.time() - now)
+import random
+def goprofile():
+    now = time.time()
+    engine = Engine()
+    engine.debug = True
+    engine.infinite = False
+    engine.max_depth = 9
+    # pos = Position.from_fen("r3kbnr/ppp2ppp/2n5/8/2BP2b1/5N2/PP2KPPP/RNB4R w kq - 1 9")
+    pos = Position()
+    # print(pos)
+    # for i in range(100000):
+    #     sq = random.randint(0,63)
+    #     lowest_attacker(pos, 1<<sq)
+    # print(list(pos.generate_moves_all(legal=True)))
+    # print(engine.sort_moves(list(pos.generate_moves_all(legal=True)), pos, engine.si, 0, False))
+    engine.root_position = pos
+    engine.init_move_history()
+    engine.search_stats.time_start = time.time()
+    # print(engine.evaluate(pos))
+    # pos.toggle_side_to_move()
+    # print(engine.evaluate(pos))
+    pos.halfmove_clock = 50
+    engine.iterative_deepening()
+    # print(time.time() - now)
 
-# goprofile()
+goprofile()
 
-pos = Position()
-pos.make_move(Move(Pt.N, G1, F3))
-print(pos.three_fold_hack)
-pos.make_move(Move(Pt.B_KNIGHT, G8, F6))
-print(pos.three_fold_hack)
-pos.make_move(Move(Pt.N, F3, G1))
-print(pos.three_fold_hack)
-pos.make_move(Move(Pt.B_KNIGHT, F6, G8))
-print(pos.three_fold_hack)
+# pos = Position()
+# pos.make_move(Move(Pt.N, G1, F3))
+# print(pos.three_fold_hack)
+# pos.make_move(Move(Pt.B_KNIGHT, G8, F6))
+# print(pos.three_fold_hack)
+# pos.make_move(Move(Pt.N, F3, G1))
+# print(pos.three_fold_hack)
+# pos.make_move(Move(Pt.B_KNIGHT, F6, G8))
+# print(pos.three_fold_hack)
 
-    
+# pos.make_move(Move(Pt.N, B1, C3))
+
 # cProfile.run("goprofile()", filename="outprofile")
 # pstats.Stats("outprofile").strip_dirs().sort_stats("time").print_stats(15)
 # print()

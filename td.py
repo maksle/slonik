@@ -1,6 +1,7 @@
 from IPython import embed
 import random
 import time
+import os
 from search import allowance_to_depth
 from position import Position
 from side import Side
@@ -47,17 +48,20 @@ iterations = 10000
 total_fens = 700762
 plies_to_play = 16
 batch_size = 32
-positions_per_iteration = 20 #128 #256
+positions_per_iteration = 16 #128 #256
 num_iterations = total_fens // positions_per_iteration + 1
 
 if __name__ == "__main__":
     offset = 0
+    init_npos = 10000
+    sts_scores = []
     for itern in range(num_iterations):
         positions = []
         lines_read = 0
-        if itern == 0:
-            # npos = 10000
-            npos = positions_per_iteration
+        initialize_network = itern == 0 and not os.path.exists('checkpoint')
+        if initialize_network:
+            npos = init_npos
+            # npos = positions_per_iteration
         else:
             npos = positions_per_iteration
         with open('../allfens.txt') as fens:
@@ -73,15 +77,20 @@ if __name__ == "__main__":
                 positions.append(Position.from_fen(fen))
             offset += npos
 
-        if itern == 0:
-            pass
-            # initialize_weights(positions)
-            # model.save_model()
+        if initialize_network:
+            # pass
+            initialize_weights(positions)
+            model.save_model()
             # break
         else:
+            n = offset
+            m = 0
             for psn in positions:
+                n += 1
+                m += 1
                 print("============================")
-                print("New Game")
+                print("New Game, #{0}, (#{1}/{2})".format(n, m, positions_per_iteration))
+                print(psn.fen())
                 moves = list(psn.generate_moves_all(legal=True))
                 move = random.choice(moves)
                 print("Random move:", move)
@@ -134,5 +143,10 @@ if __name__ == "__main__":
 
                 model.save_model()
 
-        if itern % 20 == 0:
-            sts.run_sts_test()
+        # if itern % 20 == 0:
+        if True:
+            sts_score = sts.run_sts_test()
+            sts_scores.append(sts_score)
+            model.update_sts_score(sts_score)
+            print("STS scores over time:", sts_scores)
+
