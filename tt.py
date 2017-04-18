@@ -2,7 +2,9 @@ import random
 import math
 from enum import Enum
 
+
 class TTEntry():
+    game_counter = 0
     def __init__(self, key=0, move=0, bound_type=0, value=0, depth=0, static_eval=None):
         self.key = key
         self.move = move
@@ -10,6 +12,12 @@ class TTEntry():
         self.value = value
         self.depth = depth
         self.static_eval = static_eval
+        self.game_counter = TTEntry.game_counter
+
+    @classmethod
+    def next_game(cls):
+        cls.game_counter += 1;
+        
 
 class BoundType(Enum):
     EXACT = 1

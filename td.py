@@ -2,6 +2,7 @@ from IPython import embed
 import random
 import time
 import os
+import TTEntry
 from search import allowance_to_depth
 from position import Position
 from side import Side
@@ -61,7 +62,7 @@ positions_per_iteration = 16 #128 #256
 num_iterations = total_fens // positions_per_iteration + 1
 
 if __name__ == "__main__":
-    offset = 0
+    offset = 80
     init_npos = 10000
     sts_scores = []
     for itern in range(num_iterations):
@@ -108,6 +109,8 @@ if __name__ == "__main__":
                 
                 engine = Engine()
                 engine.init_move_history()
+                TTEntry.next_game()
+                model.reset_eligibility_trace()
                 # limits, whichever comes first
                 engine.max_depth = depth
                 engine.movetime = 120
@@ -119,8 +122,6 @@ if __name__ == "__main__":
                 engine.evaluate = nn_evaluate.evaluate
                 engine.search_stats.node_count = 0
                 engine.search_stats.time_start = time.time()
-
-                model.reset_eligibility_trace()
                 
                 timesteps = []
                 # for ply in range(plies_to_play):

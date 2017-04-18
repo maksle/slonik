@@ -43,7 +43,7 @@ class Model(object):
         global_step_op = self.global_step.assign_add(1)
 
         lamda = .7
-        lr = .01
+        lr = .001
 
         self.input_global_size, self.hidden_global_size = 20, 15
         self.input_pawn_size, self.hidden_pawn_size = 18, 14
