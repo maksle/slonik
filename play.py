@@ -92,32 +92,36 @@ def get_user_move(side):
 # print([len(a) for a in tf])
 # print(tf)
 
+import features
+pos = Position.from_fen("1rq1kb1r/ppp2ppp/2np4/3N4/1PPpPn2/P4N1P/1B1Q1PP1/R4RK1 w k - 0 16")
 import random
 def goprofile():
-    now = time.time()
-    engine = Engine()
-    engine.debug = True
-    engine.infinite = False
-    engine.max_depth = 9
-    # pos = Position.from_fen("r3kbnr/ppp2ppp/2n5/8/2BP2b1/5N2/PP2KPPP/RNB4R w kq - 1 9")
-    pos = Position()
-    # print(pos)
-    # for i in range(100000):
-    #     sq = random.randint(0,63)
-    #     lowest_attacker(pos, 1<<sq)
-    # print(list(pos.generate_moves_all(legal=True)))
-    # print(engine.sort_moves(list(pos.generate_moves_all(legal=True)), pos, engine.si, 0, False))
-    engine.root_position = pos
-    engine.init_move_history()
-    engine.search_stats.time_start = time.time()
-    # print(engine.evaluate(pos))
-    # pos.toggle_side_to_move()
-    # print(engine.evaluate(pos))
-    pos.halfmove_clock = 50
-    engine.iterative_deepening()
-    # print(time.time() - now)
+    # now = time.time()
+    # engine = Engine()
+    # engine.debug = True
+    # engine.infinite = False
+    # engine.max_depth = 9
+    # # pos = Position.from_fen("r3kbnr/ppp2ppp/2n5/8/2BP2b1/5N2/PP2KPPP/RNB4R w kq - 1 9")
+    # pos = Position()
+    # # print(pos)
+    # # for i in range(100000):
+    # #     sq = random.randint(0,63)
+    # #     lowest_attacker(pos, 1<<sq)
+    # # print(list(pos.generate_moves_all(legal=True)))
+    # # print(engine.sort_moves(list(pos.generate_moves_all(legal=True)), pos, engine.si, 0, False))
+    # engine.root_position = pos
+    # engine.init_move_history()
+    # engine.search_stats.time_start = time.time()
+    # # print(engine.evaluate(pos))
+    # # pos.toggle_side_to_move()
+    # # print(engine.evaluate(pos))
+    # pos.halfmove_clock = 50
+    # engine.iterative_deepening()
+    # # print(time.time() - now)
+    for i in range(5000):
+        tf = features.ToFeature(pos).ann_features()
 
-goprofile()
+# goprofile()
 
 # pos = Position()
 # pos.make_move(Move(Pt.N, G1, F3))
@@ -131,10 +135,10 @@ goprofile()
 
 # pos.make_move(Move(Pt.N, B1, C3))
 
-# cProfile.run("goprofile()", filename="outprofile")
-# pstats.Stats("outprofile").strip_dirs().sort_stats("time").print_stats(15)
-# print()
-# pstats.Stats("outprofile").strip_dirs().sort_stats("cumulative").print_stats(15)
+cProfile.run("goprofile()", filename="outprofile")
+pstats.Stats("outprofile").strip_dirs().sort_stats("time").print_stats(15)
+print()
+pstats.Stats("outprofile").strip_dirs().sort_stats("cumulative").print_stats(15)
 
 # pos = Position.from_fen("r3kbnr/ppp2ppp/2n5/8/2BP2b1/5N2/PP2KPPP/RNB4R w kq - 1 9")
 # from evals import BaseEvaluator

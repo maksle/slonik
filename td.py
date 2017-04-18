@@ -23,6 +23,15 @@ def has_moves(pos):
     moves = pos.generate_moves_all(legal=True)
     return len(list(moves)) > 0
 
+def fifty_move_draw(pos):
+    return pos.halfmove_clock >= 50
+
+def three_fold_repetition(pos):
+    return pos.three_fold_hack[pos.fen(timeless=True)] >= 3
+
+def game_over(pos):
+    return not has_moves(pos) or fifty_move_draw(pos) or three_fold_repetition(pos)
+    
 def initialize_weights(positions):
     features = [nn_evaluate.get_features(psn) for psn in positions]
     scores = []
@@ -81,7 +90,7 @@ if __name__ == "__main__":
             # pass
             initialize_weights(positions)
             model.save_model()
-            # break
+            break
         else:
             n = offset
             m = 0
@@ -116,7 +125,7 @@ if __name__ == "__main__":
                 timesteps = []
                 # for ply in range(plies_to_play):
                 while True:
-                    if not has_moves(psn):
+                    if game_over(psn):
                         break
                     engine.stop_event.clear()
                     engine.rotate_killers()

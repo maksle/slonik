@@ -86,11 +86,17 @@ class ToFeature():
         f = []
         for sqind in range(64):
             sq = 1 << sqind
-            lowest = lowest_attacker(self.pos, sq, side)
-            if lowest: pt, attacker = lowest # optimize this
-            pt = pt if lowest else 0
-            bt = Pt.base_type(pt)
-            f.extend([(7 - bt) / 6]) # lower pt gives higher "score"
+            lowest = Pt.NULL
+            pieces = [Pt.P, Pt.N, Pt.B, Pt.R, Pt.Q, Pt.K]
+            if side == Side.B:
+                pieces = [p + 6 for p in pieces]
+            if self.base_evaluator.all_attacks[side]:
+                lowest = pieces[-1]
+                for bt in pieces:
+                    if self.base_evaluator.piece_attacks[bt] & sq:
+                        lowest = bt
+                        break
+            f.append((7 - lowest) / 6) # lower pt gives higher "score"
         return f
     
     def castling(self):

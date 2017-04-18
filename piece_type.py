@@ -9,12 +9,12 @@ class PieceType():
     R = ROOK = W_ROOK = 4
     Q = QUEEN = W_QUEEN = 5
     K = KING = W_KING = 6
-    B_PAWN = 7
-    B_KNIGHT = 8
-    B_BISHOP = 9
-    B_ROOK = 10
-    B_QUEEN = 11
-    B_KING = 12
+    BP = B_PAWN = 7
+    BN = B_KNIGHT = 8
+    BB = B_BISHOP = 9
+    BR = B_ROOK = 10
+    BQ = B_QUEEN = 11
+    BK = B_KING = 12
 
     @classmethod
     def base_type(cls, val):

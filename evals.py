@@ -22,7 +22,7 @@ class BaseEvaluator():
         self.piece_attacks = [0] * 13
         self.all_attacks = [0] * 2
         self.double_attacks = [0] * 2
-
+        
         occ = self.position.occupied[Side.WHITE] | self.position.occupied[Side.BLACK]
         for side in [Side.WHITE, Side.BLACK]:
             pinned = self.position.pinned[Pt.piece(Pt.K, side)]

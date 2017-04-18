@@ -707,17 +707,17 @@ class Engine(threading.Thread):
 
         assert(pv_node or alpha == beta-1)
         
-        if node.three_fold_hack[node.fen(timeless=True)] == 3:
-            return DRAW_VALUE
-
-        if node.halfmove_clock == 50:
-            return DRAW_VALUE
-        
         si = self.si
         si[ply] = si[ply] or SearchInfo()
         si[ply+1] = si[ply+1] or SearchInfo()
         si[ply].pv.clear()
         si[ply+1].pv.clear()
+
+        if node.three_fold_hack[node.fen(timeless=True)] == 3:
+            return DRAW_VALUE
+
+        if node.halfmove_clock == 50:
+            return DRAW_VALUE
         
         tt_hit = False
         a_orig = alpha

@@ -7,6 +7,12 @@ from search import Engine
 import nn_evaluate
 import math
 from collections import defaultdict
+from evals import BaseEvaluator
+
+baseEvaluator = BaseEvaluator()        
+def static_evaluate(position):
+    baseEvaluator.set_position(position)
+    return baseEvaluator.evaluate()
 
 def parse_epd(epd):
     ops = epd.split(';')
@@ -48,6 +54,7 @@ def run_sts_test():
             engine.info = lambda *args: True
             engine.debug_info = lambda *args: True
             engine.evaluate = nn_evaluate.evaluate
+            # engine.evaluate = static_evaluate
             engine.search_stats.node_count = 0
             engine.search_stats.time_start = time.time()
 
@@ -78,4 +85,6 @@ def run_sts_test():
     return final_score
 
 if __name__ == "__main__":
+    now = time.time()
     run_sts_test()
+    print(time.time() - now, 's')

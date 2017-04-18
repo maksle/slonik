@@ -82,7 +82,7 @@ class Position():
         bk = self.pieces[Pt.piece(Pt.K, Side.BLACK)]
         # occ = self.occupied[Side.WHITE] | self.occupied[Side.BLACK]
         self.k_lines = [queen_attack(wk, 0), queen_attack(bk, 0)]
-            
+
     def init_squares(self):
         self.squares = [PieceType.NULL for i in range(0,64)]
         self.squares[0] = self.squares[7] = PieceType.W_ROOK

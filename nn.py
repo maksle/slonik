@@ -8,7 +8,7 @@ from keras.layers import Input, Dense
 from keras.models import Model as KModel
 import keras.backend as K
 
-from tensorflow.python import debug as tf_debug
+# from tensorflow.python import debug as tf_debug
 
 FLAGS = tf.app.flags.FLAGS
 tf.logging.set_verbosity(tf.logging.DEBUG)
@@ -165,11 +165,13 @@ class Model(object):
         
     def fit(self, features, targets, epochs, batch_size):
         with self.graph.as_default():
-            f = self.transform_features(features)
             for epoch in range(epochs):
-                for start, end in batch_indexes(len(targets), batch_size):
-                    f = self.transform_features(features[start:end])
-                    t = targets[start:end]
+                c = list(zip(features, targets))
+                random.shuffle(c)
+                efeatures, etargets = list(zip(*c))
+                for start, end in batch_indexes(len(etargets), batch_size):
+                    f = self.transform_features(efeatures[start:end])
+                    t = etargets[start:end]
                     self.sess.run([self.fit_op], feed_dict={
                         self.input_global: f['input_global'],
                         self.input_pawn: f['input_pawn'],
