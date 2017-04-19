@@ -2,7 +2,7 @@ from IPython import embed
 import random
 import time
 import os
-import TTEntry
+from tt import TTEntry
 from search import allowance_to_depth
 from position import Position
 from side import Side
@@ -62,7 +62,7 @@ positions_per_iteration = 16 #128 #256
 num_iterations = total_fens // positions_per_iteration + 1
 
 if __name__ == "__main__":
-    offset = 80
+    offset = 96
     init_npos = 10000
     sts_scores = []
     for itern in range(num_iterations):

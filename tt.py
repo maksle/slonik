@@ -42,7 +42,8 @@ def get_tt_index(key):
     index = key % TT_SIZE
     # if TT[index] is not None and TT[index].key != key:
     #     print('collission')
-    if TT[index] is not None and TT[index].key == key:
+    entry = TT[index]
+    if entry is not None and entry.key == key and entry.game_counter == TTEntry.game_counter:
         return True, index, TT[index]
     else:
         return False, index, TT[index]
