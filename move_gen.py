@@ -79,6 +79,18 @@ def is_capture(move, other):
 # def am_in_check(attacks, king):
 #     return attacks & king > 0
 
+def preserved_kingside_castle_rights(position_flags, side):
+    if side == Side.W:
+        return position_flags & 5 == 0
+    else:
+        return position_flags & 18 == 0
+
+def preserved_queenside_castle_rights(position_flags, side):
+    if side == Side.W:
+        return position_flags & 9 == 0
+    else:
+        return position_flags & 34 == 0
+    
 def preserved_castle_rights(position_flags, side):
     if side == Side.WHITE:
         return not (position_flags & 1 or (position_flags & 12) == 12)

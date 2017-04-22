@@ -17,4 +17,6 @@ def evaluate(position, train=False):
         val = res_value
     else:
         val = -res_value
+    # if abs(val * 1000 - 18.847251310944557) < .0008:
+    #     embed()
     return val if train else val * 1000

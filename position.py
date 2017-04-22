@@ -24,20 +24,12 @@ class Position():
             self.pieces = pos.pieces[:]
             self.occupied = pos.occupied[:]
             self.moves = pos.moves[:]
-            self.three_fold_hack = copy(pos.three_fold_hack)
+            self.three_fold = copy(pos.three_fold)
             self.pinned = pos.pinned[:]
             self.sliding_checkers = pos.sliding_checkers[:]
             self.discoverers = pos.discoverers[:]
             self.k_lines = pos.k_lines[:]
             
-            self.w_king_move_ply = pos.w_king_move_ply
-            self.w_king_castle_ply = pos.w_king_castle_ply
-            self.w_kr_move_ply = pos.w_kr_move_ply
-            self.w_qr_move_ply = pos.w_qr_move_ply
-            self.b_king_move_ply = pos.b_king_move_ply
-            self.b_king_castle_ply = pos.b_king_castle_ply
-            self.b_kr_move_ply = pos.b_kr_move_ply
-            self.b_qr_move_ply = pos.b_qr_move_ply
             self.en_pessant_sq = pos.en_pessant_sq
             self.halfmove_clock = pos.halfmove_clock
             self.fullmove_clock = pos.fullmove_clock
@@ -46,16 +38,7 @@ class Position():
 
         else:
             self.position_flags = Side.WHITE << 6
-
-            self.w_king_move_ply = None
-            self.w_king_castle_ply = None
-            self.w_kr_move_ply = None
-            self.w_qr_move_ply = None
-            self.b_king_move_ply = None
-            self.b_king_castle_ply = None
-            self.b_kr_move_ply = None
-            self.b_qr_move_ply = None
-
+            
             self.en_pessant_sq = None
             self.halfmove_clock = 0
             self.fullmove_clock = 1
@@ -69,8 +52,8 @@ class Position():
             self.load_king_lines()
             
             self.moves = []
-            self.three_fold_hack = defaultdict(int)
-            self.three_fold_hack[self.fen(timeless=True)] += 1
+            self.three_fold = defaultdict(int)
+            self.three_fold[self.fen(timeless=True)] += 1
 
             # filled during evaluation
             self.pinned = [0 for i in range(13)]
@@ -132,13 +115,13 @@ class Position():
         self.zobrist_hash ^= tt.ZOBRIST_SIDE[self.side_to_move()]
 
         # castling
-        if self.w_kr_move_ply is None and self.w_king_move_ply is None:
+        if preserved_kingside_castle_rights(self.position_flags, Side.W):
             self.zobrist_hash ^= tt.ZOBRIST_CASTLE[0]
-        if self.w_qr_move_ply is None and self.w_king_move_ply is None:
+        if preserved_queenside_castle_rights(self.position_flags, Side.W):
             self.zobrist_hash ^= tt.ZOBRIST_CASTLE[1]
-        if self.b_kr_move_ply is None and self.b_king_move_ply is None:
+        if preserved_kingside_castle_rights(self.position_flags, Side.B):
             self.zobrist_hash ^= tt.ZOBRIST_CASTLE[2]
-        if self.b_qr_move_ply is None and self.b_king_move_ply is None:
+        if preserved_queenside_castle_rights(self.position_flags, Side.B):
             self.zobrist_hash ^= tt.ZOBRIST_CASTLE[3]
 
     def fen(self, timeless=False):
@@ -314,10 +297,10 @@ class Position():
         valid_sqs = self.occupied[them]
         
         yield from self.generate_moves_pt(Pt.piece(Pt.P, us), valid_sqs, do_promo=True)
-        yield from self.generate_moves_pt(Pt.piece(Pt.Q, us), valid_sqs)
-        yield from self.generate_moves_pt(Pt.piece(Pt.R, us), valid_sqs)
-        yield from self.generate_moves_pt(Pt.piece(Pt.B, us), valid_sqs)
         yield from self.generate_moves_pt(Pt.piece(Pt.N, us), valid_sqs)
+        yield from self.generate_moves_pt(Pt.piece(Pt.B, us), valid_sqs)
+        yield from self.generate_moves_pt(Pt.piece(Pt.R, us), valid_sqs)
+        yield from self.generate_moves_pt(Pt.piece(Pt.Q, us), valid_sqs)
         yield from self.generate_moves_pt(Pt.piece(Pt.K, us), valid_sqs)
         
     def generate_moves_in_check(self, legal=False):
@@ -325,7 +308,7 @@ class Position():
         them = us ^ 1
         occ = self.occupied[0] | self.occupied[1]
         
-        yield from self.generate_moves_pt(Pt.piece(Pt.K, us), invert(us), legal=legal)
+        yield from self.generate_moves_pt(Pt.piece(Pt.K, us), invert(self.occupied[us]), legal=legal)
 
         ksq = self.pieces[Pt.piece(Pt.K, us)]
         step_checkers = piece_attack(Pt.N, ksq, occ) & self.pieces[Pt.piece(Pt.N, them)]
@@ -632,13 +615,15 @@ class Position():
         to_sq = move.to_sq
         side = Side.WHITE if PieceType.is_white(piece_type) else Side.BLACK
         last_move = self.last_move()
-        this_move_num = len(self.moves)
         from_square_ind = bit_position(from_sq)
         to_square_ind = bit_position(to_sq)
 
+        orig_flags = self.position_flags
+        
         capture_mask = to_sq ^ FULL_BOARD
         captured_pt = self.squares[bit_position(to_sq)]
         
+        # toggle side to move
         self.position_flags = self.position_flags ^ (1 << 6)
 
         self.pieces[piece_type] ^= from_sq ^ to_sq
@@ -675,20 +660,18 @@ class Position():
             self.en_pessant_sq = shift_north(from_sq, side)
         else:
             self.en_pessant_sq = None
-                
-        # castling
+        
         if base_type == Pt.K:
             if side == Side.WHITE:
-                self.w_king_move_ply = this_move_num
                 self.position_flags |= 1
-                if self.w_kr_move_ply is None and self.w_king_move_ply is None:
-                    self.zobrist_hash ^= tt.ZOBRIST_CASTLE[0]
-                elif self.w_qr_move_ply is None and self.w_king_move_ply is None:
-                    self.zobrist_hash ^= tt.ZOBRIST_CASTLE[1]
 
+                # castling
+                if preserved_kingside_castle_rights(orig_flags, side):
+                    self.zobrist_hash ^= tt.ZOBRIST_CASTLE[0]
+                if preserved_queenside_castle_rights(orig_flags, side):
+                    self.zobrist_hash ^= tt.ZOBRIST_CASTLE[1]
+                
                 if from_sq == E1 and to_sq == G1:
-                    self.w_kr_move_ply = this_move_num
-                    self.w_king_castle_ply = this_move_num
                     self.position_flags |= 4
                     self.occupied[Side.WHITE] ^= 0x5
                     self.pieces[PieceType.W_ROOK] ^= 0x5
@@ -697,8 +680,6 @@ class Position():
                     self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[0][PieceType.W_ROOK]
                     self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[2][PieceType.W_ROOK]
                 elif from_sq == E1 and to_sq == C1:
-                    self.w_qr_move_ply = this_move_num
-                    self.w_king_castle_ply = this_move_num
                     self.position_flags |= 8
                     self.occupied[Side.WHITE] ^= 0x90
                     self.pieces[PieceType.W_ROOK] ^= 0x90
@@ -707,17 +688,15 @@ class Position():
                     self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[7][PieceType.W_ROOK]
                     self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[4][PieceType.W_ROOK]
             else: # Black
-                self.b_king_move_ply = this_move_num
                 self.position_flags |= 2
-                if self.b_kr_move_ply is None and self.b_king_move_ply is None:
+                
+                if preserved_kingside_castle_rights(orig_flags, side):
                     self.zobrist_hash ^= tt.ZOBRIST_CASTLE[2]
-                elif self.b_qr_move_ply is None and self.b_king_move_ply is None:
+                if preserved_queenside_castle_rights(orig_flags, side):
                     self.zobrist_hash ^= tt.ZOBRIST_CASTLE[3]
-
+                
                 if from_sq == E8 and to_sq == G8:
                     self.position_flags |= 16
-                    self.b_kr_move_ply = this_move_num
-                    self.b_king_castle_ply = this_move_num
                     self.occupied[Side.BLACK] ^= (0x5 << 56)
                     self.pieces[PieceType.B_ROOK] ^= (0x5 << 56)
                     self.squares[bit_position(H8)] = PieceType.NULL
@@ -726,8 +705,6 @@ class Position():
                     self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[58][PieceType.B_ROOK]
                 elif from_sq == E8 and to_sq == C8:
                     self.position_flags |= 32
-                    self.b_qr_move_ply = this_move_num
-                    self.b_king_castle_ply = this_move_num
                     self.occupied[Side.BLACK] ^= (0x90 << 56)
                     self.pieces[PieceType.B_ROOK] ^= (0x90 << 56)
                     self.squares[bit_position(A8)] = PieceType.NULL
@@ -738,24 +715,20 @@ class Position():
         # castling rights
         if base_type == Pt.R:
             if side == Side.WHITE:
-                if from_sq == H1 and self.w_kr_move_ply is None:
+                if preserved_kingside_castle_rights(orig_flags, side):
                     self.zobrist_hash ^= tt.ZOBRIST_CASTLE[0]
                     self.position_flags |= 4
-                    self.w_kr_move_ply = this_move_num
-                elif from_sq == A1 and self.w_qr_move_ply is None:
+                if preserved_queenside_castle_rights(orig_flags, side):
                     self.zobrist_hash ^= tt.ZOBRIST_CASTLE[1]
                     self.position_flags |= 8
-                    self.w_qr_move_ply = this_move_num
             else: # Black
-                if from_sq == H8 and self.b_kr_move_ply is None:
+                if preserved_kingside_castle_rights(orig_flags, side):
                     self.zobrist_hash ^= tt.ZOBRIST_CASTLE[2]
                     self.position_flags |= 16
-                    self.b_kr_move_ply = this_move_num
-                elif from_sq == A8 and self.b_qr_move_ply is None:
+                if preserved_queenside_castle_rights(orig_flags, side):
                     self.zobrist_hash ^= tt.ZOBRIST_CASTLE[3]
                     self.position_flags |= 32
-                    self.b_qr_move_ply = this_move_num
-        
+                    
         # promotions
         if base_type == PieceType.P and get_rank(to_sq, side) == 7:
             self.pieces[piece_type] ^= to_sq
@@ -779,7 +752,7 @@ class Position():
             self.fullmove_clock += 1
         
         self.moves.append(move)
-        self.three_fold_hack[self.fen(timeless=True)] += 1
+        self.three_fold[self.fen(timeless=True)] += 1
 
 def chunks(l, n):
     """Yield successive n-sized chunks from l."""

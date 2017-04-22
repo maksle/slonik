@@ -27,6 +27,10 @@ class ToFeature():
         g.extend(self.side_to_move())
         g.extend(self.castling())
         g.extend(self.in_check())
+        # g.extend(self.clock())
+        # redundant with np but doing it anyway
+        g.extend(self.king(Side.WHITE)) 
+        g.extend(self.king(Side.BLACK)) 
     
         p = [] # pawn-centric
         np = [] # piece-centric
@@ -54,6 +58,9 @@ class ToFeature():
         y_alt = get_rank(sq, stm) if sq else -1
         return [normalize_coord(c+1) for c in [x, y, y_alt]]
 
+    def clock(self):
+        return [self.pos.halfmove_clock / 50]
+    
     def counts_and_values(self, side):
         f = []
         max_counts = [0] + [8,2,2,2,1,0]

@@ -9,6 +9,7 @@ from psqt import *
 from evals import *
 from operator import itemgetter
 from features import ToFeature
+import random
 import nn_evaluate
 import threading
 import itertools
@@ -394,9 +395,36 @@ class Engine(threading.Thread):
         
         return val, self.si
 
+    def imagine(self, pos):
+
+        def random_goal(): 
+            g = random.randrange(0,64)
+            if 1<<g & (pos.occupied[side] | pos.occupied[side^1]):
+                return g
+        
+        best = self.evaluate(pos)
+        goal = None
+        side = pos.side_to_move()
+        for pt in Pt.pieces(side=side):
+            for pbb in pos.pieces[pt]:
+                for p in iterate_pieces(bb):
+                    for i in range(2):
+                        posc = Position(pos)
+                        posc.pieces[pt] ^= p
+                        posc.occupied[side] ^= p
+                        posc.squares[bit_position(p)] = Pt.NULL
+                        # impl newp
+                        posc.pieces[pt] ^= newp
+                        posc.occupied[side] ^= newp
+                        posc.squares[bit_position(newp)] = pt
+                        val = self.evaluate(posc)
+                        if val > best:
+                            best = val
+                            goal = (pt, newp)
+                            
     def search(self, node, ply, a, b, allowance, pv_node, cut_node):
         """Search for best move in position `node` within alpha and beta window."""
-
+        
         a_orig = a
         is_root = pv_node and ply == 0
         
@@ -418,7 +446,7 @@ class Engine(threading.Thread):
             si[ply].pv.clear()
         si[ply+1].pv.clear()
 
-        if node.three_fold_hack[node.fen(timeless=True)] == 3:
+        if node.three_fold[node.fen(timeless=True)] == 3:
             return DRAW_VALUE
 
         if node.halfmove_clock == 50:
@@ -453,7 +481,7 @@ class Engine(threading.Thread):
             score = self.qsearch(node, ply, 0, a, b, 9, pv_node, in_check)
             return score
         
-        if not in_check:
+        if not pv_node and not in_check:
             if not si[ply].skip_early_pruning:
                 # futility prune of parent
                 if not pv_node \
@@ -512,17 +540,13 @@ class Engine(threading.Thread):
         counter = None
         if len(node.moves):
             counter = self.lookup_counter(node.side_to_move() ^ 1, node.moves[-1])
-
-        if 'c6d4 e2e3 g4f3 g2f3' in " ".join([m.to_uci for m in node.moves]):
-        # if 'Nc6-d4' in str(node.moves):
-            log.debug("pos: %s", node.moves)
-            log.debug("moves: %s", moves)
-            for i in range(ply+1):
-                log.debug("si[%s].pv: %s", i, si[i].pv)
-            
+        
         #
         # Move iteration
         for move in moves:
+
+            # if a == -7.262934774160385 and b == 46.98472175002098 and allowance == 1 and str(move) == 'Ke7-e8':
+            #     print('hey')
             
             val = 0
             
@@ -642,6 +666,16 @@ class Engine(threading.Thread):
                 # if pv_node and val > a:
                 if pv_node:
                     si[ply].pv = [move] + si[ply+1].pv
+                    
+                    # psn = Position(node)
+                    # for m in si[ply].pv:
+                    #     psn.make_move(m)
+                    # testval = self.evaluate(psn)
+                    # if len(si[ply].pv) % 2 != 0:
+                    #     testval = -testval
+                    # if abs(testval - val) > .01 and abs(testval - val) < 1000000:
+                    #     embed()
+                    
                 # si[ply].pv = [move] + si[ply+1].pv
 
             if self.stop_event.is_set():
@@ -713,7 +747,7 @@ class Engine(threading.Thread):
         si[ply].pv.clear()
         si[ply+1].pv.clear()
 
-        if node.three_fold_hack[node.fen(timeless=True)] == 3:
+        if node.three_fold[node.fen(timeless=True)] == 3:
             return DRAW_VALUE
 
         if node.halfmove_clock == 50:

@@ -43,9 +43,9 @@ class Model(object):
         global_step_op = self.global_step.assign_add(1)
 
         lamda = .7
-        lr = .001
+        lr = .0005
 
-        self.input_global_size, self.hidden_global_size = 20, 15
+        self.input_global_size, self.hidden_global_size = 26, 15
         self.input_pawn_size, self.hidden_pawn_size = 18, 14
         self.input_piece_size, self.hidden_piece_size = 68, 16
         self.input_square_size, self.hidden_square_size = 148, 16
@@ -69,9 +69,8 @@ class Model(object):
         # .. output layer
         self.V = dense_layer(hidden_shared, [hidden_shared_size, 1], tf.tanh, name='V')
         
-        # placeholders for trainng
-        self.leaf = tf.placeholder('float', shape=(1,), name='leaf')
-        self.leaf_next = tf.placeholder('float', shape=(1,), name='leaf_next')
+        # placeholders for training
+        self.V_next = tf.placeholder('float', shape=(1,), name='V_next')
         self.target = tf.placeholder('float', shape=[None, 1], name='target')
 
         # fit_loss = tf.reduce_mean(self.target - self.V, name='fit_loss')
@@ -80,7 +79,7 @@ class Model(object):
         self.fit_op = tf.train.AdamOptimizer(.0003).minimize(fit_loss)
         
         # stats
-        loss_op = tf.reduce_mean(tf.square(self.leaf_next - self.leaf), name='loss')
+        loss_op = tf.reduce_mean(tf.square(self.V_next - self.V), name='loss')
         with tf.variable_scope('game'):
             game_step = tf.Variable(tf.constant(0.0), name='game_step', trainable=False)
             loss_sum = tf.Variable(tf.constant(0.0), name='loss_sum', trainable=False)
@@ -91,9 +90,10 @@ class Model(object):
         self.sts_score = tf.Variable(0.0, name='STS_score', trainable=False)
         tf.summary.scalar('test/sts_score', self.sts_score)
         
-        delta_op = tf.reduce_sum(self.leaf_next - self.leaf)
+        delta_op = tf.reduce_mean(tf.abs(self.V_next - self.V))
         
         tvars = tf.trainable_variables()
+        # grads = tf.gradients(self.V, tvars)
         grads = tf.gradients(self.V, tvars)
         
         for grad, var in zip(grads, tvars):
@@ -104,6 +104,7 @@ class Model(object):
         trace_reset_ops = []
         with tf.variable_scope('apply_gradients'):
             for grad, var in zip(grads, tvars):
+
                 with tf.variable_scope('trace'):
                     trace = tf.Variable(tf.zeros(grad.get_shape()), name='trace')
                     trace_op = trace.assign((lamda * trace) + grad)
@@ -191,7 +192,7 @@ class Model(object):
             })
             return np.asscalar(v[0])
 
-    def train(self, features, v, v_next):
+    def train(self, features, v_next):
         with self.graph.as_default():
             f = self.transform_features([features])
             _, summaries = self.sess.run([self.optimize, self.summaries_op], feed_dict={
@@ -199,8 +200,7 @@ class Model(object):
                 self.input_pawn: f['input_pawn'],
                 self.input_piece: f['input_piece'],
                 self.input_square: f['input_square'],
-                self.leaf_next: np.array([v_next]),
-                self.leaf: np.array([v])
+                self.V_next: np.array([v_next]),
             })
             self.summary_writer.add_summary(summaries, global_step=self.global_step.eval(session=self.sess))
 

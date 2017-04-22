@@ -49,6 +49,8 @@ def get_tt_index(key):
         return False, index, TT[index]
 
 def save_tt_entry(tt_entry):
+    # if abs(tt_entry.static_eval) == 178.9897084236145:
+    #     b=5
     found, index, found_entry = get_tt_index(tt_entry.key)
     TT[index] = tt_entry
 
