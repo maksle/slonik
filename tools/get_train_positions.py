@@ -3,7 +3,7 @@ import chess.pgn
 import random
 
 
-pgn = open('/home/maksle/share/allgames.pgn')
+pgn = open('/home/maks/scid/allgames.pgn')
 while True:
     game = chess.pgn.read_game(pgn)
     if game is None: break

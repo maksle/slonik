@@ -63,6 +63,15 @@ class Position():
     def load_king_lines(self):
         wk = self.pieces[Pt.piece(Pt.K, Side.WHITE)]
         bk = self.pieces[Pt.piece(Pt.K, Side.BLACK)]
+
+        if not wk or not bk:
+            print(self.fen())
+            print(self)
+            print(self.moves)
+            print(self.pieces)
+            print(self.pieces[Pt.piece(Pt.K, Side.WHITE)])
+            print(self.pieces[Pt.piece(Pt.K, Side.BLACK)])
+        
         # occ = self.occupied[Side.WHITE] | self.occupied[Side.BLACK]
         self.k_lines = [queen_attack(wk, 0), queen_attack(bk, 0)]
 
@@ -619,47 +628,50 @@ class Position():
         to_square_ind = bit_position(to_sq)
 
         orig_flags = self.position_flags
+        orig_ep = self.en_pessant_sq
         
         capture_mask = to_sq ^ FULL_BOARD
         captured_pt = self.squares[bit_position(to_sq)]
         
         # toggle side to move
         self.position_flags = self.position_flags ^ (1 << 6)
-
-        self.pieces[piece_type] ^= from_sq ^ to_sq
-        self.occupied[side] ^= from_sq ^ to_sq
-
-        self.pieces[captured_pt] &= capture_mask
-        self.occupied[side ^ 1] &= capture_mask
-        
-        # zobrist - side
         self.zobrist_hash ^= tt.ZOBRIST_SIDE[0]
         self.zobrist_hash ^= tt.ZOBRIST_SIDE[1]
         
-        # zobrist - move's from_sq and move's to_sq
+        # update our pieces
+        self.pieces[piece_type] ^= from_sq ^ to_sq
+        self.occupied[side] ^= from_sq ^ to_sq
         self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[from_square_ind][piece_type]
         self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[to_square_ind][piece_type]
         
-        # zobrist - captured piece
+        # update their pieces
+        self.pieces[captured_pt] &= capture_mask
+        self.occupied[side ^ 1] &= capture_mask
         self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[to_square_ind][captured_pt]
-        
-        # en pessant
-        en_pessant_capture = False
-        if base_type == Pt.P:
-            pawn_them = Pt.piece(Pt.P, side ^ 1)
-            if last_move.piece_type == pawn_them \
-               and last_move.from_sq == shift_north(to_sq, side) \
-               and last_move.to_sq == shift_south(to_sq, side):
-                self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[bit_position(last_move.to_sq)][pawn_them]
-                self.pieces[pawn_them] ^= last_move.to_sq
-                self.occupied[side ^ 1] ^= last_move.to_sq
-                self.squares[bit_position(last_move.to_sq)] = PieceType.NULL
-                en_pessant_capture = True
 
+        # update square => pt map
+        self.squares[bit_position(from_sq)] = PieceType.NULL
+        self.squares[bit_position(to_sq)] = piece_type
+        
+        # removing previous ep square
+        if self.en_pessant_sq:
+            self.zobrist_hash ^= tt.ZOBRIST_EP_SQUARES[bit_position(self.en_pessant_sq)]
+            self.en_pessant_sq = None
+            
+        # creating ep square
         if base_type == Pt.P and get_rank(from_sq, side) == 1 and get_rank(to_sq, side) == 3:
             self.en_pessant_sq = shift_north(from_sq, side)
-        else:
-            self.en_pessant_sq = None
+            self.zobrist_hash ^= tt.ZOBRIST_EP_SQUARES[bit_position(shift_north(from_sq, side))]
+        
+        # en pessant capture
+        en_pessant_capture = False
+        if base_type == Pt.P and orig_ep and to_sq == orig_ep:
+            ep_captured = shift_south(orig_ep, side)
+            self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[ep_captured][pawn_them]
+            self.squares[bit_position(ep_captured)] = PieceType.NULL
+            self.pieces[pawn_them] ^= ep_captured
+            self.occupied[side ^ 1] ^= ep_captured
+            en_pessant_capture = True
         
         if base_type == Pt.K:
             if side == Side.WHITE:
@@ -715,17 +727,17 @@ class Position():
         # castling rights
         if base_type == Pt.R:
             if side == Side.WHITE:
-                if preserved_kingside_castle_rights(orig_flags, side):
+                if from_sq == H1 and preserved_kingside_castle_rights(orig_flags, side):
                     self.zobrist_hash ^= tt.ZOBRIST_CASTLE[0]
                     self.position_flags |= 4
-                if preserved_queenside_castle_rights(orig_flags, side):
+                if from_sq == A1 and preserved_queenside_castle_rights(orig_flags, side):
                     self.zobrist_hash ^= tt.ZOBRIST_CASTLE[1]
                     self.position_flags |= 8
             else: # Black
-                if preserved_kingside_castle_rights(orig_flags, side):
+                if from_sq == H8 and preserved_kingside_castle_rights(orig_flags, side):
                     self.zobrist_hash ^= tt.ZOBRIST_CASTLE[2]
                     self.position_flags |= 16
-                if preserved_queenside_castle_rights(orig_flags, side):
+                if from_sq == A8 and preserved_queenside_castle_rights(orig_flags, side):
                     self.zobrist_hash ^= tt.ZOBRIST_CASTLE[3]
                     self.position_flags |= 32
                     
@@ -733,6 +745,7 @@ class Position():
         if base_type == PieceType.P and get_rank(to_sq, side) == 7:
             self.pieces[piece_type] ^= to_sq
             self.pieces[move.promo_piece] ^= to_sq
+            self.squares[bit_position(to_sq)] = move.promo_piece
             self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[to_square_ind][piece_type]
             self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[to_square_ind][move.promo_piece]
         
@@ -741,10 +754,7 @@ class Position():
 
         if (move.from_sq | move.to_sq) & (self.k_lines[side] | self.k_lines[side^1]) or en_pessant_capture:
             self.load_discoveries_and_pins(target_piece_type=Pt.K)
-
-        self.squares[bit_position(from_sq)] = PieceType.NULL
-        self.squares[bit_position(to_sq)] = piece_type if not (move.move_type & MoveType.promo) else move.promo_piece
-
+        
         if captured_pt or base_type == Pt.P: self.halfmove_clock = 0
         else: self.halfmove_clock += 1
 

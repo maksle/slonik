@@ -50,19 +50,19 @@ def initialize_weights(positions):
 # num_targets_per_iteration = batch * plies_to_play = 3072        
 # num_iterations = total_fens / batch = 2734
 
-depth = 5.5 #6.5
+depth = 4.5 #6.5
 # td_lambda = 0.7
 # position_value = namedtuple('position_value', ['fen', 'leaf_val', 'features'])
 
 iterations = 10000
 total_fens = 700762
-plies_to_play = 16
+plies_to_play = 24
 batch_size = 32
-positions_per_iteration = 8 #128 #256
+positions_per_iteration = 24 #128 #256
 num_iterations = total_fens // positions_per_iteration + 1
 
 if __name__ == "__main__":
-    offset = 650
+    offset = 10100
     init_npos = 20000
     sts_scores = []
     for itern in range(num_iterations):
@@ -161,31 +161,7 @@ if __name__ == "__main__":
                     psn.make_move(pv[0])
                     if len(timesteps) % 10 == 0:
                         print(psn)
-                    
-                    # if len(timesteps) > 2:
-                    #     t0_val, t0_fen = timesteps[-3]
-                    #     t0_pos = Position.from_fen(t0_fen)
-                    #     t1_val, t1_fen = timesteps[-1]
-
-                    #     # This happens b/c of previous update
-                    #     # val = nn_evaluate.evaluate(t0_pos)
-                    #     # if t0_pos.side_to_move() == Side.B:
-                    #     #     val = -val
-                    #     # if abs(val/1000 - t0_val) > .0008:
-                    #     #     embed()
-
-                    #     print('             ', format(t1_val, '.4f'))
-                    #     # model.train(nn_evaluate.get_features(t0_pos), t1_val)
-                    #     # if abs(t1_val - t0_val) > dyna_threshold and dyna_counter < 1 and len(positions) < 16:
-                    #     #     fen = timesteps[-3][1]
-                    #     #     dyna_pos = Position.from_fen(fen)
-                    #     #     positions.append(dyna_pos)
-                    #     #     dyna_counter += 1
-                    #     #     print("Adding dyna position:\n")
-                    #     #     print(dyna_pos)
-                    
-                    # print()
-                    
+                  
                 positions = []
                 targets = []
                         
@@ -193,6 +169,13 @@ if __name__ == "__main__":
                 T = len(timesteps)
                 for ind, t in enumerate(timesteps):
                     leaf_val, pos = t
+                    
+                    # val = nn_evaluate.evaluate(pos)
+                    # if pos.side_to_move() == Side.B:
+                    #     val = -val
+                    # if abs(val/1000 - leaf_val) > .0008:
+                    #     embed()
+                    
                     error = 0
                     L = 1
                     for j in range(ind+2, T, 2):
@@ -208,8 +191,8 @@ if __name__ == "__main__":
                 model.fit(features, targets, 10, batch_size)
                 model.save_model()
                 
-        # if itern % 20 == 0:
-        if True:
+        if itern % 20 == 0:
+        # if True:
             sts_score = sts.run_sts_test()
             sts_scores.append(sts_score)
             model.update_sts_score(sts_score)

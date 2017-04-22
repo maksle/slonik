@@ -91,10 +91,10 @@ def preserved_queenside_castle_rights(position_flags, side):
     else:
         return position_flags & 34 == 0
     
-def preserved_castle_rights(position_flags, side):
-    if side == Side.WHITE:
-        return not (position_flags & 1 or (position_flags & 12) == 12)
-    return not (position_flags & 2 or (position_flags & 48) == 48)
+# def preserved_castle_rights(position_flags, side):
+#     if side == Side.WHITE:
+#         return not (position_flags & 1 or (position_flags & 12) == 12)
+#     return not (position_flags & 2 or (position_flags & 48) == 48)
 
 def piece_attacks(piece_type, piece_squares, occupied):
     base_type = PieceType.base_type(piece_type)

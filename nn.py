@@ -1,12 +1,12 @@
 from IPython import embed
 import tensorflow as tf
-import keras
+# import keras
 import numpy as np
 import random
 import os
-from keras.layers import Input, Dense
-from keras.models import Model as KModel
-import keras.backend as K
+# from keras.layers import Input, Dense
+# from keras.models import Model as KModel
+# import keras.backend as K
 
 # from tensorflow.python import debug as tf_debug
 
@@ -74,9 +74,9 @@ class Model(object):
         self.target = tf.placeholder('float', shape=[None, 1], name='target')
 
         # fit_loss = tf.reduce_mean(self.target - self.V, name='fit_loss')
-        fit_loss = tf.losses.absolute_difference(self.target, self.V)
+        self.fit_loss = tf.losses.absolute_difference(self.target, self.V)
         # fit_loss = tf.Print(fit_loss, [fit_loss], "Loss: ")
-        self.fit_op = tf.train.AdamOptimizer(.0003).minimize(fit_loss)
+        self.fit_op = tf.train.AdamOptimizer(.0003).minimize(self.fit_loss)
         
         # stats
         loss_op = tf.reduce_mean(tf.square(self.V_next - self.V), name='loss')
@@ -170,17 +170,20 @@ class Model(object):
                 c = list(zip(features, targets))
                 random.shuffle(c)
                 efeatures, etargets = list(zip(*c))
+                tloss = 0
                 for start, end in batch_indexes(len(etargets), batch_size):
                     f = self.transform_features(efeatures[start:end])
                     t = etargets[start:end]
-                    self.sess.run([self.fit_op], feed_dict={
+                    loss, _ = self.sess.run([self.fit_loss, self.fit_op], feed_dict={
                         self.input_global: f['input_global'],
                         self.input_pawn: f['input_pawn'],
                         self.input_piece: f['input_piece'],
                         self.input_square: f['input_square'],
                         self.target: np.array(t).reshape(end-start, 1)
                     })
-
+                    tloss += loss
+                print("epoch", epoch, "loss", tloss)
+                    
     def predict(self, features):
         with self.graph.as_default():
             f = self.transform_features([features])

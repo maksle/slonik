@@ -62,6 +62,11 @@ for i in range(0,64):
     piece_arr.append(0)
     for j in range(1,13):
         piece_arr.append(random.getrandbits(64))
+
+ZOBRIST_EP_SQUARES = []
+for i in range(0,64):
+    ZOBRIST_EP_SQUARES.append(random.getrandbits(64))
+
 ZOBRIST_SIDE = get_rand_array(2)
 ZOBRIST_CASTLE = get_rand_array(4)
 

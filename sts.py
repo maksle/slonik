@@ -38,7 +38,7 @@ def run_sts_test():
     total_scores = defaultdict(int)
     best_counts = defaultdict(int)
     n = 0
-    with open("/home/maksle/share/STS_EEAI_v1/STS1-STS15.EPD") as f:
+    with open("./tools/STS1-STS15.EPD") as f:
         for epd in f.readlines():
             n += 1
             epd_num = int(math.ceil(n/100))
