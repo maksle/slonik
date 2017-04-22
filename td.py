@@ -8,7 +8,7 @@ from position import Position
 from side import Side
 from search import Engine
 from collections import namedtuple
-from evals import BaseEvaluator
+from evals import BaseEvaluator, arbiter_draw
 from nn import model
 import nn_evaluate
 import numpy as np
@@ -24,14 +24,8 @@ def has_moves(pos):
     moves = pos.generate_moves_all(legal=True)
     return len(list(moves)) > 0
 
-def fifty_move_draw(pos):
-    return pos.halfmove_clock >= 50
-
-def three_fold_repetition(pos):
-    return pos.three_fold[pos.fen(timeless=True)] >= 3
-
 def game_over(pos):
-    return not has_moves(pos) or fifty_move_draw(pos) or three_fold_repetition(pos)
+    return not has_moves(pos) or arbiter_draw(pos)
     
 def initialize_weights(positions):
     features = [nn_evaluate.get_features(psn) for psn in positions]
@@ -56,10 +50,11 @@ depth = 4.5 #6.5
 
 iterations = 10000
 total_fens = 700762
-plies_to_play = 24
-batch_size = 32
+plies_to_play = 32
 positions_per_iteration = 24 #128 #256
+batch_size = plies_to_play * positions_per_iteration // 8
 num_iterations = total_fens // positions_per_iteration + 1
+epochs = 10
 
 if __name__ == "__main__":
     offset = 10100
@@ -135,8 +130,8 @@ if __name__ == "__main__":
                 dyna_threshold = .2
                 dyna_counter = 0
 
-                while True:
-                # for ply in range(plies_to_play):
+                # while True:
+                for ply in range(plies_to_play):
                     if game_over(psn):
                         break
                     # dyna position
@@ -170,25 +165,35 @@ if __name__ == "__main__":
                 for ind, t in enumerate(timesteps):
                     leaf_val, pos = t
                     
-                    # val = nn_evaluate.evaluate(pos)
-                    # if pos.side_to_move() == Side.B:
-                    #     val = -val
-                    # if abs(val/1000 - leaf_val) > .0008:
-                    #     embed()
-                    
                     error = 0
                     L = 1
                     for j in range(ind+2, T, 2):
                         L *= lamda
                         delta = timesteps[j][0] - timesteps[j-2][0]
+                        
+                        # The leaf eval should be the same or it's a game end result.
+                        # We don't want to reward/penalize the nn for evals it didn't make,
+                        # except for end of game rewards that are deducable from the position
+                        # (but not draws due to 50 move rule for example). If we include move
+                        # count in the nn features, we would have to also include it in the zhash.
+                        jval, jpos = timesteps[j]
+                        lval = nn_evaluate.evaluate(jpos)
+                        if jpos.side_to_move() == Side.B:
+                            lval = -lval
+                        if abs(lval/1000 - jval) > .0008:
+                            if fifty_move_draw(pos) or three_fold_repetition(pos):
+                                print("skipping")
+                                continue
+                            
                         error += L * delta
+
                     target = error + leaf_val
                     positions.append(pos)
                     targets.append(target)
             
             
                 features = [nn_evaluate.get_features(psn) for psn in positions]
-                model.fit(features, targets, 10, batch_size)
+                model.fit(features, targets, epochs, batch_size)
                 model.save_model()
                 
         if itern % 20 == 0:

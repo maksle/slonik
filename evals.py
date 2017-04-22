@@ -739,3 +739,29 @@ def next_en_prise(position, side, move=None):
             attacker_pt, attacker_sq = lowest
             return pt, square, attacker_pt, attacker_sq
     return 0, 0, 0, 0
+
+def fifty_move_draw(pos):
+    return pos.halfmove_clock >= 50
+
+def three_fold_repetition(pos):
+    return pos.three_fold[pos.fen(timeless=True)] >= 3
+
+def insufficient_material(pos):
+    all_occ = pos.occupied[Side.W] | pos.occupied[Side.B]
+    
+    # kb v k or kn v k
+    if count_bits(all_occ) == 3:
+        if pos.pieces[Pt.N] | pos.pieces[Pt.BN] | pos.pieces[Pt.B] | pos.pieces[Pt.BB]:
+            return True
+
+    # k vs k
+    if count_bits(all_occ) == 2:
+        return True
+
+    return False
+
+def arbiter_draw(pos):
+    return fifty_move_draw(pos) or three_fold_repetition(pos) or insufficient_material(pos)
+    
+
+    

@@ -446,10 +446,7 @@ class Engine(threading.Thread):
             si[ply].pv.clear()
         si[ply+1].pv.clear()
 
-        if node.three_fold[node.fen(timeless=True)] == 3:
-            return DRAW_VALUE
-
-        if node.halfmove_clock == 50:
+        if arbiter_draw(node):
             return DRAW_VALUE
         
         pos_key = node.zobrist_hash ^ si[ply].excluded_move.compact()
@@ -747,10 +744,7 @@ class Engine(threading.Thread):
         si[ply].pv.clear()
         si[ply+1].pv.clear()
 
-        if node.three_fold[node.fen(timeless=True)] == 3:
-            return DRAW_VALUE
-
-        if node.halfmove_clock == 50:
+        if arbiter_draw(node):
             return DRAW_VALUE
         
         tt_hit = False
