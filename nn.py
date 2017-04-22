@@ -45,11 +45,11 @@ class Model(object):
         lamda = .7
         lr = .0005
 
-        self.input_global_size, self.hidden_global_size = 26, 15
-        self.input_pawn_size, self.hidden_pawn_size = 18, 14
+        self.input_global_size, self.hidden_global_size = 26, 12
+        self.input_pawn_size, self.hidden_pawn_size = 18, 8
         self.input_piece_size, self.hidden_piece_size = 68, 16
-        self.input_square_size, self.hidden_square_size = 148, 16
-        merged_size = self.hidden_global_size + self.hidden_pawn_size + self.hidden_piece_size + self.hidden_square_size
+        self.input_square_size, self.hidden_square_size = 148, 24
+        merged_size = self.input_global_size + self.hidden_global_size + self.hidden_pawn_size + self.hidden_piece_size + self.hidden_square_size
         hidden_shared_size = 64
 
         # build the graph
@@ -63,23 +63,18 @@ class Model(object):
         hidden_pawn = dense_layer(self.input_pawn, [self.input_pawn_size, self.hidden_pawn_size], tf.nn.relu, name='hidden_pawn')
         hidden_piece = dense_layer(self.input_piece, [self.input_piece_size, self.hidden_piece_size], tf.nn.relu, name='hidden_piece')
         hidden_square = dense_layer(self.input_square, [self.input_square_size, self.hidden_square_size], tf.nn.relu, name='hidden_square')
-        merged = tf.concat([hidden_global, hidden_pawn, hidden_piece, hidden_square], axis=1)
+        merged = tf.concat([self.input_global, hidden_global, hidden_pawn, hidden_piece, hidden_square], axis=1)
         # .. merged hidden layer
         hidden_shared = dense_layer(merged, [merged_size, hidden_shared_size], tf.nn.relu, name='hidden_shared')
         # .. output layer
         self.V = dense_layer(hidden_shared, [hidden_shared_size, 1], tf.tanh, name='V')
         
         # placeholders for training
-        self.V_next = tf.placeholder('float', shape=(1,), name='V_next')
+        # self.V_next = tf.placeholder('float', shape=(1,), name='V_next')
         self.target = tf.placeholder('float', shape=[None, 1], name='target')
 
-        # fit_loss = tf.reduce_mean(self.target - self.V, name='fit_loss')
-        self.fit_loss = tf.losses.absolute_difference(self.target, self.V)
-        # fit_loss = tf.Print(fit_loss, [fit_loss], "Loss: ")
-        self.fit_op = tf.train.AdamOptimizer(.0003).minimize(self.fit_loss)
-        
         # stats
-        loss_op = tf.reduce_mean(tf.square(self.V_next - self.V), name='loss')
+        loss_op = tf.reduce_mean(tf.square(self.target - self.V), name='loss')
         with tf.variable_scope('game'):
             game_step = tf.Variable(tf.constant(0.0), name='game_step', trainable=False)
             loss_sum = tf.Variable(tf.constant(0.0), name='loss_sum', trainable=False)
@@ -90,46 +85,55 @@ class Model(object):
         self.sts_score = tf.Variable(0.0, name='STS_score', trainable=False)
         tf.summary.scalar('test/sts_score', self.sts_score)
         
-        delta_op = tf.reduce_mean(tf.abs(self.V_next - self.V))
-        
-        tvars = tf.trainable_variables()
-        # grads = tf.gradients(self.V, tvars)
-        grads = tf.gradients(self.V, tvars)
-        
-        for grad, var in zip(grads, tvars):
-            tf.summary.histogram(var.name, var)
-            tf.summary.histogram(var.name + '/gradients/grad', grad)
-        
-        apply_gradients = []
-        trace_reset_ops = []
-        with tf.variable_scope('apply_gradients'):
-            for grad, var in zip(grads, tvars):
-
-                with tf.variable_scope('trace'):
-                    trace = tf.Variable(tf.zeros(grad.get_shape()), name='trace')
-                    trace_op = trace.assign((lamda * trace) + grad)
-                    tf.summary.histogram('trace', trace)
-
-                    trace_reset_op = trace.assign(tf.zeros(grad.get_shape()))
-                    trace_reset_ops.append(trace_reset_op)
-                    
-                grad_trace = lr * delta_op * trace_op
-                tf.summary.histogram(var.name + '/gradients/trace', grad_trace)
-
-                apply_gradients.append(var.assign_add(grad_trace))
-
         with tf.control_dependencies([
                 global_step_op,
                 loss_sum_op,
+                self.sts_score
         ]):
-            self.optimize = tf.group(*apply_gradients, name='optimize')
+            # self.fit_loss = tf.reduce_mean(tf.square(self.target - self.V), name='fit_loss')
+            # self.fit_loss = tf.reduce_mean(tf.losses.absolute_difference(self.target, self.V))
+            self.fit_loss = tf.reduce_mean(tf.abs(self.target - self.V), name='fit_loss')
+            self.fit_op = tf.train.AdamOptimizer(.003).minimize(self.fit_loss)
+        
+        # delta_op = tf.subtract(self.V_next, self.V)
+        
+        # tvars = tf.trainable_variables()
+        # # grads = tf.gradients(self.V, tvars)
+        # grads = tf.gradients(self.V, tvars)
+        
+        # for grad, var in zip(grads, tvars):
+        #     tf.summary.histogram(var.name, var)
+        #     tf.summary.histogram(var.name + '/gradients/grad', grad)
+        
+        # apply_gradients = []
+        # trace_reset_ops = []
+        # with tf.variable_scope('apply_gradients'):
+        #     for grad, var in zip(grads, tvars):
 
-        # self.optimize = tf.train.AdamOptimizer(lr).apply_gradients(grad_and_vars)
+        #         with tf.variable_scope('trace'):
+        #             trace = tf.Variable(tf.zeros(grad.get_shape()), name='trace')
+        #             trace_op = trace.assign((lamda * trace) + grad)
+        #             tf.summary.histogram('trace', trace)
+
+        #             trace_reset_op = trace.assign(tf.zeros(grad.get_shape()))
+        #             trace_reset_ops.append(trace_reset_op)
+                    
+        #         grad_trace = lr * delta_op * trace_op
+        #         tf.summary.histogram(var.name + '/gradients/trace', grad_trace)
+
+        #         apply_gradients.append(var.assign_add(grad_trace))
+
+        # with tf.control_dependencies([
+        #         global_step_op,
+        #         loss_sum_op,
+        # ]):
+        #     self.optimize = tf.group(*apply_gradients, name='optimize')
 
         game_step_reset_op = game_step.assign(0.0)
         loss_sum_reset_op = loss_sum.assign(0.0)
         game_step_op = game_step.assign_add(1.0)
-        reset_ops = trace_reset_ops + [game_step_reset_op, loss_sum_reset_op, game_step_op]
+        # reset_ops = trace_reset_ops + [game_step_reset_op, loss_sum_reset_op, game_step_op]
+        reset_ops = [game_step_reset_op, loss_sum_reset_op, game_step_op]
         self.reset_op = tf.group(*reset_ops, name='reset')
         
         self.sess.run(tf.global_variables_initializer())
@@ -171,18 +175,23 @@ class Model(object):
                 random.shuffle(c)
                 efeatures, etargets = list(zip(*c))
                 tloss = 0
+                batches = 0
                 for start, end in batch_indexes(len(etargets), batch_size):
+                    batches += 1
                     f = self.transform_features(efeatures[start:end])
                     t = etargets[start:end]
-                    loss, _ = self.sess.run([self.fit_loss, self.fit_op], feed_dict={
+                    loss, _, summaries = self.sess.run([self.fit_loss, self.fit_op, self.summaries_op], feed_dict={
                         self.input_global: f['input_global'],
                         self.input_pawn: f['input_pawn'],
                         self.input_piece: f['input_piece'],
                         self.input_square: f['input_square'],
                         self.target: np.array(t).reshape(end-start, 1)
                     })
-                    tloss += loss
-                print("epoch", epoch, "loss", tloss)
+                    self.summary_writer.add_summary(summaries, global_step=self.global_step.eval(session=self.sess))
+                    if epoch == 0 and batches == 1:
+                        print("initial loss", loss)
+                    tloss += np.mean(loss)
+                print("epoch", epoch, "loss", tloss/batches)
                     
     def predict(self, features):
         with self.graph.as_default():
@@ -195,17 +204,17 @@ class Model(object):
             })
             return np.asscalar(v[0])
 
-    def train(self, features, v_next):
-        with self.graph.as_default():
-            f = self.transform_features([features])
-            _, summaries = self.sess.run([self.optimize, self.summaries_op], feed_dict={
-                self.input_global: f['input_global'],
-                self.input_pawn: f['input_pawn'],
-                self.input_piece: f['input_piece'],
-                self.input_square: f['input_square'],
-                self.V_next: np.array([v_next]),
-            })
-            self.summary_writer.add_summary(summaries, global_step=self.global_step.eval(session=self.sess))
+    # def train(self, features, v_next):
+    #     with self.graph.as_default():
+    #         f = self.transform_features([features])
+    #         _, summaries = self.sess.run([self.optimize, self.summaries_op], feed_dict={
+    #             self.input_global: f['input_global'],
+    #             self.input_pawn: f['input_pawn'],
+    #             self.input_piece: f['input_piece'],
+    #             self.input_square: f['input_square'],
+    #             self.V_next: np.array([v_next]),
+    #         })
+    #         self.summary_writer.add_summary(summaries, global_step=self.global_step.eval(session=self.sess))
 
     def reset_eligibility_trace(self):
         self.sess.run(self.reset_op)

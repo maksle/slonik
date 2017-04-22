@@ -667,9 +667,10 @@ class Position():
         en_pessant_capture = False
         if base_type == Pt.P and orig_ep and to_sq == orig_ep:
             ep_captured = shift_south(orig_ep, side)
-            self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[ep_captured][pawn_them]
+            pthem = Pt.piece(Pt.P, side^1)
+            self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[bit_position(ep_captured)][pthem]
             self.squares[bit_position(ep_captured)] = PieceType.NULL
-            self.pieces[pawn_them] ^= ep_captured
+            self.pieces[pthem] ^= ep_captured
             self.occupied[side ^ 1] ^= ep_captured
             en_pessant_capture = True
         
@@ -724,7 +725,7 @@ class Position():
                     self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[63][PieceType.B_ROOK]
                     self.zobrist_hash ^= tt.ZOBRIST_PIECE_SQUARES[60][PieceType.B_ROOK]
         
-        # castling rights
+        # moving castling rights causes side to lose castling rights
         if base_type == Pt.R:
             if side == Side.WHITE:
                 if from_sq == H1 and preserved_kingside_castle_rights(orig_flags, side):
@@ -740,7 +741,23 @@ class Position():
                 if from_sq == A8 and preserved_queenside_castle_rights(orig_flags, side):
                     self.zobrist_hash ^= tt.ZOBRIST_CASTLE[3]
                     self.position_flags |= 32
-                    
+
+        # capture of rook causes other side to lose castling rights
+        if side == Side.BLACK and (to_sq == A1 or to_sq == H1):
+            if to_sq == H1 and preserved_kingside_castle_rights(orig_flags, Side.WHITE):
+                self.zobrist_hash ^= tt.ZOBRIST_CASTLE[0]
+                self.position_flags |= 4
+            if to_sq == A1 and preserved_queenside_castle_rights(orig_flags, Side.WHITE):
+                self.zobrist_hash ^= tt.ZOBRIST_CASTLE[1]
+                self.position_flags |= 8
+        if side == Side.WHITE and (to_sq == A8 or to_sq == H8):
+            if to_sq == H8 and preserved_kingside_castle_rights(orig_flags, Side.BLACK):
+                self.zobrist_hash ^= tt.ZOBRIST_CASTLE[2]
+                self.position_flags |= 16
+            if to_sq == A8 and preserved_queenside_castle_rights(orig_flags, Side.BLACK):
+                self.zobrist_hash ^= tt.ZOBRIST_CASTLE[3]
+                self.position_flags |= 32
+        
         # promotions
         if base_type == PieceType.P and get_rank(to_sq, side) == 7:
             self.pieces[piece_type] ^= to_sq

@@ -8,7 +8,7 @@ from position import Position
 from side import Side
 from search import Engine
 from collections import namedtuple
-from evals import BaseEvaluator, arbiter_draw
+from evals import BaseEvaluator, arbiter_draw, fifty_move_draw, three_fold_repetition
 from nn import model
 import nn_evaluate
 import numpy as np
@@ -51,14 +51,14 @@ depth = 4.5 #6.5
 iterations = 10000
 total_fens = 700762
 plies_to_play = 32
-positions_per_iteration = 24 #128 #256
+positions_per_iteration = 32 #128 #256
 batch_size = plies_to_play * positions_per_iteration // 8
 num_iterations = total_fens // positions_per_iteration + 1
 epochs = 10
 
 if __name__ == "__main__":
-    offset = 10100
-    init_npos = 20000
+    offset = 10250
+    init_npos = 10000
     sts_scores = []
     for itern in range(num_iterations):
         positions = []
@@ -86,10 +86,13 @@ if __name__ == "__main__":
             # pass
             initialize_weights(positions)
             model.save_model()
-            break
+            # break
         else:
             n = offset
             m = 0
+
+            update_features = []
+            update_targets = []
             for psn in positions:
                 n += 1
                 m += 1
@@ -156,10 +159,7 @@ if __name__ == "__main__":
                     psn.make_move(pv[0])
                     if len(timesteps) % 10 == 0:
                         print(psn)
-                  
-                positions = []
-                targets = []
-                        
+                
                 lamda = .7
                 T = len(timesteps)
                 for ind, t in enumerate(timesteps):
@@ -175,29 +175,26 @@ if __name__ == "__main__":
                         # We don't want to reward/penalize the nn for evals it didn't make,
                         # except for end of game rewards that are deducable from the position
                         # (but not draws due to 50 move rule for example). If we include move
-                        # count in the nn features, we would have to also include it in the zhash.
+                        # count in the nn features, would have to also include it in the zhash.
                         jval, jpos = timesteps[j]
                         lval = nn_evaluate.evaluate(jpos)
                         if jpos.side_to_move() == Side.B:
                             lval = -lval
                         if abs(lval/1000 - jval) > .0008:
                             if fifty_move_draw(pos) or three_fold_repetition(pos):
-                                print("skipping")
                                 continue
                             
                         error += L * delta
 
                     target = error + leaf_val
-                    positions.append(pos)
-                    targets.append(target)
+                    update_features.append(nn_evaluate.get_features(pos))
+                    update_targets.append(target)
             
-            
-                features = [nn_evaluate.get_features(psn) for psn in positions]
-                model.fit(features, targets, epochs, batch_size)
-                model.save_model()
+            model.fit(update_features, update_targets, epochs, batch_size)
+            model.save_model()
                 
-        if itern % 20 == 0:
-        # if True:
+        # if itern % 20 == 0:
+        if True:
             sts_score = sts.run_sts_test()
             sts_scores.append(sts_score)
             model.update_sts_score(sts_score)
