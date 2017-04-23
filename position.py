@@ -433,12 +433,14 @@ class Position():
             if not (move.to_sq & checkers or (en_pessant and checkers & shift_south(self.en_pessant_sq, us))):
                 return False
         
+        # if str(self.moves) == '[g2-g4]' and str(move) == 'f4-g3':
+        #     maksim=1
         # en pessant move
         if Pt.base_type(move.piece_type) == Pt.P and self.en_pessant_sq and move.to_sq & self.en_pessant_sq:
             # Real implementation is a little tricky. This is simpler but more expensive. However this is the rarer code path
-            moved = Position(self)
-            moved.make_move(move)
-            if moved.in_check():
+            # moved = Position(self)
+            # moved.make_move(move)
+            if self.in_check(move):
                 return False
 
         return True
@@ -476,12 +478,17 @@ class Position():
         side = self.side_to_move()
         us, them = side, side ^ 1
 
-        sq = self.pieces[Pt.piece(Pt.K, us)]
         occupied = self.occupied[us] | self.occupied[them]
 
+        sq = self.pieces[Pt.piece(Pt.K, us)]
+        
         if move is not None:
             occupied ^= move.from_sq
             occupied |= move.to_sq
+            ep_sq = self.en_pessant_sq or 0
+            if move.to_sq & ep_sq:
+                occupied ^= shift_south(ep_sq, side)
+            sq = self.pieces[Pt.piece(Pt.K, us)]
             if Pt.base_type(move.piece_type) == Pt.K:
                 sq = move.to_sq
         
