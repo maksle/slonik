@@ -220,7 +220,8 @@ class Model(object):
         self.sess.run(self.reset_op)
 
     def update_sts_score(self, score):
-        self.sess.run(self.sts_score.assign(score))
+        _, summaries = self.sess.run([self.sts_score.assign(score), self.summaries_op])
+        self.summary_writer.add_summary(summaries, global_step=self.global_step.eval(session=self.sess))
         
 
 graph = tf.Graph()
