@@ -176,16 +176,14 @@ if __name__ == "__main__":
                 for ind, t in enumerate(timesteps):
                     leaf_val, pos, is_nn_eval = t
                     
-                    if not is_nn_eval:
-                        target = leaf_val
-                    else:
-                        error = 0
-                        L = 1
-                        for j in range(ind+2, T, 2):
-                            L *= lamda
-                            delta = timesteps[j][0] - timesteps[j-2][0]
-                            error += L * delta
-                        target = error + leaf_val
+                    error = 0
+                    L = 1
+                    for j in range(ind+2, T, 2):
+                        L *= lamda
+                        delta = timesteps[j][0] - timesteps[j-2][0]
+                        error += L * delta
+                    target = error + leaf_val
+
                     update_features.append(nn_evaluate.get_features(pos))
                     update_targets.append(target)
             
