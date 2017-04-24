@@ -1,3 +1,10 @@
+current perft
+1 20 0.0005249977111816406 s
+2 400 0.011399507522583008 s
+3 8902 0.19441461563110352 s
+4 197281 4.360037326812744 s
+5 4865609 103.82070016860962 s
+
 change sort to assign prob based on bucket (see>=0, checks, other), and apply gaussian to other only
 play engine against itself to determine if change is + or -
 add pin to queen to evals

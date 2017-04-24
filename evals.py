@@ -1,6 +1,6 @@
 import pprint
 from collections import defaultdict
-from material import MG_PIECES, piece_counts, material_eval
+from material import MG_PIECES, piece_counts, material_eval, get_phase
 from psqt import psqt_value
 from move_gen import *
 from piece_type import PieceType as Pt
@@ -479,18 +479,20 @@ class BaseEvaluator():
         PINNED[Pt.piece(Pt.Q, Side.WHITE)] = q_pinned[Pt.piece(Pt.Q, Side.WHITE)]
         PINNED[Pt.piece(Pt.Q, Side.BLACK)] = q_pinned[Pt.piece(Pt.Q, Side.BLACK)]
         DISCOVERERS = self.position.discoverers
+
+        phase = get_phase(self.position)
         
         for side in [Side.WHITE, Side.BLACK]:
 
             side_str = "WHITE" if side == Side.WHITE else "BLACK"
-
+            
             # count material
             for base_type in [Pt.P, Pt.N, Pt.B,
                                Pt.R, Pt.Q, Pt.K]:
                 piece_type = Pt.piece(base_type, side)
 
                 if base_type is not Pt.K:
-                    value = counts[piece_type] * material_eval(counts, base_type, side)
+                    value = counts[piece_type] * material_eval(phase, counts, base_type, side)
                     if debug: evals["Material %s" % (HUMAN_PIECE[piece_type])][side] += value
                     evaluations[side] += value
 
@@ -762,6 +764,3 @@ def insufficient_material(pos):
 
 def arbiter_draw(pos):
     return fifty_move_draw(pos) or three_fold_repetition(pos) or insufficient_material(pos)
-    
-
-    

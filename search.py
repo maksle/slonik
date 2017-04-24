@@ -1011,22 +1011,22 @@ class Engine(threading.Thread):
             
         return result
     
-    def perft(self, pos, depth, is_root):
-        cnt = nodes = 0
-        leaf = depth == 2
-        moves = list(pos.generate_moves())
-        for move in moves:
-            if is_root and depth <= 1:
-                cnt = 1
-                nodes += 1
+def perft(pos, depth, is_root):
+    cnt = nodes = 0
+    leaf = depth == 2
+    moves = list(pos.generate_moves_all(legal=True))
+    for move in moves:
+        if is_root and depth <= 1:
+            cnt = 1
+            nodes += 1
+        else:
+            child = Position(pos)
+            child.make_move(move)
+            if leaf:
+                cnt = len(list(child.generate_moves_all(legal=True)))
             else:
-                child = Position(pos)
-                child.make_move(move)
-                if leaf:
-                    cnt = len(list(child.generate_moves())) 
-                else:
-                    cnt = perft(child, depth - 1, False)
-                nodes += cnt
-            # if is_root:
-            #     print("move:", str(move), cnt)
-        return nodes
+                cnt = perft(child, depth - 1, False)
+            nodes += cnt
+        # if is_root:
+        #     print("move:", str(move), cnt)
+    return nodes

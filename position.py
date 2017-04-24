@@ -433,8 +433,6 @@ class Position():
             if not (move.to_sq & checkers or (en_pessant and checkers & shift_south(self.en_pessant_sq, us))):
                 return False
         
-        # if str(self.moves) == '[g2-g4]' and str(move) == 'f4-g3':
-        #     maksim=1
         # en pessant move
         if Pt.base_type(move.piece_type) == Pt.P and self.en_pessant_sq and move.to_sq & self.en_pessant_sq:
             # Real implementation is a little tricky. This is simpler but more expensive. However this is the rarer code path

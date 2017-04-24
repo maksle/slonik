@@ -30,7 +30,13 @@ def dense_layer(x, shape, activation, name):
         W, b = weight_bias(shape)
         return activation(tf.matmul(x, W) + b, name='activation')
 
-
+def huber_loss(labels, predictions, delta=1.0):
+    residual = tf.abs(predictions - labels)
+    condition = tf.less(residual, delta)
+    small_res = 0.5 * tf.square(residual)
+    large_res = delta * residual - 0.5 * tf.square(delta)
+    return tf.where(condition, small_res, large_res)
+    
 class Model(object):
     def __init__(self, sess, graph, restore=False):
         self.sess = sess
@@ -92,8 +98,9 @@ class Model(object):
         ]):
             # self.fit_loss = tf.reduce_mean(tf.square(self.target - self.V), name='fit_loss')
             # self.fit_loss = tf.reduce_mean(tf.losses.absolute_difference(self.target, self.V))
-            self.fit_loss = tf.reduce_mean(tf.abs(self.target - self.V), name='fit_loss')
-            self.fit_op = tf.train.AdamOptimizer(.003).minimize(self.fit_loss)
+            # self.fit_loss = tf.reduce_mean(tf.abs(self.target - self.V), name='fit_loss')
+            self.fit_loss = tf.reduce_mean(huber_loss(self.target, self.V))
+            self.fit_op = tf.train.AdamOptimizer(.0003).minimize(self.fit_loss)
         
         # delta_op = tf.subtract(self.V_next, self.V)
         
