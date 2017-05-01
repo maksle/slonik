@@ -75,17 +75,24 @@ class Estimator(object):
         # placeholders for training
         self.target = tf.placeholder('float', shape=[None, 1], name='target')
         
-        # training op
-        self.fit_loss = tf.reduce_mean(huber_loss(self.target, self.V))
-        self.fit_op = tf.train.AdamOptimizer(.0003).minimize(self.fit_loss, global_step=self.global_step)
+        
+        with tf.name_scope('Loss'):
+            self.fit_loss = tf.reduce_mean(huber_loss(self.target, self.V))
+            tf.summary.scalar('loss', self.fit_loss)
+
+        with tf.name_scope('SGD'):
+            tvars = [t for t in tf.trainable_variables() if t.name.startswith(self.scope)]
+            grads = tf.gradients(self.fit_loss, tvars)
+            for grad, var in zip(grads, tvars):
+                tf.summary.histogram(var.name, var)
+                tf.summary.histogram(var.name + '/gradients/grad', grad)
+            self.fit_op = tf.train.AdamOptimizer(.0003).minimize(self.fit_loss, global_step=self.global_step)
 
         self.sts_score = tf.Variable(0.0, name='sts_score', trainable=False)
+        tf.summary.scalar('sts_score', self.sts_score)
         
         # summaries
-        self.summaries_op = tf.summary.merge([
-            tf.summary.scalar('loss', self.fit_loss),
-            tf.summary.scalar('sts_score', self.sts_score)
-        ])
+        self.summaries_op = tf.summary.merge_all()
         
     def predict(self, features):
         with self.graph.as_default():
@@ -98,17 +105,21 @@ class Estimator(object):
             })
             return np.asscalar(v[0])
 
-    def train_batch(self, features, targets):
+    def train_batch(self, features, targets, write_summary=True):
         with self.graph.as_default():
             f = self.transform_features(features)
-            loss, _, summaries = self.sess.run([self.fit_loss, self.fit_op, self.summaries_op], feed_dict={
+            ops = [self.fit_loss, self.fit_op]
+            if write_summary:
+                ops.append(self.summaries_op)
+            results = self.sess.run(ops, feed_dict={
                 self.input_global: f['input_global'],
                 self.input_pawn: f['input_pawn'],
                 self.input_piece: f['input_piece'],
                 self.input_square: f['input_square'],
                 self.target: np.array(targets).reshape(len(targets), 1)
             })
-            self.summary_writer.add_summary(summaries, global_step=self.global_step.eval(self.sess))
+            if write_summary:
+                self.summary_writer.add_summary(results[2], global_step=self.global_step.eval(self.sess))
             
     def transform_features(self, features):
         m = len(features)

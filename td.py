@@ -107,7 +107,7 @@ def initialize_weights(positions):
     model.copy_to_target()
     Timestep.current_target_generation += 1
 
-def train(episodes):
+def train(episodes, write_summary):
     features = []
     targets = []
     for timesteps in episodes:
@@ -122,19 +122,19 @@ def train(episodes):
     bfeatures, btargets = rfeatures[:batch_size], rtargets[:batch_size]
 
     # update the actor
-    model.actor.train_batch(bfeatures, btargets)
+    model.actor.train_batch(bfeatures, btargets, write_summary)
 
 
 if __name__ == "__main__":
-    depth = 2 #6.5
+    depth = 3 #6.5
     total_fens = 700762
     plies_to_play = 32
-    positions_per_iteration = 128
-    batch_size = plies_to_play * positions_per_iteration // 8
+    positions_per_iteration = 256
+    batch_size = 32 # plies_to_play * positions_per_iteration // 8
     num_iterations = total_fens // positions_per_iteration + 1
     max_replay_buffer_size = 64
 
-    offset = 20200
+    offset = 50300
     init_npos = 10000
     sts_scores = []
     episodes = []
@@ -219,6 +219,10 @@ if __name__ == "__main__":
 
                     timesteps.append(Timestep(leaf, nn_evaluate.get_features(leaf), None, -1))
                     
+                    if len(episodes) == max_replay_buffer_size:
+                        write_summary = ply == 0 and m == 1
+                        train(episodes, write_summary=write_summary)
+                    
                     # stop playing when the results are no longer the raw NN output
                     is_fixed = eval_is_fixed(leaf, leaf_val)
                     if is_fixed:
@@ -233,11 +237,7 @@ if __name__ == "__main__":
                 # replay buffer size is limited
                 if len(episodes) > max_replay_buffer_size:
                     episodes.pop(0)
-                  
-                # after each episode update the actor model on a random batch from the replay buffer
-                if len(episodes) == max_replay_buffer_size:
-                    train(episodes)
-        
+                
             # After each playing iteration:
             # .. check our progress
             sts_score = sts.run_sts_test()
