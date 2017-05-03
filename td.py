@@ -24,11 +24,12 @@ log = logging.getLogger(__name__)
 
 class Timestep(object):
     current_target_generation = 0
-    def __init__(self, leaf, features, target_val, target_gen):
+    def __init__(self, leaf, features, target_val, target_gen, error=0):
         self.leaf = leaf
         self.features = features
         self.target_val = target_val
         self.target_gen = target_gen
+        self.error = error
 
     def update_target_val(self):
         if self.target_val is None or self.target_gen < Timestep.current_target_generation:
@@ -56,9 +57,65 @@ def eval_is_fixed(leaf, eval_from_search):
         check_val *= -1
     check_val = min(max(check_val/1000, -1), 1)
     if abs(check_val - eval_from_search) > .0008:
+        if abs(eval_from_search) != 0 and abs(eval_from_search) != 1:
+            print("fixed.. searchval:", eval_from_search, "nnval:", check_val, "fen", leaf.fen())
         return True
     return False
    
+def priority_rank(val):
+    if val < 0.4: return 9
+    elif val < 0.8: return 8
+    elif val < 1.2: return 7
+    elif val < 1.6: return 6
+    elif val < 2.0: return 5
+    elif val < 2.4: return 4
+    elif val < 2.8: return 3
+    elif val < 3.2: return 2
+    elif val < 3.6: return 1
+    else return 0
+
+def ranked_timesteps(features, targets):
+    """Pigeon holes timesteps by rank. Has side effect on the target error for
+    importance sampling"""
+    buckets = [list() for k in range(10)]
+    fts = zip(features, targets)
+    max_error = max(t.error for t in targets)
+    for ft in fts:
+        target = ft[1]
+        rank = priority_rank(target.error)
+
+        # The expected value with stochastic updates depends on the behavior
+        # distribution to be the same as the updates. Since we are introducing
+        # bias with prioritized sweeps, we need to do introduce importance
+        # sampling.
+        
+        # https://arxiv.org/pdf/1511.05952.pdf
+        # Importance sampling weight 
+        # w_i = (N * P(i))^-B) / max(w_j)
+        w = (batch_size * rank) ** -0.5
+        w /= max_error
+        
+        buckets[rank].append(ft)
+    return buckets
+    
+def sample(buckets):
+    """Choose from k rank buckets by a power distribution and sample within
+    buckets uniformally"""
+    k = len(buckets)
+    pdf = list(map(lambda x: math.pow(x, -0.7), range(1, k+1)))
+    pdf_sum = math.fsum(pdf)
+    distribution = list(map(lambda x: x / pdf_sum, pdf))
+    samples = []
+    n = 0
+    while n < 32:
+        select = np.random.choice(range(k), p=distribution, size=batch_size)
+        for k in select:
+            if len(buckets[k]):
+                sample = np.random.choice(buckets[k])
+                samples.extend(sample)
+                n += len(sample)
+    return samples[:batch_size]
+
 def sum_TD_errors(timesteps):
     lamda = .7
     features = []
@@ -82,7 +139,8 @@ def sum_TD_errors(timesteps):
 
             delta = t_next.target_val - t_prev.target_val
             error += L * delta
-        
+
+        t.error = abs(error)
         target = error + t.target_val
         
         targets.append(target)
@@ -115,11 +173,15 @@ def train(episodes, write_summary):
         features.extend(f)
         targets.extend(t)
 
-    # get random batch
-    z = list(zip(features, targets))
-    random.shuffle(z)
-    rfeatures, rtargets = list(zip(*z))
-    bfeatures, btargets = rfeatures[:batch_size], rtargets[:batch_size]
+    # # get random batch
+    # z = list(zip(features, targets))
+    # random.shuffle(z)
+    # rfeatures, rtargets = list(zip(*z))
+    # bfeatures, btargets = rfeatures[:batch_size], rtargets[:batch_size]
+
+    buckets = ranked_timesteps(features, targets)
+    batch = sample(buckets)
+    bfeatures, btargets = zip(*batch)
 
     # update the actor
     model.actor.train_batch(bfeatures, btargets, write_summary)
@@ -217,7 +279,7 @@ if __name__ == "__main__":
                         leaf.make_move(move)
                     print(pv[0], leaf_val)
 
-                    timesteps.append(Timestep(leaf, nn_evaluate.get_features(leaf), None, -1))
+                    timesteps.append(Timestep(leaf, nn_evaluate.get_features(leaf), None, -1, 0))
                     
                     if len(episodes) == max_replay_buffer_size:
                         write_summary = ply == 0 and m == 1
