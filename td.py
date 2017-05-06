@@ -64,12 +64,13 @@ def eval_is_fixed(leaf, eval_from_search):
         return True
     return False
 
-def sample(buckets):
+def sample(timesteps):
     """Choose from k rank buckets by a power distribution and sample within
     buckets uniformally"""
 
     k = 32
     pow_alpha = -0.7
+    pow_beta = -0.5
     
     # P(i) = (1 / rank(i)) ^ alpha / sum((1 / rank(i)) ^ alpha)
     pdf = [x ** pow_alpha for x in range(1, k+1)]
@@ -84,17 +85,19 @@ def sample(buckets):
     # https://arxiv.org/pdf/1511.05952.pdf
     # Importance sampling weight 
     # w_i = (N * P(i))^-B) / max(w_j)
-    importance = [(len(timesteps) * pi) ** -0.5 for pi in distribution]
-    importance /= max(w)
+    importance = [(len(timesteps) * pi) ** pow_beta for pi in distribution]
+    max_importance = max(importance)
+    importance = [i / max_importance for i in importance]
     
     # Sample timesteps
     timesteps.sort(key=lambda t: t.abs_error, reverse=True)
     samples = []
     b = 0
     for start, stop in batch_indexes(len(timesteps), math.floor(len(timesteps) / k)):
+        if b == k: break
         sample = np.random.choice(timesteps[start:stop])
         sample.adjusted_target = sample.target * importance[b]
-        samples.extend(sample)
+        samples.append(sample)
         b += 1
 
     return samples
@@ -153,8 +156,10 @@ def train(episodes, write_summary):
     # rfeatures, rtargets = list(zip(*z))
     # bfeatures, btargets = rfeatures[:batch_size], rtargets[:batch_size]
 
-    batch = sample(buckets)
-    bfeatures, btargets = [(t.features, t.adjusted_target) for t in batch]
+    # flatten the list
+    timesteps = [t for e in episodes for t in e]
+    batch = sample(timesteps)
+    bfeatures, btargets = zip(*[(t.features, t.adjusted_target) for t in batch])
 
     # update the actor
     model.actor.train_batch(bfeatures, btargets, write_summary)
@@ -165,11 +170,11 @@ if __name__ == "__main__":
     total_fens = 700762
     plies_to_play = 32
     positions_per_iteration = 256
-    batch_size = 32 # plies_to_play * positions_per_iteration // 8
+    # batch_size = 32 # plies_to_play * positions_per_iteration // 8
     num_iterations = total_fens // positions_per_iteration + 1
     max_replay_buffer_size = 64
 
-    offset = 50300
+    offset = 0
     init_npos = 10000
     sts_scores = []
     episodes = []
@@ -256,19 +261,15 @@ if __name__ == "__main__":
                                               features=nn_evaluate.get_features(leaf),
                                               static_val=None,
                                               static_gen=-1,
-                                              error=None,
+                                              abs_error=None,
                                               target=None,
                                               adjusted_target=None))
-                    
-                    if len(episodes) == max_replay_buffer_size:
-                        write_summary = ply == 0 and m == 1
-                        train(episodes, write_summary=write_summary)
-                    
+
                     # stop playing when the results are no longer the raw NN output
                     is_fixed = eval_is_fixed(leaf, leaf_val)
                     if is_fixed:
                         break
-
+                        
                     psn.make_move(pv[0])
                     if len(timesteps) % 10 == 0:
                         print(psn)
@@ -278,12 +279,21 @@ if __name__ == "__main__":
                 # replay buffer size is limited
                 if len(episodes) > max_replay_buffer_size:
                     episodes.pop(0)
+
+                # train after each episode rather than timestep because
+                # otherwise we'd have to turn off use of the transposition table
+                if len(episodes) == max_replay_buffer_size:
+                    write_summary = n % 32 == 0
+                    train(episodes, write_summary=write_summary)
+
                 
             # After each playing iteration:
             # .. check our progress
             sts_score = sts.run_sts_test()
             sts_scores.append(sts_score)
             model.update_sts_score(sts_score)
+            with open('../sts_scores.txt', 'a') as f:
+                f.write('{0}, '.format(sts_score))
             print("STS scores over time:", sts_scores)
             # .. update the target network and save the models
             model.copy_to_target()

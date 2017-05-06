@@ -79,15 +79,18 @@ class Estimator(object):
         with tf.name_scope('Loss'):
             self.fit_loss = tf.reduce_mean(huber_loss(self.target, self.V))
             tf.summary.scalar('loss', self.fit_loss)
-
+        
         with tf.name_scope('SGD'):
             tvars = [t for t in tf.trainable_variables() if t.name.startswith(self.scope)]
             grads = tf.gradients(self.fit_loss, tvars)
             for grad, var in zip(grads, tvars):
                 tf.summary.histogram(var.name, var)
                 tf.summary.histogram(var.name + '/gradients/grad', grad)
-            self.fit_op = tf.train.AdamOptimizer(.0003).minimize(self.fit_loss, global_step=self.global_step)
-
+            grads, _ = tf.clip_by_global_norm(grads, clip_norm=5.0)
+            optimizer = tf.train.AdamOptimizer(.0003)
+            self.fit_op = optimizer.apply_gradients(zip(grads, tvars), global_step=self.global_step)
+            # self.fit_op = tf.train.AdamOptimizer(.0003).minimize(self.fit_loss, global_step=self.global_step)
+            
         self.sts_score = tf.Variable(0.0, name='sts_score', trainable=False)
         tf.summary.scalar('sts_score', self.sts_score)
         
