@@ -69,38 +69,41 @@ def sample(timesteps):
     buckets uniformally"""
 
     k = 32
-    pow_alpha = -0.7
-    pow_beta = -0.5
+    # pow_alpha = -0.7
+    # pow_beta = -0.5
     
-    # P(i) = (1 / rank(i)) ^ alpha / sum((1 / rank(i)) ^ alpha)
-    pdf = [x ** pow_alpha for x in range(1, k+1)]
-    pdf_sum = math.fsum(pdf)
-    distribution = [x / pdf_sum for x in pdf]
+    # # P(i) = (1 / rank(i)) ^ alpha / sum((1 / rank(i)) ^ alpha)
+    # pdf = [x ** pow_alpha for x in range(1, k+1)]
+    # pdf_sum = math.fsum(pdf)
+    # distribution = [x / pdf_sum for x in pdf]
     
-    # The expected value with stochastic updates depends on the behavior
-    # distribution to be the same as the updates. Since we are introducing
-    # bias with prioritized sweeps, we need to do introduce importance
-    # sampling.
+    # # The expected value with stochastic updates depends on the behavior
+    # # distribution to be the same as the updates. Since we are introducing
+    # # bias with prioritized sweeps, we need to do introduce importance
+    # # sampling.
 
-    # https://arxiv.org/pdf/1511.05952.pdf
-    # Importance sampling weight 
-    # w_i = (N * P(i))^-B) / max(w_j)
-    importance = [(len(timesteps) * pi) ** pow_beta for pi in distribution]
-    max_importance = max(importance)
-    importance = [i / max_importance for i in importance]
+    # # https://arxiv.org/pdf/1511.05952.pdf
+    # # Importance sampling weight 
+    # # w_i = (N * P(i))^-B) / max(w_j)
+    # importance = [(len(timesteps) * pi) ** pow_beta for pi in distribution]
+    # max_importance = max(importance)
+    # importance = [i / max_importance for i in importance]
     
-    # Sample timesteps
-    timesteps.sort(key=lambda t: t.abs_error, reverse=True)
-    samples = []
-    b = 0
-    for start, stop in batch_indexes(len(timesteps), math.floor(len(timesteps) / k)):
-        if b == k: break
-        sample = np.random.choice(timesteps[start:stop])
-        sample.adjusted_target = sample.target * importance[b]
-        samples.append(sample)
-        b += 1
-
-    return samples
+    # # Sample timesteps
+    # # timesteps.sort(key=lambda t: t.abs_error, reverse=True)
+    # samples = []
+    # b = 0
+    # for start, stop in batch_indexes(len(timesteps), math.floor(len(timesteps) / k)):
+    #     if b == k: break
+    #     sample = np.random.choice(timesteps[start:stop])
+    #     sample.adjusted_target = sample.target * importance[b]
+    #     samples.append(sample)
+    #     b += 1
+    
+    for t in timesteps:
+        t.adjusted_target = t.target
+    random.shuffle(timesteps)
+    return timesteps[:k]
     
 def sum_TD_errors(timesteps):
     lamda = .7
@@ -158,15 +161,22 @@ def train(episodes, write_summary):
 
     # flatten the list
     timesteps = [t for e in episodes for t in e]
-    batch = sample(timesteps)
-    bfeatures, btargets = zip(*[(t.features, t.adjusted_target) for t in batch])
-
-    # update the actor
-    model.actor.train_batch(bfeatures, btargets, write_summary)
+    # batch = sample(timesteps)
+    
+    epochs = 10
+    for epoch in range(epochs):
+        random.shuffle(timesteps)
+        rfeatures, rtargets = zip(*[(t.features, t.target) for t in timesteps])
+        for start, stop in batch_indexes(len(positions), 32):
+            wr = write_summary and (epoch == (epochs-1)) and start == 0
+            model.actor.train_batch(rfeatures[start:stop], rtargets[start:stop], write_summary=wr)
+            
+    # # update the actor
+    # model.actor.train_batch(bfeatures, btargets, write_summary)
 
 
 if __name__ == "__main__":
-    depth = 3 #6.5
+    depth = 2 #6.5
     total_fens = 700762
     plies_to_play = 32
     positions_per_iteration = 256
@@ -174,11 +184,12 @@ if __name__ == "__main__":
     num_iterations = total_fens // positions_per_iteration + 1
     max_replay_buffer_size = 64
 
-    offset = 0
+    offset = 20000
     init_npos = 10000
     sts_scores = []
-    episodes = []
+    # episodes = []
     for itern in range(num_iterations):
+        episodes = []
         positions = []
         lines_read = 0
         initialize_network = itern == 0 and not os.path.exists('checkpoint')
@@ -277,15 +288,16 @@ if __name__ == "__main__":
                 episodes.append(timesteps)
                 
                 # replay buffer size is limited
-                if len(episodes) > max_replay_buffer_size:
-                    episodes.pop(0)
+                # if len(episodes) > max_replay_buffer_size:
+                #     episodes.pop(0)
 
-                # train after each episode rather than timestep because
-                # otherwise we'd have to turn off use of the transposition table
-                if len(episodes) == max_replay_buffer_size:
-                    write_summary = n % 32 == 0
-                    train(episodes, write_summary=write_summary)
-
+                # # train after each episode rather than timestep because
+                # # otherwise we'd have to turn off use of the transposition table
+                # if len(episodes) == max_replay_buffer_size:
+                #     write_summary = n % 32 == 0
+                #     train(episodes, write_summary=write_summary)
+                
+            train(episodes, write_summary=True)
                 
             # After each playing iteration:
             # .. check our progress
