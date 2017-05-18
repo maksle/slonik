@@ -48,11 +48,11 @@ class Estimator(object):
         # self.summary_writer = tf.train.SummaryWriter(summary_dir)
 
     def build_model(self):
-        self.input_global_size, self.hidden_global_size = 26, 12
-        self.input_pawn_size, self.hidden_pawn_size = 18, 8
-        self.input_piece_size, self.hidden_piece_size = 68, 16
-        self.input_square_size, self.hidden_square_size = 148, 24
-        merged_size = self.input_global_size + self.hidden_global_size + self.hidden_pawn_size + self.hidden_piece_size + self.hidden_square_size
+        self.input_global_size, self.hidden_global_size = 26, 26
+        self.input_pawn_size, self.hidden_pawn_size = 18, 18
+        self.input_piece_size, self.hidden_piece_size = 68, 24
+        self.input_square_size, self.hidden_square_size = 148, 32
+        merged_size = self.hidden_global_size + self.hidden_pawn_size + self.hidden_piece_size + self.hidden_square_size
         hidden_shared_size = 64
 
         # build the graph
@@ -66,7 +66,7 @@ class Estimator(object):
         hidden_pawn = dense_layer(self.input_pawn, [self.input_pawn_size, self.hidden_pawn_size], tf.nn.relu, name='hidden_pawn')
         hidden_piece = dense_layer(self.input_piece, [self.input_piece_size, self.hidden_piece_size], tf.nn.relu, name='hidden_piece')
         hidden_square = dense_layer(self.input_square, [self.input_square_size, self.hidden_square_size], tf.nn.relu, name='hidden_square')
-        merged = tf.concat([self.input_global, hidden_global, hidden_pawn, hidden_piece, hidden_square], axis=1)
+        merged = tf.concat([hidden_global, hidden_pawn, hidden_piece, hidden_square], axis=1)
         # .. merged hidden layer
         hidden_shared = dense_layer(merged, [merged_size, hidden_shared_size], tf.nn.relu, name='hidden_shared')
         # .. output layer
@@ -108,6 +108,18 @@ class Estimator(object):
             })
             return np.asscalar(v[0])
 
+    def loss(self, features, targets):
+        with self.graph.as_default():
+            f = self.transform_features(features)
+            loss = self.sess.run([self.fit_loss], feed_dict={
+                self.input_global: f['input_global'],
+                self.input_pawn: f['input_pawn'],
+                self.input_piece: f['input_piece'],
+                self.input_square: f['input_square'],
+                self.target: np.array(targets).reshape(len(targets), 1)
+            })
+            return loss
+            
     def train_batch(self, features, targets, write_summary=True):
         with self.graph.as_default():
             f = self.transform_features(features)
@@ -160,19 +172,18 @@ class Model(object):
         self.saver = tf.train.Saver()
         if restore:
             self.restore()
-
-        a = 5
-    
+            
     def save_model(self):
-        self.saver.save(self.sess, self.checkpoint_path + 'tfcheckpoint') 
-        print("saved model")
+        with self.graph.as_default():
+            self.saver.save(self.sess, self.checkpoint_path + 'tfcheckpoint') 
+            print("saved model")
             
     def restore(self):
         latest_checkpoint_path = tf.train.latest_checkpoint(self.checkpoint_path)
         if latest_checkpoint_path:
             print('Restoring checkpoint: {0}'.format(latest_checkpoint_path))
             self.saver.restore(self.sess, latest_checkpoint_path)
-    
+            
     def copy_to_target(self):
         with self.graph.as_default():
             e1_params = [t for t in tf.trainable_variables() if t.name.startswith(self.actor.scope)]
@@ -192,6 +203,7 @@ class Model(object):
         
 
 graph = tf.Graph()
+# print("graphid:", id(graph))
 sess = tf.Session(graph=graph)
 with sess.as_default(), graph.as_default():
     model = Model(sess, graph, restore=True)

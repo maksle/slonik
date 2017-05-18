@@ -147,6 +147,60 @@ def initialize_weights(positions):
     model.copy_to_target()
     Timestep.current_target_generation += 1
 
+def validation_data():
+    features = []
+    scores = []
+    with open("../stockfish_init_scores.txt") as initf:
+        n = 0
+        while True:
+            fen = initf.readline()
+            s_raw = initf.readline()
+            if not s_raw: break
+            s = int(s_raw)
+            
+            if 185000 < n:
+                s = math.tanh(s)
+                scores.append(s)
+                pos = Position.from_fen(fen)
+                f = nn_evaluate.get_features(pos)
+                features.append(f)
+            n += 1
+    return features, scores
+                
+def initialize_weights_sf(npos):
+    validation_f, validation_s = validation_data()
+    features = []
+    scores = []
+    with open("../stockfish_init_scores.txt") as initf:
+        n = 0
+        while n != npos:
+            fen = initf.readline()
+            s = int(initf.readline())
+            # s = min(1, max(-1, s / 1000))
+            s = math.tanh(s)
+            scores.append(s)
+            pos = Position.from_fen(fen)
+            f = nn_evaluate.get_features(pos)
+            features.append(f)
+            n += 1
+    print(len(features), len(scores))
+    with open('../stockfish_init_validation.txt', 'a') as validf:
+        k = 0
+        for _ in range(10):
+            z = list(zip(features, scores))
+            random.shuffle(z)
+            rfeatures, rscores = list(zip(*z))
+            for start, stop in batch_indexes(len(positions), 1024):
+                model.actor.train_batch(rfeatures[start:stop], rscores[start:stop])
+                if k % 10 == 0:
+                    valid_loss = model.actor.loss(validation_f, validation_s)
+                    validf.write("{}, ".format(valid_loss[0]))
+                k += 1
+            valid_loss = model.actor.loss(validation_f, validation_s)
+            validf.write("{}, ".format(valid_loss[0]))
+    model.copy_to_target()
+    Timestep.current_target_generation += 1
+    
 def train(episodes, write_summary):
     features = []
     targets = []
@@ -184,8 +238,8 @@ if __name__ == "__main__":
     num_iterations = total_fens // positions_per_iteration + 1
     max_replay_buffer_size = 64
 
-    offset = 20000
-    init_npos = 10000
+    init_npos = 200000
+    offset = init_npos
     sts_scores = []
     # episodes = []
     for itern in range(num_iterations):
@@ -193,6 +247,7 @@ if __name__ == "__main__":
         positions = []
         lines_read = 0
         initialize_network = itern == 0 and not os.path.exists('checkpoint')
+        # initialize_network = True
         if initialize_network:
             npos = init_npos
             # npos = positions_per_iteration
@@ -212,7 +267,8 @@ if __name__ == "__main__":
             offset += npos
 
         if initialize_network:
-            initialize_weights(positions)
+            # initialize_weights(positions)
+            initialize_weights_sf(npos)
             model.save_model()
             break
         else:

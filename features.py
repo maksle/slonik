@@ -95,12 +95,11 @@ class ToFeature():
             sq = 1 << sqind
             lowest = Pt.NULL
             pieces = [Pt.P, Pt.N, Pt.B, Pt.R, Pt.Q, Pt.K]
-            if side == Side.B:
-                pieces = [p + 6 for p in pieces]
             if self.base_evaluator.all_attacks[side]:
-                lowest = pieces[-1]
+                lowest = pieces[-1] + 1
                 for bt in pieces:
-                    if self.base_evaluator.piece_attacks[bt] & sq:
+                    pt = Pt.piece(bt, side)
+                    if self.base_evaluator.piece_attacks[pt] & sq:
                         lowest = bt
                         break
             f.append((7 - lowest) / 6) # lower pt gives higher "score"
