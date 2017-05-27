@@ -475,7 +475,7 @@ class Engine(threading.Thread):
             allowance = 1
         
         if allowance < 1:
-            score = self.qsearch(node, ply, 0, a, b, 9, pv_node, in_check)
+            score = self.qsearch(node, ply, 0, a, b, pv_node, in_check)
             return score
         
         if not pv_node and not in_check:
@@ -723,7 +723,7 @@ class Engine(threading.Thread):
         if is_root: assert(len(si[0].pv) > 0)
         return best_val
 
-    def qsearch(self, node, ply, qsply, alpha, beta, allowance, pv_node, in_check):
+    def qsearch(self, node, ply, qsply, alpha, beta, pv_node, in_check):
         """Find best resulting quiet position within the alpha-beta window and
         return the evaluation."""
 
@@ -758,7 +758,7 @@ class Engine(threading.Thread):
             self.search_stats.tb_hits += 1
 
         if not pv_node:
-            if tt_hit and tt_entry.depth >= allowance:
+            if tt_hit and tt_entry.depth >= 0:
                 if tt_entry.bound_type == tt.BoundType.EXACT:
                     self.search_stats.update_ply_stat(ply, pv_node)
                     # log.debug("a %s b %s moves %s exact tt_entry.value %s", alpha, beta, node.moves, tt_entry.value)
@@ -799,7 +799,7 @@ class Engine(threading.Thread):
             if not tt_hit or tt_entry.bound_type == tt.BoundType.NONE:
                 tt.save_tt_entry(tt.TTEntry(node.zobrist_hash,
                                             Move(PieceType.NULL).compact(),
-                                            tt.BoundType.LO_BOUND, static_eval, allowance, static_eval))
+                                            tt.BoundType.LO_BOUND, static_eval, 0, static_eval))
             self.search_stats.update_ply_stat(ply, pv_node)
             # if pv_node:
             #     print("qs stand pat", node.moves, best_value, ">=", beta)
@@ -855,7 +855,7 @@ class Engine(threading.Thread):
                 if see_score < 0:
                     continue
 
-            score = -self.qsearch(child, ply+1, qsply+1, -beta, -alpha, int(allowance * move.prob), pv_node, gives_check)
+            score = -self.qsearch(child, ply+1, qsply+1, -beta, -alpha, pv_node, gives_check)
 
             if score > alpha:
                 alpha = score
@@ -864,14 +864,14 @@ class Engine(threading.Thread):
 
             if alpha >= beta:
                 tt.save_tt_entry(tt.TTEntry(node.zobrist_hash, move.compact(),
-                                            tt.BoundType.LO_BOUND, best_val, allowance, static_eval))
+                                            tt.BoundType.LO_BOUND, best_val, 0, static_eval))
                 self.search_stats.update_ply_stat(ply, pv_node)
                 return alpha
         
         if pv_node and best_val > a_orig: bound_type = tt.BoundType.EXACT
         else: bound_type = tt.BoundType.HI_BOUND
         tt.save_tt_entry(tt.TTEntry(node.zobrist_hash, best_move.compact(),
-                                    bound_type, alpha, allowance, static_eval))
+                                    bound_type, alpha, 0, static_eval))
         self.search_stats.update_ply_stat(ply, pv_node)
 
         # log.debug("a %s b %s moves %s best_value (in bounds) %s", alpha, beta, node.moves, alpha)

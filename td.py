@@ -230,7 +230,7 @@ def train(episodes, write_summary):
 
 
 if __name__ == "__main__":
-    depth = 2 #6.5
+    depth = 5 #6.5
     total_fens = 700762
     plies_to_play = 32
     positions_per_iteration = 256
