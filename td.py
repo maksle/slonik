@@ -147,7 +147,7 @@ def initialize_weights(positions):
     model.copy_to_target()
     Timestep.current_target_generation += 1
 
-def validation_data():
+def validation_data(offset, npos):
     features = []
     scores = []
     with open("../stockfish_init_scores.txt") as initf:
@@ -158,39 +158,54 @@ def validation_data():
             if not s_raw: break
             s = int(s_raw)
             
-            if 185000 < n:
+            if offset < n <= offset + npos:
                 s = math.tanh(s)
                 scores.append(s)
                 pos = Position.from_fen(fen)
                 f = nn_evaluate.get_features(pos)
                 features.append(f)
+
+            if n >= offset + npos: break
             n += 1
     return features, scores
                 
 def initialize_weights_sf(npos):
-    validation_f, validation_s = validation_data()
+    nvalid = 1e4
+    ndata = npos - nvalid
+    
+    validation_f, validation_s = validation_data(offset=ndata, npos=nvalid)
+    validation_s = [math.tanh(s / 190) for s in validation_s]
     features = []
     scores = []
+    # fens = []
     with open("../stockfish_init_scores.txt") as initf:
         n = 0
-        while n != npos:
+        while n != ndata:
             fen = initf.readline()
             s = int(initf.readline())
             # s = min(1, max(-1, s / 1000))
-            s = math.tanh(s)
+            s = math.tanh(s / 190)
             scores.append(s)
             pos = Position.from_fen(fen)
             f = nn_evaluate.get_features(pos)
             features.append(f)
+            # fens.append(fen)
             n += 1
+    # print(len(fens), len(scores))
     print(len(features), len(scores))
     with open('../stockfish_init_validation.txt', 'a') as validf:
         k = 0
         for _ in range(10):
+            # z = list(zip(fens, scores))
             z = list(zip(features, scores))
             random.shuffle(z)
+            # rfens, rscores = list(zip(*z))
             rfeatures, rscores = list(zip(*z))
-            for start, stop in batch_indexes(len(positions), 1024):
+            # for start, stop in batch_indexes(len(rfens), 1024):
+            for start, stop in batch_indexes(len(rfeatures), 1024):
+                # fs = [nn_evaluate.get_features(Position.from_fen(fen)) for fen in rfens[start:stop]]
+                # ss = rscores[start:stop]
+                # model.actor.train_batch(fs, ss)
                 model.actor.train_batch(rfeatures[start:stop], rscores[start:stop])
                 if k % 10 == 0:
                     valid_loss = model.actor.loss(validation_f, validation_s)
@@ -238,6 +253,7 @@ if __name__ == "__main__":
     num_iterations = total_fens // positions_per_iteration + 1
     max_replay_buffer_size = 64
 
+    # init_npos = 295705
     init_npos = 200000
     offset = init_npos
     sts_scores = []
@@ -246,13 +262,13 @@ if __name__ == "__main__":
         episodes = []
         positions = []
         lines_read = 0
-        initialize_network = itern == 0 and not os.path.exists('checkpoint')
-        # initialize_network = True
+        # initialize_network = itern == 0 and not os.path.exists('checkpoint')
+        initialize_network = True
         if initialize_network:
             npos = init_npos
-            # npos = positions_per_iteration
         else:
             npos = positions_per_iteration
+
         with open('../allfens.txt') as fens:
             while lines_read != offset:
                 fen = fens.readline()
