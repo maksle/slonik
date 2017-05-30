@@ -476,7 +476,7 @@ class Position():
         
     def gives_check(self, move):
         them = self.side_to_move() ^ 1
-        return in_check(move=move, for_side=them)
+        return self.in_check(move=move, for_side=them)
     
     def in_check(self, move=None, for_side=None):
         side = self.side_to_move()
@@ -485,10 +485,11 @@ class Position():
         occupied = self.occupied[us] | self.occupied[them]
         
         if move is not None:
+            mbt = Pt.base_type(move.piece_type)
             occupied ^= move.from_sq
             occupied |= move.to_sq
             ep_sq = self.en_pessant_sq or 0
-            if Pt.base_type(move.piece_type) == Pt.P and move.to_sq & ep_sq:
+            if mbt == Pt.P and move.to_sq & ep_sq:
                 occupied ^= shift_south(ep_sq, side)
       
         # redefine the sides in case for_side is explicit
@@ -499,24 +500,34 @@ class Position():
         if move is not None and move.from_sq == sq:
             sq = move.to_sq
         
-        b = knight_attack(sq) & occupied
-        if b & self.pieces[Pt.piece(Pt.N, them)]:
+        foreseen_move = move is not None and for_side is not None and for_side != self.side_to_move()
+            
+        b = knight_attack(sq)
+        pcs = self.pieces[Pt.piece(Pt.N, them)]
+        if foreseen_move and mbt == Pt.N: pcs |= move.to_sq
+        if b & pcs & occupied:
             return True
 
-        b = pawn_attack(sq, us) & occupied
-        if b & self.pieces[Pt.piece(Pt.P, them)]:
+        b = pawn_attack(sq, us) 
+        pcs = self.pieces[Pt.piece(Pt.P, them)]
+        if foreseen_move and mbt == Pt.P: pcs |= move.to_sq
+        if b & pcs & occupied:
             return True
 
-        b = bishop_attack(sq, occupied) & occupied
-        if b & (self.pieces[Pt.piece(Pt.B, them)] | self.pieces[Pt.piece(Pt.Q, them)]):
+        b = bishop_attack(sq, occupied) 
+        pcs = (self.pieces[Pt.piece(Pt.B, them)] | self.pieces[Pt.piece(Pt.Q, them)])
+        if foreseen_move and (mbt == Pt.B or mbt == Pt.Q ): pcs |= move.to_sq
+        if b & pcs & occupied:
             return True
 
-        b = rook_attack(sq, occupied) & occupied
-        if b & (self.pieces[Pt.piece(Pt.R, them)] | self.pieces[Pt.piece(Pt.Q, them)]):
+        b = rook_attack(sq, occupied) 
+        pcs = (self.pieces[Pt.piece(Pt.R, them)] | self.pieces[Pt.piece(Pt.Q, them)])
+        if foreseen_move and (mbt == Pt.R or mbt == Pt.Q ): pcs |= move.to_sq
+        if b & pcs & occupied:
             return True
 
-        b = king_attack(sq) & occupied
-        if b & self.pieces[Pt.piece(Pt.K, them)]:
+        b = king_attack(sq) 
+        if b & self.pieces[Pt.piece(Pt.K, them)] & occupied:
             return True
 
         return False

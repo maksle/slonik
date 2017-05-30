@@ -30,9 +30,14 @@ class BaseEvaluator():
             for sq in range(64):
                 pt = self.position.squares[sq]
                 if pt == Pt.NULL: continue
-                if Pt.get_side(pt) == side:
+                pt_side = Pt.get_side(pt)
+                bt = Pt.base_type(pt)
+                if pt_side == side:
                     sq_bb = 1 << sq
-                    attacks = piece_attack(pt, sq_bb, occ)
+                    if bt == Pt.P:
+                        attacks = pawn_attack(sq_bb, pt_side)
+                    else:
+                        attacks = piece_attack(bt, sq_bb, occ)
                     if pinned & sq_bb:
                         attacks &= line_sqs(bit_position(king_us), sq)
                     self.piece_attacks[pt] |= attacks
@@ -700,7 +705,7 @@ def lowest_attacker(pos, square, side=None, highest_attacker=Pt.NULL):
         if piece_type < highest_attacker:
             pt = Pt.piece(piece_type, side)
             occ = position.occupied[side] | position.occupied[side^1]
-            attacks = piece_attack(pt, square, occ)
+            attacks = piece_attack(piece_type, square, occ)
 
             b = attacks & position.pieces[pt]
             if b: return pt, ls1b(b)

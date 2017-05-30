@@ -120,9 +120,9 @@ class Engine(threading.Thread):
         # root position from which to search
         self.root_position = Position()
         self.next_root_position = None
-
         # moves available in root position, can be set by uci commands
         self.root_moves = None
+        self.next_root_moves = None
 
         # stack info and for finding principal variations
         self.si = [None] * 64
@@ -179,6 +179,14 @@ class Engine(threading.Thread):
                 next_position.make_move(move)
         self.next_root_position = next_position
             
+    def uci_root_moves(self, uci_moves=None):
+        """Set by the "searchmoves" option of the uci "go" command, which limits
+        the moves to search in the root position"""
+        if uci_moves is None:
+            self.next_root_moves = self.root_position.generate_moves_all(legal=True)
+        else:
+            self.next_root_moves = [self.root_position.uci_move_to_move(m) for m in uci_moves]
+
     def run(self):
         """override of threading.Thread method. This kicks off the thread"""
         while self.exec_event.wait():
@@ -216,6 +224,9 @@ class Engine(threading.Thread):
         # initialize position
         if self.next_root_position:
             self.root_position, self.next_root_position = self.next_root_position, None
+            self.root_moves, self.next_root_moves = self.next_root_moves, None
+            if self.root_moves is None:
+                self.root_moves = self.root_position.generate_moves_all(legal=True)
             self.init_move_history()
         
         # time management
@@ -247,15 +258,7 @@ class Engine(threading.Thread):
         if -1 in d:
             del d[-1]
         self.killer_moves = d
-        
-    def init_root_moves(self, uci_moves=None):
-        """Set by the "searchmoves" option of the uci "go" command, which limits
-        the moves to search in the root position"""
-        if uci_moves is None:
-            self.root_moves = self.root_position.generate_moves_all(legal=True)
-        else:
-            self.root_moves = [self.root_position.uci_move_to_move(m) for m in uci_moves]
-            
+                
     # History heuristic
     def update_history(self, side, move, value):
         """Maintain a score for piece/square composite key as a rudimentary heuristic"""
@@ -987,15 +990,15 @@ class Engine(threading.Thread):
                 cap_see_lt0.append(move)
         
         for move in from_pv: move.prob = 3
+        for move in from_tt: move.prob = 2.8
         for move in checks: move.prob = 2
         for move in counters: move.prob = 2
         # for move in captures: move.prob = 1.9
-        for move in from_tt: move.prob = 1.8
         for (ind, move) in enumerate(killers):
-            move.prob = 1 + (ind * .1)
+            move.prob = 1.5 + (ind * .1)
         for move in other_moves: move.prob = 1
         
-        result = list(itertools.chain(from_pv, cap_see_gt0, checks, counters, from_tt, killers, cap_see_eq0, other_moves, cap_see_lt0))
+        result = list(itertools.chain(from_pv, from_tt, cap_see_gt0, checks, counters, killers, cap_see_eq0, other_moves, cap_see_lt0))
         # result = list(itertools.chain(from_pv, checks, counters, captures, from_tt, killers, other_moves))
 
         prob_sum = 0

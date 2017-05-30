@@ -89,7 +89,7 @@ class Entry(cmd.Cmd):
 
         try: index = params.index("searchmoves")
         except: pass
-        else: self.engine.init_root_moves(params[index+1:].split())
+        else: self.engine.uci_root_moves(params[index+1:].split())
 
         try: index = params.index("ponder")
         except: self.engine.ponder = False

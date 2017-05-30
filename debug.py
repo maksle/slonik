@@ -63,9 +63,13 @@ def goprofile():
 # then = time.time()
 # print(then-now, end='s')
 
-# f = Position.from_fen("8/8/3p4/1Pp3kr/1K3R2/8/4P1P1/8 w - c6 0 3")
-# in_check = f.in_check(Move(Pt.P, B5, C6))
+# f = Position.from_fen("1r2k2r/p1ppqNb1/bn2pnp1/3P4/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQk - 1 2")
+# in_check = f.in_check(Move(Pt.N, F7, D6), for_side=Side.B)
 # print(in_check)
+
+# f = Position.from_fen("3r2k1/1R3pp1/p3pb1p/P7/8/3b1N1P/1P1BrPP1/R2K4 b - - 16 34")
+# print(f.gives_check(Move(Pt.B_ROOK,E2,E1)))
+
 
 # python3 -m cProfile -o profile5 play.py
 # pstats.Stats('profile5').strip_dirs().sort_stats('cumulative').print_stats(15)
