@@ -775,18 +775,7 @@ class Engine(threading.Thread):
                     self.search_stats.update_ply_stat(ply, pv_node)
                     # log.debug("a %s b %s moves %s lowbound tt_entry.value %s", alpha, beta, node.moves, tt_entry.value)
                     return tt_entry.value
-
-        # to stop search of endless checks, including repetition checks
-        # if in_check:
-        #     num_moves = len(node.moves)
-        #     if allowance <= 1 and num_moves > 3 \
-        #        and node.moves[-3].move_type & MoveType.check:
-        #         self.search_stats.update_ply_stat(ply, pv_node)
-        #         static_eval = Evaluation(node).init_attacks().evaluate()
-        #         # print(node.moves, static_eval)
-        #         log.debug("a %s b %s moves %s static_eval %s", alpha, beta, node.moves, static_eval)
-        #         return static_eval
-
+   
         if in_check and qsply > 1:
             return self.search(node, ply, alpha, beta, 1, pv_node, False)
 
@@ -796,12 +785,18 @@ class Engine(threading.Thread):
         if static_eval is None:
             static_eval = self.evaluate(node)
         
-        if static_eval >= beta:
+        if static_eval >= beta and not in_check:
+            # We can't stand pat if in check, because standing pat assumes that
+            # there is at least some quiet move, if not violent move, that is at
+            # least as good as alpha. We can't assume that if we can't deal with
+            # the check.
+
             # "stand pat"
             if not tt_hit or tt_entry.bound_type == tt.BoundType.NONE:
+                d = QS_CHECK_DEPTH if qsply == 0 else QS_DEPTH
                 tt.save_tt_entry(tt.TTEntry(node.zobrist_hash,
                                             Move(PieceType.NULL).compact(),
-                                            tt.BoundType.LO_BOUND, static_eval, 0, static_eval))
+                                            tt.BoundType.LO_BOUND, static_eval, d, static_eval))
             self.search_stats.update_ply_stat(ply, pv_node)
             # if pv_node:
             #     print("qs stand pat", node.moves, best_value, ">=", beta)
@@ -818,7 +813,7 @@ class Engine(threading.Thread):
         if in_check:
             pseudo_moves = node.generate_moves_in_check()
         else:
-            pseudo_moves = node.generate_moves_violent()
+            pseudo_moves = node.generate_moves_violent(do_checks= qsply == 0)
         moves = self.sort_moves(pseudo_moves, node, si, ply, True)
         # log.debug("so far: %s violent: %s", node.moves, moves)
 
@@ -865,15 +860,17 @@ class Engine(threading.Thread):
                 si[ply].pv = [move] + si[ply+1].pv
 
             if alpha >= beta:
+                d = QS_CHECK_DEPTH if qsply == 0 else QS_DEPTH
                 tt.save_tt_entry(tt.TTEntry(node.zobrist_hash, move.compact(),
-                                            tt.BoundType.LO_BOUND, best_val, 0, static_eval))
+                                            tt.BoundType.LO_BOUND, best_val, d, static_eval))
                 self.search_stats.update_ply_stat(ply, pv_node)
                 return alpha
         
         if pv_node and best_val > a_orig: bound_type = tt.BoundType.EXACT
         else: bound_type = tt.BoundType.HI_BOUND
+        d = QS_CHECK_DEPTH if qsply == 0 else QS_DEPTH
         tt.save_tt_entry(tt.TTEntry(node.zobrist_hash, best_move.compact(),
-                                    bound_type, alpha, 0, static_eval))
+                                    bound_type, alpha, d, static_eval))
         self.search_stats.update_ply_stat(ply, pv_node)
 
         # log.debug("a %s b %s moves %s best_value (in bounds) %s", alpha, beta, node.moves, alpha)
@@ -1029,6 +1026,6 @@ def perft(pos, depth, is_root):
             else:
                 cnt = perft(child, depth - 1, False)
             nodes += cnt
-        # if is_root:
-        #     print("move:", str(move), cnt)
+        if is_root:
+            print(move, cnt)
     return nodes

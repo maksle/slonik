@@ -349,14 +349,8 @@ cpdef ULL pawn_attack_calc(ULL pawn, int side_to_move):
         return ((pawn >> 9) & _NOT_A_FILE) \
             | ((pawn >> 7) & _NOT_H_FILE)
 
-cpdef piece_attack(int pt, ULL sq, ULL occupied):
-    cdef int bt
-    cdef int side
-    bt = Pt.base_type(pt)
-    if bt == Pt.P:
-        side = Pt.get_side(pt)
-        return pawn_attack(sq, side)
-    elif bt == Pt.N:
+cpdef piece_attack(int bt, ULL sq, ULL occupied):
+    if bt == Pt.N:
         return knight_attack(sq)
     elif bt == Pt.B:
         return bishop_attack(sq, occupied)
@@ -380,9 +374,7 @@ cpdef ULL reset_ls1b(ULL p):
     # flip least significant 1 bit
     return p & (p-1)
 
-def iterate_pieces(ULL b):
-    cdef ULL board
-    board = b
+def iterate_pieces(ULL board):
     while board > 0:
         yield ls1b(board)
         board = reset_ls1b(board)

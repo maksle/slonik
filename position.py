@@ -293,35 +293,35 @@ class Position():
     def generate_moves_all(self, legal=False):
         us = self.side_to_move()
         valid_sqs = FULL_BOARD
-        yield from self.generate_moves_pt(Pt.piece(Pt.P, us), valid_sqs, do_promo=True, legal=legal)
-        yield from self.generate_moves_pt(Pt.piece(Pt.N, us), valid_sqs, legal=legal)
-        yield from self.generate_moves_pt(Pt.piece(Pt.B, us), valid_sqs, legal=legal)
-        yield from self.generate_moves_pt(Pt.piece(Pt.R, us), valid_sqs, legal=legal)
-        yield from self.generate_moves_pt(Pt.piece(Pt.Q, us), valid_sqs, legal=legal)
-        yield from self.generate_moves_pt(Pt.piece(Pt.K, us), valid_sqs, legal=legal)
+        yield from self.generate_moves_pt(Pt.piece(Pt.P, us), valid_sqs, do_promo=True, legal_only=legal)
+        yield from self.generate_moves_pt(Pt.piece(Pt.N, us), valid_sqs, legal_only=legal)
+        yield from self.generate_moves_pt(Pt.piece(Pt.B, us), valid_sqs, legal_only=legal)
+        yield from self.generate_moves_pt(Pt.piece(Pt.R, us), valid_sqs, legal_only=legal)
+        yield from self.generate_moves_pt(Pt.piece(Pt.Q, us), valid_sqs, legal_only=legal)
+        yield from self.generate_moves_pt(Pt.piece(Pt.K, us), valid_sqs, legal_only=legal)
 
-    def generate_moves_violent(self):
+    def generate_moves_violent(self, do_checks=False):
         us = self.side_to_move()
         them = us ^ 1
         valid_sqs = self.occupied[them]
         
-        yield from self.generate_moves_pt(Pt.piece(Pt.P, us), valid_sqs, do_promo=True)
-        yield from self.generate_moves_pt(Pt.piece(Pt.N, us), valid_sqs)
-        yield from self.generate_moves_pt(Pt.piece(Pt.B, us), valid_sqs)
-        yield from self.generate_moves_pt(Pt.piece(Pt.R, us), valid_sqs)
-        yield from self.generate_moves_pt(Pt.piece(Pt.Q, us), valid_sqs)
-        yield from self.generate_moves_pt(Pt.piece(Pt.K, us), valid_sqs)
+        yield from self.generate_moves_pt(Pt.piece(Pt.P, us), valid_sqs, do_promo=True, do_checks=do_checks)
+        yield from self.generate_moves_pt(Pt.piece(Pt.N, us), valid_sqs=valid_sqs, do_checks=do_checks)
+        yield from self.generate_moves_pt(Pt.piece(Pt.B, us), valid_sqs=valid_sqs, do_checks=do_checks)
+        yield from self.generate_moves_pt(Pt.piece(Pt.R, us), valid_sqs=valid_sqs, do_checks=do_checks)
+        yield from self.generate_moves_pt(Pt.piece(Pt.Q, us), valid_sqs=valid_sqs, do_checks=do_checks)
+        yield from self.generate_moves_pt(Pt.piece(Pt.K, us), valid_sqs=valid_sqs, do_checks=do_checks)
         
     def generate_moves_in_check(self, legal=False):
         us = self.side_to_move()
         them = us ^ 1
         occ = self.occupied[0] | self.occupied[1]
         
-        yield from self.generate_moves_pt(Pt.piece(Pt.K, us), invert(self.occupied[us]), legal=legal)
+        yield from self.generate_moves_pt(Pt.piece(Pt.K, us), invert(self.occupied[us]), legal_only=legal)
 
         ksq = self.pieces[Pt.piece(Pt.K, us)]
-        step_checkers = piece_attack(Pt.N, ksq, occ) & self.pieces[Pt.piece(Pt.N, them)]
-        step_checkers |= piece_attack(Pt.piece(Pt.P, us), ksq, occ) & self.pieces[Pt.piece(Pt.P, them)]
+        step_checkers = knight_attack(ksq) & self.pieces[Pt.piece(Pt.N, them)]
+        step_checkers |= pawn_attack(ksq, us) & self.pieces[Pt.piece(Pt.P, them)]
         
         sliding_checkers = self.sliding_checkers[Pt.piece(Pt.K, us)]
         if reset_ls1b(sliding_checkers | step_checkers) == 0:
@@ -330,13 +330,13 @@ class Position():
                 valid_sqs = checker
                 if checker & sliding_checkers:
                     valid_sqs |= between_sqs(bit_position(ksq), bit_position(checker))
-                yield from self.generate_moves_pt(Pt.piece(Pt.P, us), valid_sqs, legal=legal)
-                yield from self.generate_moves_pt(Pt.piece(Pt.N, us), valid_sqs, legal=legal)
-                yield from self.generate_moves_pt(Pt.piece(Pt.B, us), valid_sqs, legal=legal)
-                yield from self.generate_moves_pt(Pt.piece(Pt.R, us), valid_sqs, legal=legal)
-                yield from self.generate_moves_pt(Pt.piece(Pt.Q, us), valid_sqs, legal=legal)
+                yield from self.generate_moves_pt(Pt.piece(Pt.P, us), valid_sqs, legal_only=legal)
+                yield from self.generate_moves_pt(Pt.piece(Pt.N, us), valid_sqs, legal_only=legal)
+                yield from self.generate_moves_pt(Pt.piece(Pt.B, us), valid_sqs, legal_only=legal)
+                yield from self.generate_moves_pt(Pt.piece(Pt.R, us), valid_sqs, legal_only=legal)
+                yield from self.generate_moves_pt(Pt.piece(Pt.Q, us), valid_sqs, legal_only=legal)
     
-    def generate_moves_pt(self, pt, valid_sqs=None, do_promo=False, legal=False):
+    def generate_moves_pt(self, pt, valid_sqs=None, do_promo=False, do_checks=False, legal_only=False):
         if valid_sqs is None:
             valid_sqs = FULL_BOARD
 
@@ -367,19 +367,21 @@ class Position():
                 moves = pseudo_king_moves(self)
                 
             for from_sq, to_sq in moves:
-                if to_sq & valid_sqs:
+                if do_checks:
+                    gives_check = self.gives_check(Move(pt, from_sq, to_sq))
+                if to_sq & valid_sqs or (do_checks and gives_check):
                     is_capture = to_sq & other
                     if bt == Pt.P and to_sq & (RANKS[0] | RANKS[7]):
-                        for promo_bt in [Pt.N, Pt.B, Pt.R, Pt.Q]:
+                        for promo_bt in [Pt.Q, Pt.N, Pt.B, Pt.R]:
                             promo_pt = Pt.piece(promo_bt, side)
                             move = Move(pt, from_sq, to_sq, MoveType.promo, promo_pt)
                             if is_capture: move.move_type |= MoveType.capture
-                            if not legal or self.is_legal(move):
+                            if not legal_only or self.is_legal(move):
                                 yield move
                     else:
                         move = Move(pt, from_sq, to_sq, MoveType.regular)
                         if is_capture: move.move_type |= MoveType.capture
-                        if not legal or self.is_legal(move):
+                        if not legal_only or self.is_legal(move):
                             yield move
     
     def last_move(self):
@@ -472,49 +474,48 @@ class Position():
         checkers |= self.sliding_checkers[kpt]
         return checkers
         
-    def in_check(self, move=None):
+    def gives_check(self, move):
+        them = self.side_to_move() ^ 1
+        return in_check(move=move, for_side=them)
+    
+    def in_check(self, move=None, for_side=None):
         side = self.side_to_move()
         us, them = side, side ^ 1
 
         occupied = self.occupied[us] | self.occupied[them]
-
-        sq = self.pieces[Pt.piece(Pt.K, us)]
         
         if move is not None:
             occupied ^= move.from_sq
             occupied |= move.to_sq
             ep_sq = self.en_pessant_sq or 0
-            if move.to_sq & ep_sq:
+            if Pt.base_type(move.piece_type) == Pt.P and move.to_sq & ep_sq:
                 occupied ^= shift_south(ep_sq, side)
-            sq = self.pieces[Pt.piece(Pt.K, us)]
-            if Pt.base_type(move.piece_type) == Pt.K:
-                sq = move.to_sq
+      
+        # redefine the sides in case for_side is explicit
+        us = us if for_side is None else for_side
+        them = us ^ 1
+
+        sq = self.pieces[Pt.piece(Pt.K, us)]
+        if move is not None and move.from_sq == sq:
+            sq = move.to_sq
         
-        if sq == 0 or sq is None:
-            log.debug("sq: %s", sq)
-            log.debug(self)
-            log.debug("self.moves: %s", self.moves)
-            log.debug("self.pieces: %s", self.pieces)
-            log.debug("self.squares: %s", self.squares)
-            log.debug("self.occupied: %s", self.occupied)
-                
-        b = knight_attack(sq)
+        b = knight_attack(sq) & occupied
         if b & self.pieces[Pt.piece(Pt.N, them)]:
             return True
 
-        b = pawn_attack(sq, us)
+        b = pawn_attack(sq, us) & occupied
         if b & self.pieces[Pt.piece(Pt.P, them)]:
             return True
 
-        b = bishop_attack(sq, occupied)
+        b = bishop_attack(sq, occupied) & occupied
         if b & (self.pieces[Pt.piece(Pt.B, them)] | self.pieces[Pt.piece(Pt.Q, them)]):
             return True
 
-        b = rook_attack(sq, occupied)
+        b = rook_attack(sq, occupied) & occupied
         if b & (self.pieces[Pt.piece(Pt.R, them)] | self.pieces[Pt.piece(Pt.Q, them)]):
             return True
 
-        b = king_attack(sq)
+        b = king_attack(sq) & occupied
         if b & self.pieces[Pt.piece(Pt.K, them)]:
             return True
 

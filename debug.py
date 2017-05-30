@@ -58,9 +58,14 @@ def goprofile():
 
 # import time
 # now = time.time()
-# perft(Position(Position.from_fen("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 0")), 3, True)
+# nodes = perft(Position(Position.from_fen("8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 0")), 5, True)
+# print(4, nodes)
 # then = time.time()
 # print(then-now, end='s')
+
+# f = Position.from_fen("8/8/3p4/1Pp3kr/1K3R2/8/4P1P1/8 w - c6 0 3")
+# in_check = f.in_check(Move(Pt.P, B5, C6))
+# print(in_check)
 
 # python3 -m cProfile -o profile5 play.py
 # pstats.Stats('profile5').strip_dirs().sort_stats('cumulative').print_stats(15)

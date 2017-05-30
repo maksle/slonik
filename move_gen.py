@@ -10,15 +10,21 @@ def knight_moves(knights, own):
 
 def bishop_moves(b, own, other):
     for bishop in iterate_pieces(b):
-        yield from attacks_generic(bishop, own, other, bishop_attack)
+        moves = piece_attack(Pt.B, bishop, own|other) & (own ^ FULL_BOARD)
+        for move in iterate_pieces(moves):
+            yield (bishop, move)
 
 def rook_moves(b, own, other):
     for rook in iterate_pieces(b):
-        yield from attacks_generic(rook, own, other, rook_attack)
-
+        moves = piece_attack(Pt.R, rook, own|other) & (own ^ FULL_BOARD)
+        for move in iterate_pieces(moves):
+            yield (rook, move)
+        
 def queen_moves(b, own, other):
     for queen in iterate_pieces(b):
-        yield from attacks_generic(queen, own, other, queen_attack)
+        moves = piece_attack(Pt.Q, queen, own|other) & (own ^ FULL_BOARD)
+        for move in iterate_pieces(moves):
+            yield (queen, move)
 
 def pawn_moves(pawns, own, other, en_pessant_sq, side):
     for pawn in iterate_pieces(pawns):
@@ -46,10 +52,6 @@ def pseudo_king_moves(position):
             yield 8 << 56, 2 << 56
         if flags & 0x22 == 0 and (free & (0x70 << 56)) == (0x70 << 56): # queenside 
             yield 8 << 56, 0x20 << 56
-    
-def attacks_generic(p, own, other, attack_fn):
-    attacks = attack_fn(p, own | other) & (own ^ FULL_BOARD)
-    return ((p, to_sq) for to_sq in iterate_pieces(attacks))
 
 def pawn_capture(pawn, side_to_move, other):
     return pawn_attack(pawn, side_to_move) & other
@@ -76,9 +78,6 @@ def pawn_move_non_capture(pawn, side_to_move, own, other):
 def is_capture(move, other):
     return (move & other) > 0
 
-# def am_in_check(attacks, king):
-#     return attacks & king > 0
-
 def preserved_kingside_castle_rights(position_flags, side):
     if side == Side.W:
         return position_flags & 5 == 0
@@ -90,26 +89,6 @@ def preserved_queenside_castle_rights(position_flags, side):
         return position_flags & 9 == 0
     else:
         return position_flags & 34 == 0
-    
-# def preserved_castle_rights(position_flags, side):
-#     if side == Side.WHITE:
-#         return not (position_flags & 1 or (position_flags & 12) == 12)
-#     return not (position_flags & 2 or (position_flags & 48) == 48)
-
-def piece_attacks(piece_type, piece_squares, occupied):
-    base_type = PieceType.base_type(piece_type)
-    if base_type == PieceType.P:
-        return pawn_attack(piece_squares, PieceType.get_side(piece_type))
-    elif base_type == PieceType.N:
-        return knight_attack(piece_squares)
-    elif base_type == PieceType.B:
-        return bishop_attack(piece_squares, occupied)
-    elif base_type == PieceType.Q:
-        return queen_attack(piece_squares, occupied)
-    elif base_type == PieceType.K:
-        return king_attack(piece_squares)
-    elif base_type == PieceType.R:
-        return rook_attack(piece_squares, occupied)
 
 # Position flags:
 # white king has moved - bit 1
