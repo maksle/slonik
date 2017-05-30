@@ -114,7 +114,7 @@ def static_evaluate(position):
 class Engine(threading.Thread):
     # Engine runs in a thread so we can respond to uci commands while thinking
 
-    def __init__(self):
+    def __init__(self, use_static_evaluator):
         super(Engine, self).__init__()
 
         # root position from which to search
@@ -128,8 +128,10 @@ class Engine(threading.Thread):
         self.si = [None] * 64
 
         # Evaluator (static or nn)
-        # self.evaluate = static_evaluate
-        self.evaluate = nn_evaluate.evaluate
+        if use_static_evaluator:
+            self.evaluate = static_evaluate
+        else:
+            self.evaluate = nn_evaluate.evaluate
         
         # ply counts and other stats
         self.search_stats = SearchStats()

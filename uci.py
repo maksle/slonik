@@ -21,12 +21,13 @@ class Entry(cmd.Cmd):
     intro = "Slonik by M. Grinman"
     prompt = ""
     
-    def __init__(self):
+    def __init__(self, static_evaluator):
         super(Entry, self).__init__()
 
         self.file = open('output.log', 'w')
         
-        self.engine = Engine()
+        self.p_static_evaluator = static_evaluator
+        self.engine = Engine(static_evaluator)
         self.engine.info = self.uci_info
         self.engine.debug_info = self.uci_debug
         self.engine.start()
@@ -46,7 +47,8 @@ class Entry(cmd.Cmd):
         self.uci_info("info string", *info_str)
         
     def do_uci(self, args):
-        self.respond("id name slonik")
+        s = " (static)" if self.p_static_evaluator else ""
+        self.respond("id name slonik" + s)
         self.respond("id author Maksim Grinman")
         self.respond("uciok")
 
@@ -154,7 +156,8 @@ class Entry(cmd.Cmd):
         self.engine.join()
             
 if __name__ == '__main__':
-    entry = Entry()
+    static_evaluator = len(sys.argv) > 1 and sys.argv[1] == '--static'
+    entry = Entry(static_evaluator)
     try:
         entry.cmdloop()
     except:

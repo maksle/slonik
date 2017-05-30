@@ -10,7 +10,7 @@ engine = chess.uci.popen_engine(STOCKFISH)
 info_handler = chess.uci.InfoHandler()
 engine.info_handlers.append(info_handler)
 
-with open('/home/maks/projects/stockfish_init_fens2.txt') as fens:
+with open('/home/maks/projects/stockfish_init_fens3.txt') as fens:
     for fen in fens:
         fen = fen.strip()
         
