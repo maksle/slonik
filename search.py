@@ -98,13 +98,13 @@ class TimeManagement():
         else:
             time = self.btime
         moves_to_go = self.movestogo
-        out_of_book_move_number = 0
         if moves_to_go is None:
-            return time * .05
-        if moves_to_go == 0:
+            moves_to_go = 65 - current_move_number
+        if moves_to_go <= 0:
             return .95 * time
+        out_of_book_move_number = 0
         moves_out_of_book = min(10, current_move_number - out_of_book_move_number)
-        return int(.95 * (self.wtime / moves_to_go) * (2 - moves_out_of_book / 10))
+        return int(.95 * (time / moves_to_go) * (2 - moves_out_of_book / 10))
 
 baseEvaluator = BaseEvaluator()        
 def static_evaluate(position):
@@ -114,7 +114,7 @@ def static_evaluate(position):
 class Engine(threading.Thread):
     # Engine runs in a thread so we can respond to uci commands while thinking
 
-    def __init__(self, use_static_evaluator):
+    def __init__(self, use_static_evaluator=False):
         super(Engine, self).__init__()
 
         # root position from which to search
@@ -183,10 +183,11 @@ class Engine(threading.Thread):
         """Set by the "searchmoves" option of the uci "go" command, which limits
         the moves to search in the root position"""
         if uci_moves is None:
-            self.next_root_moves = self.root_position.generate_moves_all(legal=True)
+            moves = self.root_position.generate_moves_all(legal=True)
         else:
-            self.next_root_moves = [self.root_position.uci_move_to_move(m) for m in uci_moves]
-
+            moves = [self.root_position.uci_move_to_move(m) for m in uci_moves]
+        self.next_root_moves = [[move, 0] for move in moves]
+    
     def run(self):
         """override of threading.Thread method. This kicks off the thread"""
         while self.exec_event.wait():
@@ -225,8 +226,6 @@ class Engine(threading.Thread):
         if self.next_root_position:
             self.root_position, self.next_root_position = self.next_root_position, None
             self.root_moves, self.next_root_moves = self.next_root_moves, None
-            if self.root_moves is None:
-                self.root_moves = self.root_position.generate_moves_all(legal=True)
             self.init_move_history()
         
         # time management
@@ -250,7 +249,7 @@ class Engine(threading.Thread):
             History(Move(piece, to_sq=1<<sq), psqt_value_sq(piece, 1<<sq, side))
             for sq in range(64)] for piece in range(13)] for side in range(2)
         ]
-
+    
     def rotate_killers(self):
         d = defaultdict(list)
         for ply, v in self.killer_moves.items():
@@ -291,7 +290,14 @@ class Engine(threading.Thread):
         if len(self.killer_moves[ply]) == 3:
             self.killer_moves[ply].pop()
         self.killer_moves[ply].append(move)
-    
+
+    # Root move sorting
+    def update_root_score(self, move, score):
+        for rmove in self.root_moves:
+            if rmove[0] == move:
+                rmove[1] = score
+                break
+        
     # Search
     def iterative_deepening(self):
         """Search deeper each iteration until stop condition. If fail high or
@@ -306,6 +312,10 @@ class Engine(threading.Thread):
 
         pv = []
 
+        # move ordering of root moves, case when uci doesn't set the "searchmoves"
+        if self.root_moves is None:
+            self.root_moves = [[move, 0] for move in self.root_position.generate_moves_all(legal=True)]
+        
         # log.debug("Side to move: %s", self.root_position.side_to_move())
         
         # log.debug("max_depth %s", self.max_depth)
@@ -529,15 +539,17 @@ class Engine(threading.Thread):
 
         move_count = 0
         best_val_move_count = 0
-        
-        if in_check:
-            pseudo_moves = node.generate_moves_in_check()
+            
+        if is_root and any(map(lambda x: x[1] != 0, self.root_moves)):
+            moves = map(itemgetter(0), sorted(self.root_moves, key=itemgetter(1), reverse=True))
+        elif is_root:
+            moves = map(itemgetter(0), self.root_moves)
+            moves = self.sort_moves(moves, node, si, ply)
+            self.root_moves = [[move, ind * .001] for (ind, move) in enumerate(moves[::-1])]
         else:
-            pseudo_moves = node.generate_moves_all()
-        moves = self.sort_moves(pseudo_moves, node, si, ply, False)
-        
-        # if is_root:
-        #     log.debug("pv: %s, \nmoves considering: %s", si[ply].pv, moves)
+            if in_check: pseudo_moves = node.generate_moves_in_check()
+            else: pseudo_moves = node.generate_moves_all()
+            moves = self.sort_moves(pseudo_moves, node, si, ply)
             
         counter = None
         if len(node.moves):
@@ -546,10 +558,7 @@ class Engine(threading.Thread):
         #
         # Move iteration
         for move in moves:
-
-            # if a == -7.262934774160385 and b == 46.98472175002098 and allowance == 1 and str(move) == 'Ke7-e8':
-            #     print('hey')
-            
+   
             val = 0
             
             # if not improving:
@@ -660,6 +669,9 @@ class Engine(threading.Thread):
             if (pv_node or (do_full_zw and a < val <= b)):
                 val = -self.search(child, ply+1, -b, -a, int(allowance * move.prob), True, False)
 
+            if is_root:
+                self.update_root_score(move, val)
+                
             if val > best_val:
                 prev_best = best_move
                 best_val, best_move = val, move
@@ -817,7 +829,7 @@ class Engine(threading.Thread):
             pseudo_moves = node.generate_moves_in_check()
         else:
             pseudo_moves = node.generate_moves_violent(do_checks= qsply == 0)
-        moves = self.sort_moves(pseudo_moves, node, si, ply, True)
+        moves = self.sort_moves(pseudo_moves, node, si, ply)
         # log.debug("so far: %s violent: %s", node.moves, moves)
 
         for move in moves:
@@ -902,7 +914,7 @@ class Engine(threading.Thread):
 
         return moves
     
-    def sort_moves(self, moves, position, si, ply, quiescence):
+    def sort_moves(self, moves, position, si, ply, is_root=False):
         """Sort the moves to optimize the alpha-beta search"""
         from_pv = [] 
         captures = []
@@ -920,25 +932,10 @@ class Engine(threading.Thread):
         ep_us_before = next_en_prise(position, us)
         ep_them_before = next_en_prise(position, them)
 
-        def sort_crit(move, en_prise_sort=False):
+        def sort_crit(move):
             entry = self.lookup_history(us, move)
             see_val = eval_see(position, move)
-
-            if en_prise_sort:
-                ep_us_after = next_en_prise(position, us, move)
-                pt, *rest = ep_us_before
-                pt2, *rest2 = ep_us_after
-                loss = pt - pt2
-                see_val += loss
-
-                ep_them_after = next_en_prise(position, them, move)
-                pto, *rest = ep_them_before
-                pto2, *rest = ep_them_after
-                gain = pto2 - pto
-                see_val += gain
-
             hist_val = entry.value if entry else 0
-            # psqt_val = psqt_value_sq(move.piece_type, move.to_sq, us)
             return (see_val, hist_val)
 
         pv_moves = self.find_pv(position)
@@ -969,9 +966,9 @@ class Engine(threading.Thread):
         
         # checks = sorted(checks, key=sort_crit, reverse=True)
 
-        other_moves.sort(key=lambda m: sort_crit(m, en_prise_sort=False), reverse=True)
+        other_moves.sort(key=lambda m: sort_crit(m), reverse=True)
         
-        captures_see = map(lambda c: (sort_crit(c, en_prise_sort=False), c), captures)
+        captures_see = map(lambda c: (sort_crit(c), c), captures)
         sorted_cap_see = sorted(captures_see, key=itemgetter(0), reverse=True)
         cap_see_gt0 = []
         cap_see_lt0 = []
@@ -999,7 +996,6 @@ class Engine(threading.Thread):
         for move in other_moves: move.prob = 1
         
         result = list(itertools.chain(from_pv, from_tt, cap_see_gt0, checks, counters, killers, cap_see_eq0, other_moves, cap_see_lt0))
-        # result = list(itertools.chain(from_pv, checks, counters, captures, from_tt, killers, other_moves))
 
         prob_sum = 0
         for move in result:

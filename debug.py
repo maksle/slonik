@@ -14,7 +14,7 @@ def goprofile():
     engine = Engine()
     engine.debug = True
     engine.infinite = False
-    engine.max_depth = 3
+    engine.max_depth = 4
     engine.root_position = pos
     engine.evaluate = nn_evaluate.evaluate
     engine.init_move_history()
@@ -28,7 +28,7 @@ def goprofile():
         leaf.make_move(move)
     print("eval val", nn_evaluate.evaluate(leaf))
     
-# goprofile()
+goprofile()
 
 # pos = Position.from_fen("r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10")
 # for i in range(1, 6):

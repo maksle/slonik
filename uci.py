@@ -86,7 +86,7 @@ class Entry(cmd.Cmd):
 
     def do_go(self, args):
         params = args.split()
-
+        
         try: index = params.index("searchmoves")
         except: pass
         else: self.engine.uci_root_moves(params[index+1:].split())
