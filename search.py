@@ -31,8 +31,8 @@ Counter = namedtuple('Counter', ['move'])
 class SearchInfo():
     def __init__(self):
         self.ply = 0
-        self.current_variation = []
         self.pv = []
+        self.train_error = 0
         self.null_move_prune_search = False
         self.skip_early_pruning = False
         self.static_eval = None
@@ -117,6 +117,11 @@ class Engine(threading.Thread):
     def __init__(self, use_static_evaluator=False):
         super(Engine, self).__init__()
 
+        # Whether we are just playing or doing RL backups
+        self.training = False
+        # The visited states for the tree strap backup 
+        self.search_states = []
+        
         # root position from which to search
         self.root_position = Position()
         self.next_root_position = None
@@ -311,7 +316,7 @@ class Engine(threading.Thread):
         val = self.evaluate(self.root_position)
 
         pv = []
-
+        
         # move ordering of root moves, case when uci doesn't set the "searchmoves"
         if self.root_moves is None:
             self.root_moves = [[move, 0] for move in self.root_position.generate_moves_all(legal=True)]
@@ -409,34 +414,7 @@ class Engine(threading.Thread):
             log.debug("no pv, no bestmove, exiting iterative_deepening")
         
         return val, self.si
-
-    def imagine(self, pos):
-
-        def random_goal(): 
-            g = random.randrange(0,64)
-            if 1<<g & (pos.occupied[side] | pos.occupied[side^1]):
-                return g
-        
-        best = self.evaluate(pos)
-        goal = None
-        side = pos.side_to_move()
-        for pt in Pt.pieces(side=side):
-            for pbb in pos.pieces[pt]:
-                for p in iterate_pieces(bb):
-                    for i in range(2):
-                        posc = Position(pos)
-                        posc.pieces[pt] ^= p
-                        posc.occupied[side] ^= p
-                        posc.squares[bit_position(p)] = Pt.NULL
-                        # impl newp
-                        posc.pieces[pt] ^= newp
-                        posc.occupied[side] ^= newp
-                        posc.squares[bit_position(newp)] = pt
-                        val = self.evaluate(posc)
-                        if val > best:
-                            best = val
-                            goal = (pt, newp)
-                            
+    
     def search(self, node, ply, a, b, allowance, pv_node, cut_node):
         """Search for best move in position `node` within alpha and beta window."""
         
@@ -445,7 +423,7 @@ class Engine(threading.Thread):
         
         self.search_stats.node_count += 1
         
-        if self.search_stats.checkpoints > 5000: # throttle
+        if self.search_stats.checkpoints > 500: # throttle
            self.search_stats.checkpoints = 0               
            self.checkpoint()
         
@@ -511,7 +489,6 @@ class Engine(threading.Thread):
                     si[ply+1].null_move_prune_search = False
 
                     if val >= b:
-                        # log.debug(" **** NULL BETA CUTTOFF after", ' '.join(map(str,node.moves)), "--winning for", node.side_to_move(), tt_entry.value, val, a, b)
                         return val
 
             # internal iterative deepening to improve move order when there's no pv
@@ -737,6 +714,9 @@ class Engine(threading.Thread):
         tt.save_tt_entry(tt.TTEntry(pos_key, best_move.compact(),
                                     bound_type, best_val, allowance, static_eval))
         
+        if self.training:
+            self.search_states.append((node.fen(), best_val, bound_type))
+        
         if is_root: assert(len(si[0].pv) > 0)
         return best_val
 
@@ -746,7 +726,7 @@ class Engine(threading.Thread):
 
         self.search_stats.node_count += 1
         
-        if self.search_stats.checkpoints > 5000: # throttle
+        if self.search_stats.checkpoints > 500: # throttle
            self.search_stats.checkpoints = 0               
            self.checkpoint()
 

@@ -129,7 +129,7 @@ def sum_TD_errors(timesteps):
 
         t.abs_error = abs(error)
         t.target = error + t.static_val
-    
+
 def initialize_weights(positions):
     features = [nn_evaluate.get_features(psn) for psn in positions]
     scores = []
@@ -306,6 +306,7 @@ if __name__ == "__main__":
                 print(psn)
                     
                 engine = Engine()
+                engine.training = True
                 engine.init_move_history()
                 TTEntry.next_game()
                 engine.max_depth = depth
@@ -319,14 +320,12 @@ if __name__ == "__main__":
                 
                 timesteps = []
 
-                for ply in range(plies_to_play):
-                    if game_over(psn):
-                        break
-
+                while not game_over(psn):
                     # do the search
                     engine.stop_event.clear()
                     engine.rotate_killers()
                     engine.search_stats.time_start = time.time()
+                    engine.search_states = []
                     leaf_val, si = engine.iterative_deepening()
                     if psn.side_to_move() == Side.B:
                         leaf_val = -leaf_val
@@ -347,7 +346,19 @@ if __name__ == "__main__":
                                               abs_error=None,
                                               target=None,
                                               adjusted_target=None))
-
+                    
+                    # self.training = False
+                    # self.search_states = []
+                    for state in engine.search_states:
+                        fen, value, bound = state
+                        position = Position.from_fen(fen)
+                        features = nn_evaluate.get_features(position)
+                        static_eval = model.target.predict(features)
+                        if bound == tt.BoundType.LO_BOUND and value > static_eval \
+                           or bound == tt.BoundType.HI_BOUND and value < static_eval \
+                           or bound == tt.BoundType.EXACT:
+                            error = value - static_eval
+                        
                     # stop playing when the results are no longer the raw NN output
                     is_fixed = eval_is_fixed(leaf, leaf_val)
                     if is_fixed:
@@ -358,17 +369,7 @@ if __name__ == "__main__":
                         print(psn)
                 
                 episodes.append(timesteps)
-                
-                # replay buffer size is limited
-                # if len(episodes) > max_replay_buffer_size:
-                #     episodes.pop(0)
-
-                # # train after each episode rather than timestep because
-                # # otherwise we'd have to turn off use of the transposition table
-                # if len(episodes) == max_replay_buffer_size:
-                #     write_summary = n % 32 == 0
-                #     train(episodes, write_summary=write_summary)
-                
+           
             train(episodes, write_summary=True)
                 
             # After each playing iteration:
