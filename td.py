@@ -2,7 +2,7 @@ from IPython import embed
 import random
 import time
 import os
-from tt import TTEntry
+from tt import TTEntry, BoundType
 from search import allowance_to_depth
 from position import Position
 from side import Side
@@ -216,39 +216,26 @@ def initialize_weights_sf(npos):
     model.copy_to_target()
     Timestep.current_target_generation += 1
     
-def train(episodes, write_summary):
-    features = []
-    targets = []
-    for timesteps in episodes:
-        sum_TD_errors(timesteps)
-        
-    # # get random batch
-    # z = list(zip(features, targets))
-    # random.shuffle(z)
-    # rfeatures, rtargets = list(zip(*z))
-    # bfeatures, btargets = rfeatures[:batch_size], rtargets[:batch_size]
-
-    # flatten the list
-    timesteps = [t for e in episodes for t in e]
-    # batch = sample(timesteps)
+def train(features, targets, write_summary):
+    model.actor.train_batch(features, targets, write_summary=write_summary)
+    # epochs = 10
+    # for epoch in range(epochs):
+    #     z = list(zip(features, targets))
+    #     random.shuffle(z)
+    #     rfeatures, rtargets = list(zip(*z))
+    #     for start, stop in batch_indexes(len(rfeatures), 32):
+    #         wr = write_summary and (epoch == (epochs-1)) and start == 0
+    #         try:
+    #             model.actor.train_batch(rfeatures[start:stop], rtargets[start:stop], write_summary=wr)
+    #         except:
+    #             embed()
+    #             raise
     
-    epochs = 10
-    for epoch in range(epochs):
-        random.shuffle(timesteps)
-        rfeatures, rtargets = zip(*[(t.features, t.target) for t in timesteps])
-        for start, stop in batch_indexes(len(positions), 32):
-            wr = write_summary and (epoch == (epochs-1)) and start == 0
-            model.actor.train_batch(rfeatures[start:stop], rtargets[start:stop], write_summary=wr)
-            
-    # # update the actor
-    # model.actor.train_batch(bfeatures, btargets, write_summary)
-
-
 if __name__ == "__main__":
     depth = 5 #6.5
     total_fens = 700762
     plies_to_play = 32
-    positions_per_iteration = 256
+    positions_per_iteration = 16 #256
     # batch_size = 32 # plies_to_play * positions_per_iteration // 8
     num_iterations = total_fens // positions_per_iteration + 1
     max_replay_buffer_size = 64
@@ -259,11 +246,10 @@ if __name__ == "__main__":
     sts_scores = []
     # episodes = []
     for itern in range(num_iterations):
-        episodes = []
         positions = []
         lines_read = 0
-        # initialize_network = itern == 0 and not os.path.exists('checkpoint')
-        initialize_network = True
+        initialize_network = itern == 0 and not os.path.exists('checkpoint')
+        # initialize_network = True
         if initialize_network:
             npos = init_npos
         else:
@@ -298,10 +284,10 @@ if __name__ == "__main__":
                 print("New Game, #{0}, (#{1}/{2})".format(n, m, positions_per_iteration))
                 print(psn.fen())
                 
-                moves = list(psn.generate_moves_all(legal=True))
-                move = random.choice(moves)
-                print("Random move:", move)
-                psn.make_move(move)
+                # moves = list(psn.generate_moves_all(legal=True))
+                # move = random.choice(moves)
+                # print("Random move:", move)
+                # psn.make_move(move)
 
                 print(psn)
                     
@@ -318,7 +304,8 @@ if __name__ == "__main__":
                 engine.search_stats.node_count = 0
                 engine.search_stats.time_start = time.time()
                 
-                timesteps = []
+                features = []
+                targets = []
 
                 while not game_over(psn):
                     # do the search
@@ -326,51 +313,64 @@ if __name__ == "__main__":
                     engine.rotate_killers()
                     engine.search_stats.time_start = time.time()
                     engine.search_states = []
+                    engine.root_moves = None
+                    
                     leaf_val, si = engine.iterative_deepening()
                     if psn.side_to_move() == Side.B:
                         leaf_val = -leaf_val
-                    leaf_val /= 1000
-                    leaf_val = min(max(leaf_val, -1), 1)
+                    leaf_val = min(max(leaf_val / 1000, -1), 1)
 
                     # eval will be on the leaf
                     pv = si[0].pv
                     leaf = Position(psn)
+                    
                     for move in pv:
                         leaf.make_move(move)
                     print(pv[0], leaf_val)
                     
-                    timesteps.append(Timestep(leaf=leaf,
-                                              features=nn_evaluate.get_features(leaf),
-                                              static_val=None,
-                                              static_gen=-1,
-                                              abs_error=None,
-                                              target=None,
-                                              adjusted_target=None))
+                    # print("len", len(engine.search_states))
                     
-                    # self.training = False
-                    # self.search_states = []
                     for state in engine.search_states:
-                        fen, value, bound = state
+                        fen, value, bound, static_eval = state
                         position = Position.from_fen(fen)
-                        features = nn_evaluate.get_features(position)
-                        static_eval = model.target.predict(features)
-                        if bound == tt.BoundType.LO_BOUND and value > static_eval \
-                           or bound == tt.BoundType.HI_BOUND and value < static_eval \
-                           or bound == tt.BoundType.EXACT:
-                            error = value - static_eval
                         
+                        pos_features = nn_evaluate.get_features(position)
+                        # pred_eval = model.actor.predict(pos_features) # TODO: experiment with using the target
+                        # if (abs(pred_eval) - abs(static_eval) > .0008):
+                        #     print("in td")
+                        #     embed()
+                        
+                        value = min(1, max(-1, value / 1000))
+                        static_eval = min(1, max(-1, static_eval / 1000))
+                        
+                        if bound == BoundType.LO_BOUND and value > static_eval \
+                           or bound == BoundType.HI_BOUND and value < static_eval \
+                           or bound == BoundType.EXACT:
+                            
+                            # features.append((fen, value, static_eval, bound))
+                            # print(position)
+                            # print(fen)
+                            # print(static_eval, bound, value)
+                            # print()
+
+                            if position.side_to_move() == Side.B:
+                                value = -value
+                                static_eval = -static_eval
+
+                            features.append(pos_features)
+                            targets.append(value)
+                            
                     # stop playing when the results are no longer the raw NN output
                     is_fixed = eval_is_fixed(leaf, leaf_val)
                     if is_fixed:
                         break
                         
                     psn.make_move(pv[0])
-                    if len(timesteps) % 10 == 0:
+                    if len(psn.moves) % 10 == 0:
                         print(psn)
                 
-                episodes.append(timesteps)
-           
-            train(episodes, write_summary=True)
+                write_summary = m % 8 == 0
+                train(features, targets, write_summary=write_summary)
                 
             # After each playing iteration:
             # .. check our progress

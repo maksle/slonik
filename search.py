@@ -335,7 +335,7 @@ class Engine(threading.Thread):
             fail_factor = 18
             self.search_stats.reset()
             
-            alpha, beta = val - fail_factor, val + fail_factor
+            alpha, beta = max(LOW_BOUND, val - fail_factor), min(HIGH_BOUND, val + fail_factor)
             bound = ""
             
             while not finished:
@@ -351,15 +351,15 @@ class Engine(threading.Thread):
                     
                 # log.debug("BEFORE: val: %s, alpha: %s, beta: %s", val, alpha, beta)
                     
-                if val <= alpha:
+                if LOW_BOUND < val <= alpha:
                     bound = " upperbound"
-                    alpha = val - fail_factor
+                    alpha = max(LOW_BOUND, val - fail_factor)
                     # beta = (alpha + beta) // 2
                     # fail_factor += fail_factor // 3 + 6
                     fail_factor *= 3
-                elif val >= beta:
+                elif HIGH_BOUND > val >= beta:
                     bound = " lowerbound"
-                    beta = val + fail_factor
+                    beta = min(HIGH_BOUND, val + fail_factor)
                     # alpha = (alpha + beta) / 2
                     # fail_factor += fail_factor // 3 + 6
                     fail_factor *= 3
@@ -462,6 +462,10 @@ class Engine(threading.Thread):
                 si[ply].static_eval = static_eval = self.evaluate(node)
             tt.save_tt_entry(tt.TTEntry(pos_key, 0, tt.BoundType.NONE, 0, 0, static_eval))
 
+        # if node.last_move() != Move(PieceType.NULL) and (abs(static_eval) - abs(self.evaluate(static_eval)) > .0008):
+        #     print("in search")
+        #     embed()
+            
         in_check = node.in_check()
 
         if allowance < 1 and in_check:
@@ -657,18 +661,7 @@ class Engine(threading.Thread):
                 # if pv_node and val > a:
                 if pv_node:
                     si[ply].pv = [move] + si[ply+1].pv
-                    
-                    # psn = Position(node)
-                    # for m in si[ply].pv:
-                    #     psn.make_move(m)
-                    # testval = self.evaluate(psn)
-                    # if len(si[ply].pv) % 2 != 0:
-                    #     testval = -testval
-                    # if abs(testval - val) > .01 and abs(testval - val) < 1000000:
-                    #     embed()
-                    
-                # si[ply].pv = [move] + si[ply+1].pv
-
+                
             if self.stop_event.is_set():
                 return STOP_VALUE
                 
@@ -688,7 +681,7 @@ class Engine(threading.Thread):
                 best_val = a
             # mate or statemate
             elif in_check:
-                best_val = MATE_VALUE
+                best_val = MATE_VALUE + ply
             else:
                 best_val = DRAW_VALUE
         elif best_move != Move(PieceType.NULL):
@@ -711,11 +704,12 @@ class Engine(threading.Thread):
         if best_val <= a_orig: bound_type = tt.BoundType.HI_BOUND
         elif best_val >= b: bound_type = tt.BoundType.LO_BOUND
         else: bound_type = tt.BoundType.EXACT
+        
         tt.save_tt_entry(tt.TTEntry(pos_key, best_move.compact(),
                                     bound_type, best_val, allowance, static_eval))
         
-        if self.training:
-            self.search_states.append((node.fen(), best_val, bound_type))
+        if self.training and node.last_move() != Move(PieceType.NULL):
+            self.search_states.append((node.fen(), best_val, bound_type, static_eval))
         
         if is_root: assert(len(si[0].pv) > 0)
         return best_val

@@ -7,8 +7,7 @@ import random
 import nn_evaluate
 
 
-pos = Position.from_fen("r2q1rk1/1b3ppp/p1n1pn2/1p2N3/Pb1P4/2N2B2/1P3PPP/R1BQ1RK1 b - - 0 1")
-pos.make_move(Move(Pt.BN, F6, E4))
+pos = Position.from_fen("k7/8/8/8/P5r1/1P5p/4rr1P/7K b - - 0 1")
 def goprofile():
     now = time.time()
     engine = Engine()
