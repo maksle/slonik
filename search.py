@@ -329,7 +329,7 @@ class Engine(threading.Thread):
               and (not self.max_nodes or self.search_stats.node_count < self.max_nodes) \
               and (self.movetime is None or (time.time() - self.search_stats.time_start) < self.movetime):
             # log.debug("searching depth %s, max_depth %s", depth, self.max_depth)
-            depth += .5
+            depth += 1
             allowance = depth_to_allowance(depth)
             finished = False
             fail_factor = 18
@@ -453,7 +453,7 @@ class Engine(threading.Thread):
                 self.search_stats.tb_hits += 1
                 return tt_entry.value
         
-        if found and tt_entry.static_eval is not None:
+        if not self.training and found and tt_entry.static_eval is not None:
             si[ply].static_eval = static_eval = tt_entry.static_eval
         else:
             if node.last_move() == Move(PieceType.NULL):
@@ -484,16 +484,16 @@ class Engine(threading.Thread):
                     return static_eval
 
                 # null move pruning.. if pass move and we're still failing high, dont bother searching further
-                if not pv_node and not si[ply].null_move_prune_search \
-                   and found and tt_entry.value >= b:
-                    si[ply+1].null_move_prune_search = True
-                    node.make_null_move()
-                    val = -self.search(node, ply+1, -b, -b+1, int(allowance * .3), False, False)
-                    node.undo_null_move()
-                    si[ply+1].null_move_prune_search = False
+                # if not pv_node and not si[ply].null_move_prune_search \
+                #    and found and tt_entry.value >= b:
+                #     si[ply+1].null_move_prune_search = True
+                #     node.make_null_move()
+                #     val = -self.search(node, ply+1, -b, -b+1, int(allowance * .3), False, False)
+                #     node.undo_null_move()
+                #     si[ply+1].null_move_prune_search = False
 
-                    if val >= b:
-                        return val
+                #     if val >= b:
+                #         return val
 
             # internal iterative deepening to improve move order when there's no pv
             if not found and allowance_to_depth(allowance) >= 4 \
@@ -563,7 +563,7 @@ class Engine(threading.Thread):
                 move.move_type |= MoveType.check
 
             is_capture = move.to_sq & node.occupied[child.side_to_move()]
-            see_score = move.see_score or eval_see(node, move)
+            # see_score = move.see_score or eval_see(node, move)
 
             extending = False
 
@@ -603,53 +603,60 @@ class Engine(threading.Thread):
             
             # TODO?: if non rootNode and we're losing, only look at checks/big captures >= alpha 
 
-            # Probabilistic version of LMR
-            # .. zero window search reduced 
-            do_full_zw = False
-            zw_allowance = allowance * move.prob 
-            if not pv_node:
-                if allowance_to_depth(allowance) >= 3 and not is_capture:
-                    r = min(zw_allowance * .25, depth_to_allowance(1))
-                    if cut_node:
-                        r += depth_to_allowance(2)
-                    else:
-                        child.make_null_move()
-                        undo_see = eval_see(child, Move(move.piece_type, move.to_sq, move.from_sq))
-                        child.undo_null_move()
-                        if undo_see < 0:
-                            # reduce reduction if escaping capture
-                            r -= depth_to_allowance(2)
-                        else:
-                            # reduce reduction if making a threat
-                            ep_default_value = (0, 0, 0, 0)
-                            victim_before, *rest = next_en_prise(node, child.side_to_move())
-                            victim_after, *rest = next_en_prise(child, child.side_to_move())
-                            if victim_after > victim_before:
-                                r -= depth_to_allowance(2)
+            # # Probabilistic version of LMR
+            # # .. zero window search reduced 
+            # do_full_zw = False
+            # zw_allowance = allowance * move.prob 
+            # if not pv_node:
+            #     if allowance_to_depth(allowance) >= 3 and not is_capture:
+            #         r = min(zw_allowance * .25, depth_to_allowance(1))
+            #         if cut_node:
+            #             r += depth_to_allowance(2)
+            #         else:
+            #             child.make_null_move()
+            #             undo_see = eval_see(child, Move(move.piece_type, move.to_sq, move.from_sq))
+            #             child.undo_null_move()
+            #             if undo_see < 0:
+            #                 # reduce reduction if escaping capture
+            #                 r -= depth_to_allowance(2)
+            #             else:
+            #                 # reduce reduction if making a threat
+            #                 ep_default_value = (0, 0, 0, 0)
+            #                 victim_before, *rest = next_en_prise(node, child.side_to_move())
+            #                 victim_after, *rest = next_en_prise(child, child.side_to_move())
+            #                 if victim_after > victim_before:
+            #                     r -= depth_to_allowance(2)
 
-                    hist = self.lookup_history(node.side_to_move(), move)
-                    # log.debug("hist %s %s", move, hist)
-                    if hist and hist.value > .5:
-                        r -= depth_to_allowance(1)
-                    elif hist and hist.value < 0:
-                        r += depth_to_allowance(1)
+            #         hist = self.lookup_history(node.side_to_move(), move)
+            #         # log.debug("hist %s %s", move, hist)
+            #         if hist and hist.value > .5:
+            #             r -= depth_to_allowance(1)
+            #         elif hist and hist.value < 0:
+            #             r += depth_to_allowance(1)
 
-                    if r < 0: r = 0
+            #         if r < 0: r = 0
 
-                    val = -self.search(child, ply+1, -(a+1), -a, int(zw_allowance - r), False, True)
-                    do_full_zw = val > a and r != 0
-                else:
-                    do_full_zw = not (pv_node and move.prob >= .035)
+            #         val = -self.search(child, ply+1, -(a+1), -a, int(zw_allowance - r), False, True)
+            #         do_full_zw = val > a and r != 0
+            #     else:
+            #         do_full_zw = not (pv_node and move.prob >= .035)
 
-                # .. zero window full allotment search
-                if do_full_zw:
-                    val = -self.search(child, ply+1, -(a+1), -a, int(zw_allowance), True, not cut_node)
+            #     # .. zero window full allotment search
+            #     if do_full_zw:
+            #         val = -self.search(child, ply+1, -(a+1), -a, int(zw_allowance), True, not cut_node)
                 
-            # .. full window full allotment search
-            # otherwise we let the fail highs cause parent to fail low and try different move
-            if (pv_node or (do_full_zw and a < val <= b)):
+            # # .. full window full allotment search
+            # # otherwise we let the fail highs cause parent to fail low and try different move
+            # if (pv_node or (do_full_zw and a < val <= b)):
+            #     val = -self.search(child, ply+1, -b, -a, int(allowance * move.prob), True, False)
+            
+            if not pv_node and not move_count == 1 and allowance_to_depth(allowance) > 2:
+                val = -self.search(child, ply+1, -(a+1), -a, int(allowance * move.prob), False, True)
+                if a < val < b:
+                    val = -self.search(child, ply+1, -b, -a, int(allowance * move.prob), True, False)
+            else:
                 val = -self.search(child, ply+1, -b, -a, int(allowance * move.prob), True, False)
-
+                
             if is_root:
                 self.update_root_score(move, val)
                 
@@ -659,8 +666,8 @@ class Engine(threading.Thread):
                 best_move_is_capture = is_capture
                 best_val_move_count = move_count
                 # if pv_node and val > a:
-                if pv_node:
-                    si[ply].pv = [move] + si[ply+1].pv
+                # if pv_node:
+                si[ply].pv = [move] + si[ply+1].pv
                 
             if self.stop_event.is_set():
                 return STOP_VALUE
@@ -708,7 +715,7 @@ class Engine(threading.Thread):
         tt.save_tt_entry(tt.TTEntry(pos_key, best_move.compact(),
                                     bound_type, best_val, allowance, static_eval))
         
-        if self.training and node.last_move() != Move(PieceType.NULL):
+        if self.training and node.last_move() != Move(PieceType.NULL) and allowance >= 1:
             self.search_states.append((node.fen(), best_val, bound_type, static_eval))
         
         if is_root: assert(len(si[0].pv) > 0)
@@ -749,7 +756,7 @@ class Engine(threading.Thread):
             self.search_stats.tb_hits += 1
 
         if not pv_node:
-            if tt_hit and tt_entry.depth >= 0:
+            if tt_hit and tt_entry.depth >= 0 and tt_entry.bound_type != tt.BoundType.NONE:
                 if tt_entry.bound_type == tt.BoundType.EXACT:
                     self.search_stats.update_ply_stat(ply, pv_node)
                     # log.debug("a %s b %s moves %s exact tt_entry.value %s", alpha, beta, node.moves, tt_entry.value)
@@ -765,11 +772,11 @@ class Engine(threading.Thread):
                     # log.debug("a %s b %s moves %s lowbound tt_entry.value %s", alpha, beta, node.moves, tt_entry.value)
                     return tt_entry.value
    
-        if in_check and qsply > 1:
-            return self.search(node, ply, alpha, beta, 1, pv_node, False)
-
+        # if in_check and qsply > 1:
+        #     return self.search(node, ply, alpha, beta, 1, pv_node, False)
+            
         static_eval = None
-        if tt_hit:
+        if tt_hit and not self.training:
             static_eval = tt_entry.static_eval
         if static_eval is None:
             static_eval = self.evaluate(node)
@@ -782,7 +789,8 @@ class Engine(threading.Thread):
 
             # "stand pat"
             if not tt_hit or tt_entry.bound_type == tt.BoundType.NONE:
-                d = QS_CHECK_DEPTH if qsply == 0 else QS_DEPTH
+                # d = QS_CHECK_DEPTH if qsply == 0 else QS_DEPTH
+                d = QS_DEPTH
                 tt.save_tt_entry(tt.TTEntry(node.zobrist_hash,
                                             Move(PieceType.NULL).compact(),
                                             tt.BoundType.LO_BOUND, static_eval, d, static_eval))
@@ -823,26 +831,26 @@ class Engine(threading.Thread):
             if gives_check:
                 move.move_type |= MoveType.check
 
-            is_capture = move.to_sq & node.occupied[node.side_to_move() ^ 1]
+            # is_capture = move.to_sq & node.occupied[node.side_to_move() ^ 1]
 
-            if not in_check and not gives_check:
-                # Futility pruning
-                # .. try to avoid calling eval_see
-                pt_captured = node.squares[bit_position(move.to_sq)]
-                if static_eval + MG_PIECES[PieceType.base_type(pt_captured)] + MG_PIECES[PieceType.P] <= alpha:
-                    continue
-                see_score = move.see_score if move.see_score is not None else eval_see(node, move)
-                if static_eval + see_score + MG_PIECES[PieceType.P] <= alpha \
-                   and see_score < 0:
-                    continue
+            # if not in_check and not gives_check:
+            #     # Futility pruning
+            #     # .. try to avoid calling eval_see
+            #     pt_captured = node.squares[bit_position(move.to_sq)]
+            #     if static_eval + MG_PIECES[PieceType.base_type(pt_captured)] + MG_PIECES[PieceType.P] <= alpha:
+            #         continue
+            #     see_score = move.see_score if move.see_score is not None else eval_see(node, move)
+            #     if static_eval + see_score + MG_PIECES[PieceType.P] <= alpha \
+            #        and see_score < 0:
+            #         continue
 
-            if not in_check or not is_capture:
-                see_score = move.see_score if move.see_score is not None else eval_see(node, move)
-                if see_score < 0:
-                    continue
+            # if not in_check or not is_capture:
+            #     see_score = move.see_score if move.see_score is not None else eval_see(node, move)
+            #     if see_score < 0:
+            #         continue
 
             score = -self.qsearch(child, ply+1, qsply+1, -beta, -alpha, pv_node, gives_check)
-
+            
             if score > alpha:
                 alpha = score
                 best_val = score
@@ -903,14 +911,15 @@ class Engine(threading.Thread):
         other = position.occupied[them]
         counter = self.lookup_counter(them, position.last_move())
 
-        ep_us_before = next_en_prise(position, us)
-        ep_them_before = next_en_prise(position, them)
+        # ep_us_before = next_en_prise(position, us)
+        # ep_them_before = next_en_prise(position, them)
 
         def sort_crit(move):
             entry = self.lookup_history(us, move)
-            see_val = eval_see(position, move)
+            # see_val = eval_see(position, move)
             hist_val = entry.value if entry else 0
-            return (see_val, hist_val)
+            # return (see_val, hist_val)
+            return (0, hist_val)
 
         pv_moves = self.find_pv(position)
         found, tt_ind, tt_entry = tt.get_tt_index(position.zobrist_hash)
@@ -942,34 +951,35 @@ class Engine(threading.Thread):
 
         other_moves.sort(key=lambda m: sort_crit(m), reverse=True)
         
-        captures_see = map(lambda c: (sort_crit(c), c), captures)
-        sorted_cap_see = sorted(captures_see, key=itemgetter(0), reverse=True)
-        cap_see_gt0 = []
-        cap_see_lt0 = []
-        cap_see_eq0 = []
-        for cs in sorted_cap_see:
-            see, hist = cs[0]
-            move = cs[1]
-            if see > 0:
-                move.prob = 2.5
-                cap_see_gt0.append(move)
-            elif see == 0:
-                move.prob = 1.5
-                cap_see_eq0.append(move)
-            else:
-                move.prob = .75
-                cap_see_lt0.append(move)
+        # captures_see = map(lambda c: (sort_crit(c), c), captures)
+        # sorted_cap_see = sorted(captures_see, key=itemgetter(0), reverse=True)
+        # cap_see_gt0 = []
+        # cap_see_lt0 = []
+        # cap_see_eq0 = []
+        # for cs in sorted_cap_see:
+        #     see, hist = cs[0]
+        #     move = cs[1]
+        #     if see > 0:
+        #         move.prob = 2.5
+        #         cap_see_gt0.append(move)
+        #     elif see == 0:
+        #         move.prob = 1.5
+        #         cap_see_eq0.append(move)
+        #     else:
+        #         move.prob = .75
+        #         cap_see_lt0.append(move)
         
         for move in from_pv: move.prob = 3
         for move in from_tt: move.prob = 2.8
+        for move in captures: move.prob = 2.5
         for move in checks: move.prob = 2
         for move in counters: move.prob = 2
-        # for move in captures: move.prob = 1.9
         for (ind, move) in enumerate(killers):
             move.prob = 1.5 + (ind * .1)
         for move in other_moves: move.prob = 1
         
-        result = list(itertools.chain(from_pv, from_tt, cap_see_gt0, checks, counters, killers, cap_see_eq0, other_moves, cap_see_lt0))
+        # result = list(itertools.chain(from_pv, from_tt, cap_see_gt0, checks, counters, killers, cap_see_eq0, other_moves, cap_see_lt0))
+        result = list(itertools.chain(from_pv, from_tt, captures, checks, counters, killers, other_moves))
 
         prob_sum = 0
         for move in result:

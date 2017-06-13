@@ -16,4 +16,4 @@ def evaluate(position, evaluator=model.actor):
         val = res_value
     else:
         val = -res_value
-    return int(val * 1000)
+    return val * 1000

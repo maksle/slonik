@@ -232,16 +232,17 @@ def train(features, targets, write_summary):
     #             raise
     
 if __name__ == "__main__":
-    depth = 5 #6.5
+    depth = 2 #6.5
     total_fens = 700762
     plies_to_play = 32
-    positions_per_iteration = 16 #256
+    positions_per_iteration = 64 #256
     # batch_size = 32 # plies_to_play * positions_per_iteration // 8
     num_iterations = total_fens // positions_per_iteration + 1
     max_replay_buffer_size = 64
 
     # init_npos = 295705
-    init_npos = 200000
+    # init_npos = 200067
+    init_npos = 201832 - 64
     offset = init_npos
     sts_scores = []
     # episodes = []
@@ -304,8 +305,8 @@ if __name__ == "__main__":
                 engine.search_stats.node_count = 0
                 engine.search_stats.time_start = time.time()
                 
-                features = []
-                targets = []
+                # features = []
+                # targets = []
 
                 while not game_over(psn):
                     # do the search
@@ -315,6 +316,8 @@ if __name__ == "__main__":
                     engine.search_states = []
                     engine.root_moves = None
                     
+                    TTEntry.next_game()
+                    
                     leaf_val, si = engine.iterative_deepening()
                     if psn.side_to_move() == Side.B:
                         leaf_val = -leaf_val
@@ -323,13 +326,19 @@ if __name__ == "__main__":
                     # eval will be on the leaf
                     pv = si[0].pv
                     leaf = Position(psn)
+
+                    # print("lenpv", len(pv))
                     
                     for move in pv:
                         leaf.make_move(move)
-                    print(pv[0], leaf_val)
+                    print(pv[0], pv[1:], leaf_val)
                     
                     # print("len", len(engine.search_states))
                     
+                    # print(len(engine.search_states))
+                    
+                    features = []
+                    targets = []
                     for state in engine.search_states:
                         fen, value, bound, static_eval = state
                         position = Position.from_fen(fen)
@@ -337,6 +346,7 @@ if __name__ == "__main__":
                         pos_features = nn_evaluate.get_features(position)
                         # pred_eval = model.actor.predict(pos_features) # TODO: experiment with using the target
                         # if (abs(pred_eval) - abs(static_eval) > .0008):
+                        #     print("HAPPENED")
                         #     print("in td")
                         #     embed()
                         
@@ -359,18 +369,28 @@ if __name__ == "__main__":
 
                             features.append(pos_features)
                             targets.append(value)
-                            
+                    
                     # stop playing when the results are no longer the raw NN output
                     is_fixed = eval_is_fixed(leaf, leaf_val)
+
+                    # write_summary = m % 8 == 0
+                    train(features, targets, write_summary=False)
+                    
                     if is_fixed:
                         break
-                        
+                    
                     psn.make_move(pv[0])
-                    if len(psn.moves) % 10 == 0:
+
+                    # if len(psn.moves) > 35:
+                    #     break
+                    
+                    if len(psn.moves) % 5 == 0:
                         print(psn)
-                
-                write_summary = m % 8 == 0
-                train(features, targets, write_summary=write_summary)
+                   
+                model.save_model()
+                model.copy_to_target()
+                # write_summary = m % 8 == 0
+                # train(features, targets, write_summary=write_summary)
                 
             # After each playing iteration:
             # .. check our progress
@@ -381,6 +401,6 @@ if __name__ == "__main__":
                 f.write('{0}, '.format(sts_score))
             print("STS scores over time:", sts_scores)
             # .. update the target network and save the models
-            model.copy_to_target()
+            # model.copy_to_target()
             Timestep.current_target_generation += 1
-            model.save_model()
+            # model.save_model()
