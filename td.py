@@ -242,7 +242,7 @@ if __name__ == "__main__":
 
     # init_npos = 295705
     # init_npos = 200067
-    init_npos = 201832 - 64
+    init_npos = 207839 - 64
     offset = init_npos
     sts_scores = []
     # episodes = []
