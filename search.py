@@ -453,14 +453,14 @@ class Engine(threading.Thread):
                 self.search_stats.tb_hits += 1
                 return tt_entry.value
         
-        if not self.training and found and tt_entry.static_eval is not None:
-            si[ply].static_eval = static_eval = tt_entry.static_eval
-        else:
-            if node.last_move() == Move(PieceType.NULL):
-                si[ply].static_eval = static_eval = -si[ply-1].static_eval + 40
-            else:
-                si[ply].static_eval = static_eval = self.evaluate(node)
-            tt.save_tt_entry(tt.TTEntry(pos_key, 0, tt.BoundType.NONE, 0, 0, static_eval))
+        # if not self.training and found and tt_entry.static_eval is not None:
+        #     si[ply].static_eval = static_eval = tt_entry.static_eval
+        # else:
+        #     if node.last_move() == Move(PieceType.NULL):
+        #         si[ply].static_eval = static_eval = -si[ply-1].static_eval + 40
+        #     else:
+        #         si[ply].static_eval = static_eval = self.evaluate(node)
+        #     tt.save_tt_entry(tt.TTEntry(pos_key, 0, tt.BoundType.NONE, 0, 0, static_eval))
 
         # if node.last_move() != Move(PieceType.NULL) and (abs(static_eval) - abs(self.evaluate(static_eval)) > .0008):
         #     print("in search")
@@ -475,33 +475,33 @@ class Engine(threading.Thread):
             score = self.qsearch(node, ply, 0, a, b, pv_node, in_check)
             return score
         
-        if not pv_node and not in_check:
-            if not si[ply].skip_early_pruning:
-                # futility prune of parent
-                if not pv_node \
-                   and allowance_to_depth(allowance) < 6 \
-                   and static_eval - allowance_to_depth(allowance) * 150 >= b:
-                    return static_eval
+        # if not pv_node and not in_check:
+        #     if not si[ply].skip_early_pruning:
+        #         # futility prune of parent
+        #         if not pv_node \
+        #            and allowance_to_depth(allowance) < 6 \
+        #            and static_eval - allowance_to_depth(allowance) * 150 >= b:
+        #             return static_eval
 
-                # null move pruning.. if pass move and we're still failing high, dont bother searching further
-                # if not pv_node and not si[ply].null_move_prune_search \
-                #    and found and tt_entry.value >= b:
-                #     si[ply+1].null_move_prune_search = True
-                #     node.make_null_move()
-                #     val = -self.search(node, ply+1, -b, -b+1, int(allowance * .3), False, False)
-                #     node.undo_null_move()
-                #     si[ply+1].null_move_prune_search = False
+        #         # null move pruning.. if pass move and we're still failing high, dont bother searching further
+        #         # if not pv_node and not si[ply].null_move_prune_search \
+        #         #    and found and tt_entry.value >= b:
+        #         #     si[ply+1].null_move_prune_search = True
+        #         #     node.make_null_move()
+        #         #     val = -self.search(node, ply+1, -b, -b+1, int(allowance * .3), False, False)
+        #         #     node.undo_null_move()
+        #         #     si[ply+1].null_move_prune_search = False
 
-                #     if val >= b:
-                #         return val
+        #         #     if val >= b:
+        #         #         return val
 
-            # internal iterative deepening to improve move order when there's no pv
-            if not found and allowance_to_depth(allowance) >= 4 \
-               and (pv_node or static_eval + MG_PIECES[PieceType.P] >= b):
-                si[ply+1].skip_early_pruning = True
-                val = self.search(node, ply, a, b, int(allowance * .75), pv_node, cut_node)
-                si[ply+1].skip_early_pruning = False
-                found, tt_ind, tt_entry = tt.get_tt_index(node.zobrist_hash)
+        #     # internal iterative deepening to improve move order when there's no pv
+        #     if not found and allowance_to_depth(allowance) >= 4 \
+        #        and (pv_node or static_eval + MG_PIECES[PieceType.P] >= b):
+        #         si[ply+1].skip_early_pruning = True
+        #         val = self.search(node, ply, a, b, int(allowance * .75), pv_node, cut_node)
+        #         si[ply+1].skip_early_pruning = False
+        #         found, tt_ind, tt_entry = tt.get_tt_index(node.zobrist_hash)
         
         singular_extension_eligible = False
         if not is_root and allowance_to_depth(allowance) >= 2.5 \
@@ -512,7 +512,7 @@ class Engine(threading.Thread):
            and tt_entry.depth >= allowance * .7:
             singular_extension_eligible = True
 
-        improving = (ply < 2) or (si[ply-2].static_eval is None) or (si[ply].static_eval >= si[ply-2].static_eval)
+        # improving = (ply < 2) or (si[ply-2].static_eval is None) or (si[ply].static_eval >= si[ply-2].static_eval)
 
         best_move = Move(PieceType.NULL)
         best_move_is_capture = False
@@ -650,7 +650,7 @@ class Engine(threading.Thread):
             # if (pv_node or (do_full_zw and a < val <= b)):
             #     val = -self.search(child, ply+1, -b, -a, int(allowance * move.prob), True, False)
             
-            if not pv_node and not move_count == 1 and allowance_to_depth(allowance) > 2:
+            if pv_node and move_count > 1 and allowance_to_depth(allowance) > 2:
                 val = -self.search(child, ply+1, -(a+1), -a, int(allowance * move.prob), False, True)
                 if a < val < b:
                     val = -self.search(child, ply+1, -b, -a, int(allowance * move.prob), True, False)
@@ -712,11 +712,13 @@ class Engine(threading.Thread):
         elif best_val >= b: bound_type = tt.BoundType.LO_BOUND
         else: bound_type = tt.BoundType.EXACT
         
+        static_eval = None
+        if self.training and node.last_move() != Move(PieceType.NULL) and allowance >= 1:
+            static_eval = self.evaluate(node)
+            self.search_states.append((node.fen(), best_val, bound_type, static_eval))
+
         tt.save_tt_entry(tt.TTEntry(pos_key, best_move.compact(),
                                     bound_type, best_val, allowance, static_eval))
-        
-        if self.training and node.last_move() != Move(PieceType.NULL) and allowance >= 1:
-            self.search_states.append((node.fen(), best_val, bound_type, static_eval))
         
         if is_root: assert(len(si[0].pv) > 0)
         return best_val
@@ -781,30 +783,30 @@ class Engine(threading.Thread):
         if static_eval is None:
             static_eval = self.evaluate(node)
         
-        if static_eval >= beta and not in_check:
-            # We can't stand pat if in check, because standing pat assumes that
-            # there is at least some quiet move, if not violent move, that is at
-            # least as good as alpha. We can't assume that if we can't deal with
-            # the check.
+        if not in_check:
+            if static_eval >= beta:
+                # We can't stand pat if in check, because standing pat assumes that
+                # there is at least some quiet move, if not violent move, that is at
+                # least as good as alpha. We can't assume that if we can't deal with
+                # the check.
 
-            # "stand pat"
-            if not tt_hit or tt_entry.bound_type == tt.BoundType.NONE:
-                # d = QS_CHECK_DEPTH if qsply == 0 else QS_DEPTH
-                d = QS_DEPTH
-                tt.save_tt_entry(tt.TTEntry(node.zobrist_hash,
-                                            Move(PieceType.NULL).compact(),
-                                            tt.BoundType.LO_BOUND, static_eval, d, static_eval))
-            self.search_stats.update_ply_stat(ply, pv_node)
-            # if pv_node:
-            #     print("qs stand pat", node.moves, best_value, ">=", beta)
-            # log.debug("a %s b %s moves %s standpat static_eval %s", alpha, beta, node.moves, static_eval)
-            return static_eval
+                # "stand pat"
+                if not tt_hit or tt_entry.bound_type == tt.BoundType.NONE:
+                    # d = QS_CHECK_DEPTH if qsply == 0 else QS_DEPTH
+                    d = QS_DEPTH
+                    tt.save_tt_entry(tt.TTEntry(node.zobrist_hash,
+                                                Move(PieceType.NULL).compact(),
+                                                tt.BoundType.LO_BOUND, static_eval, d, static_eval))
+                self.search_stats.update_ply_stat(ply, pv_node)
+                # if pv_node:
+                #     print("qs stand pat", node.moves, best_value, ">=", beta)
+                # log.debug("a %s b %s moves %s standpat static_eval %s", alpha, beta, node.moves, static_eval)
+                return static_eval
 
-        if pv_node and static_eval > alpha:
-            alpha = static_eval
-
+            if pv_node and static_eval > alpha:
+                alpha = static_eval
+        
         best_move = Move(PieceType.NULL)
-        best_val = static_eval
         move_count = 0
 
         if in_check:
@@ -853,17 +855,19 @@ class Engine(threading.Thread):
             
             if score > alpha:
                 alpha = score
-                best_val = score
                 si[ply].pv = [move] + si[ply+1].pv
 
             if alpha >= beta:
                 d = QS_CHECK_DEPTH if qsply == 0 else QS_DEPTH
                 tt.save_tt_entry(tt.TTEntry(node.zobrist_hash, move.compact(),
-                                            tt.BoundType.LO_BOUND, best_val, d, static_eval))
+                                            tt.BoundType.LO_BOUND, alpha, d, static_eval))
                 self.search_stats.update_ply_stat(ply, pv_node)
                 return alpha
-        
-        if pv_node and best_val > a_orig: bound_type = tt.BoundType.EXACT
+    
+        if in_check and move_count == 0:
+            return MATE_VALUE + ply
+            
+        if pv_node and alpha > a_orig: bound_type = tt.BoundType.EXACT
         else: bound_type = tt.BoundType.HI_BOUND
         d = QS_CHECK_DEPTH if qsply == 0 else QS_DEPTH
         tt.save_tt_entry(tt.TTEntry(node.zobrist_hash, best_move.compact(),
@@ -871,7 +875,7 @@ class Engine(threading.Thread):
         self.search_stats.update_ply_stat(ply, pv_node)
 
         # log.debug("a %s b %s moves %s best_value (in bounds) %s", alpha, beta, node.moves, alpha)
-        return best_val
+        return alpha
 
     def find_pv(self, root_pos):
         """ Search the transposition table for the principal variation."""

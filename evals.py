@@ -751,7 +751,7 @@ def fifty_move_draw(pos):
     return pos.halfmove_clock >= 50
 
 def three_fold_repetition(pos):
-    return pos.three_fold[pos.fen(timeless=True)] >= 3
+    return pos.three_fold[pos.fen(timeless=True)] > 1
 
 def insufficient_material(pos):
     all_occ = pos.occupied[Side.W] | pos.occupied[Side.B]

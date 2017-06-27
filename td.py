@@ -232,20 +232,22 @@ def train(features, targets, write_summary):
     #             raise
     
 if __name__ == "__main__":
-    depth = 2 #6.5
+    depth = 4 #6.5
     total_fens = 700762
     plies_to_play = 32
-    positions_per_iteration = 64 #256
+    positions_per_iteration = 24 #256
     # batch_size = 32 # plies_to_play * positions_per_iteration // 8
     num_iterations = total_fens // positions_per_iteration + 1
-    max_replay_buffer_size = 64
+    # max_replay_buffer_size = 64
 
     # init_npos = 295705
     # init_npos = 200067
-    init_npos = 207839 - 64
+    init_npos = 210225 - 32
     offset = init_npos
     sts_scores = []
     # episodes = []
+    engine = Engine()
+
     for itern in range(num_iterations):
         positions = []
         lines_read = 0
@@ -291,8 +293,8 @@ if __name__ == "__main__":
                 # psn.make_move(move)
 
                 print(psn)
-                    
-                engine = Engine()
+
+                engine.si = [None] * 64
                 engine.training = True
                 engine.init_move_history()
                 TTEntry.next_game()
