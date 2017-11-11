@@ -27,13 +27,18 @@ def goprofile():
         leaf.make_move(move)
     print("eval val", nn_evaluate.evaluate(leaf))
     
-goprofile()
+# goprofile()
 
-# pos = Position.from_fen("r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10")
-# for i in range(1, 6):
-#     now = time.time()
-#     print(i, perft(pos, i, True), end=' ')
-#     print(time.time() - now,'s')
+pos = Position.from_fen("r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10")
+pos = Position.from_fen("8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 0")
+pos = Position()
+for i in range(5, 6):
+    now = time.time()
+    nodes = perft(pos, i, True)
+    after = time.time()
+    print(i, nodes, end=' ')
+    print(after - now,'s')
+    print("nps", nodes / (after - now))
 
 # cProfile.run("goprofile()", filename="outprofile")
 # pstats.Stats("outprofile").strip_dirs().sort_stats("time").print_stats(15)
