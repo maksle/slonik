@@ -232,7 +232,7 @@ def train(features, targets, write_summary):
     #             raise
     
 if __name__ == "__main__":
-    depth = 4.5 #6.5
+    depth = 5 #6.5
     total_fens = 700762
     plies_to_play = 32
     positions_per_iteration = 24 #256
@@ -242,7 +242,7 @@ if __name__ == "__main__":
 
     # init_npos = 295705
     # init_npos = 200067
-    init_npos = 211085 - 24
+    init_npos = 211384 - 24
     offset = init_npos
     sts_scores = []
     # episodes = []
