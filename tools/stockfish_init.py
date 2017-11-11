@@ -4,7 +4,8 @@ import chess.uci
 import random
 
 DEPTH = 3
-STOCKFISH = "/home/maks/prog/Chess_Engines/Stockfish/stockfish-6-linux/Linux/x86-32/stockfish"
+# STOCKFISH = "/home/maks/prog/Chess_Engines/Stockfish/stockfish-6-linux/Linux/x86-32/stockfish"
+STOCKFISH = "/usr/games/stockfish"
 
 engine = chess.uci.popen_engine(STOCKFISH)
 info_handler = chess.uci.InfoHandler()

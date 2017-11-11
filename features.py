@@ -3,6 +3,8 @@ from evals import lowest_attacker, BaseEvaluator
 from side import Side
 from piece_type import PieceType as Pt
 from bb import *
+import numpy as np
+
 
 LEFT_SIDE = FILES[0]|FILES[1]|FILES[2]|FILES[3]
 
@@ -33,7 +35,7 @@ class ToFeature():
         g.extend(self.king(Side.BLACK)) 
     
         p = [] # pawn-centric
-        np = [] # piece-centric
+        nonp = [] # piece-centric
         s = [] # square-centric
         for side in [Side.W, Side.B]:
             g.extend(self.counts_and_values(side))
@@ -42,15 +44,15 @@ class ToFeature():
             p.extend(self.pawn_count(side))
 
             for bt in [Pt.N, Pt.B, Pt.R]:
-                np.extend(self.BRN_pairs(bt, side))
-            np.extend(self.queens(side))
-            np.extend(self.king(side))
+                nonp.extend(self.BRN_pairs(bt, side))
+            nonp.extend(self.queens(side))
+            nonp.extend(self.king(side))
 
             for bt in Pt.piece_types(base_only=True):
                 if bt != Pt.P:
                     s.extend(self.mobility(bt, side))
             s.extend(self.lowest_attacker(side))
-        return [g, p, np, s]
+        return [np.array(g), np.array(p), np.array(nonp), np.array(s)]
             
     def sq(self, sq, stm):
         x = get_file(sq) if sq else -1

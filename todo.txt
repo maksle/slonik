@@ -14,3 +14,27 @@ finish the tablebase hits counter for uci output
 allowance <> depth conversion needs to be updated, is not accurate anymore
 finish root_moves implementation
 tt_entry.depth in qsearch is wrong (can have 9 allowance due to init allowance in qsearch)
+
+# mlp move order by mlp (somehow diff checkpoint than latest commit)
+Final best counts 361
+Final score: 5466
+Estimated ELO rating: 1973.9318609999998
+618.4361350536346 s
+
+# mlp move order orig code (same checkpoint used as above)
+Final best counts 363
+Final score: 5476
+Estimated ELO rating: 1977.524121
+2900.324053287506 s
+
+# mlp mover order by mlp with orig checkpoint
+Final best counts 293
+Final score: 4356
+Estimated ELO rating: 1575.191001
+400.0727288722992 s
+
+# mlp move order orig code with orig checkpoint
+Final best counts 290
+Final score: 4350
+Estimated ELO rating: 1573.035645
+325.7101502418518 s

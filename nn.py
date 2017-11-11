@@ -89,7 +89,7 @@ class Estimator(object):
             # grads, _ = tf.clip_by_global_norm(grads, clip_norm=5.0)
             # optimizer = tf.train.AdamOptimizer(.0003)
             # self.fit_op = optimizer.apply_gradients(zip(grads, tvars), global_step=self.global_step)
-            self.fit_op = tf.train.AdamOptimizer(1e-6).minimize(self.fit_loss, global_step=self.global_step)
+            self.fit_op = tf.train.AdamOptimizer(1e-4).minimize(self.fit_loss, global_step=self.global_step)
             
         self.sts_score = tf.Variable(0.0, name='sts_score', trainable=False)
         tf.summary.scalar('sts_score', self.sts_score)
@@ -99,14 +99,18 @@ class Estimator(object):
         
     def predict(self, features):
         with self.graph.as_default():
-            f = self.transform_features([features])
-            v = self.sess.run([self.V], feed_dict={
+            f = self.transform_features(features)
+            v = self.sess.run(self.V, feed_dict={
                 self.input_global: f['input_global'],
                 self.input_pawn: f['input_pawn'],
                 self.input_piece: f['input_piece'],
                 self.input_square: f['input_square']
             })
-            return np.asscalar(v[0])
+            return v
+            # if np.prod(v.shape) == 1:
+            #     return np.asscalar(v)
+            # else:
+            #     return v
 
     def loss(self, features, targets):
         with self.graph.as_default():
@@ -135,6 +139,7 @@ class Estimator(object):
             })
             if write_summary:
                 self.summary_writer.add_summary(results[2], global_step=self.global_step.eval(self.sess))
+            return results
             
     def transform_features(self, features):
         m = len(features)
@@ -206,4 +211,5 @@ graph = tf.Graph()
 # print("graphid:", id(graph))
 sess = tf.Session(graph=graph)
 with sess.as_default(), graph.as_default():
+    print("This should only run once")
     model = Model(sess, graph, restore=True)

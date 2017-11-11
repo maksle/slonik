@@ -9,6 +9,7 @@ from psqt import *
 from evals import *
 from operator import itemgetter
 from features import ToFeature
+import numpy as np
 import random
 import nn_evaluate
 import threading
@@ -18,6 +19,7 @@ import logging_config
 import sys
 import tt
 
+from nn import model
 
 log = logging.getLogger(__name__)
 
@@ -532,9 +534,9 @@ class Engine(threading.Thread):
             else: pseudo_moves = node.generate_moves_all()
             moves = self.sort_moves(pseudo_moves, node, si, ply)
             
-        counter = None
-        if len(node.moves):
-            counter = self.lookup_counter(node.side_to_move() ^ 1, node.moves[-1])
+        # counter = None
+        # if len(node.moves):
+        #     counter = self.lookup_counter(node.side_to_move() ^ 1, node.moves[-1])
         
         #
         # Move iteration
@@ -902,6 +904,30 @@ class Engine(threading.Thread):
     
     def sort_moves(self, moves, position, si, ply, is_root=False):
         """Sort the moves to optimize the alpha-beta search"""
+        toFeature = ToFeature()
+        feats = []
+        moves = list(moves)
+        if len(moves) == 0:
+            return moves
+        for move in moves:
+            pos_ = Position(position)
+            pos_.make_move(move)
+            toFeature.set_position(pos_)
+            feats.append(toFeature.ann_features())
+        predictions = model.actor.predict(feats)
+        predictions = predictions * -1 if position.side_to_move() == Side.BLACK else predictions
+        moves_preds_sorted = list(sorted(zip(moves, predictions.tolist()), key=lambda x: x[1], reverse=True))
+        preds_sorted = np.array([pred for (move, pred) in moves_preds_sorted])
+        if len(preds_sorted) == 0:
+            embed()
+        e_x = np.exp(preds_sorted - preds_sorted.max()) ** .5 # soften the temperature
+        probs = e_x / e_x.sum()
+        assert(np.allclose(sum(probs), 1))
+        sorted_moves = [m[0] for m in moves_preds_sorted]
+        for i, move in enumerate(sorted_moves):
+            move.prob = probs[i]
+        return sorted_moves
+        
         from_pv = [] 
         captures = []
         killers = []
