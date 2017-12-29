@@ -78,24 +78,27 @@ class Estimator(object):
         
         with tf.name_scope('Loss'):
             self.fit_loss = tf.reduce_mean(huber_loss(self.target, self.V))
-            tf.summary.scalar('loss', self.fit_loss)
+            with tf.device('/cpu:0'):
+                tf.summary.scalar('loss', self.fit_loss)
         
         with tf.name_scope('SGD'):
             tvars = [t for t in tf.trainable_variables() if t.name.startswith(self.scope)]
             grads = tf.gradients(self.fit_loss, tvars)
-            for grad, var in zip(grads, tvars):
-                tf.summary.histogram(var.name, var)
-                tf.summary.histogram(var.name + '/gradients/grad', grad)
+            with tf.device('/cpu:0'):
+                for grad, var in zip(grads, tvars):
+                    tf.summary.histogram(var.name, var)
+                    tf.summary.histogram(var.name + '/gradients/grad', grad)
             # grads, _ = tf.clip_by_global_norm(grads, clip_norm=5.0)
             # optimizer = tf.train.AdamOptimizer(.0003)
             # self.fit_op = optimizer.apply_gradients(zip(grads, tvars), global_step=self.global_step)
             self.fit_op = tf.train.AdamOptimizer(1e-4).minimize(self.fit_loss, global_step=self.global_step)
             
-        self.sts_score = tf.Variable(0.0, name='sts_score', trainable=False)
-        tf.summary.scalar('sts_score', self.sts_score)
+        with tf.device('/cpu:0'):
+            self.sts_score = tf.Variable(0.0, name='sts_score', trainable=False)
+            tf.summary.scalar('sts_score', self.sts_score)
+            # summaries
+            self.summaries_op = tf.summary.merge_all()
         
-        # summaries
-        self.summaries_op = tf.summary.merge_all()
         
     def predict(self, features):
         with self.graph.as_default():
@@ -169,8 +172,10 @@ class Model(object):
         # self.summaries_op = tf.summary.merge_all()
         # self.summary_writer = tf.summary.FileWriter('/tmp/td', self.sess.graph)
 
-        self.actor = Estimator(self.sess, self.graph, "actor_estimator", self.global_step)
-        self.target = Estimator(self.sess, self.graph, "target_estimator", self.global_step)
+        with tf.device('/cpu:0'):
+            self.actor = Estimator(self.sess, self.graph, "actor_estimator", self.global_step)
+        with tf.device('/gpu:0'):
+            self.target = Estimator(self.sess, self.graph, "target_estimator", self.global_step)
         
         self.sess.run(tf.global_variables_initializer())
         

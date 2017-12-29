@@ -1,3 +1,6 @@
+# import os
+# os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+
 import pyximport
 # pyximport.install()
 # from bb import *
@@ -40,6 +43,8 @@ def run_sts_test():
     n = 0
     with open("./tools/STS1-STS15.EPD") as f:
         for epd in f.readlines():
+            # if n == 15:
+            #     break
             n += 1
             epd_num = int(math.ceil(n/100))
             fen, best_move, move_scores = parse_epd(epd)

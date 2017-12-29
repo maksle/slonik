@@ -19,7 +19,9 @@ import logging_config
 import sys
 import tt
 
-from nn import model
+# from nn import model #mlp
+from cnnfeat import get_feats #cnn
+from nn_evaluate import model
 
 log = logging.getLogger(__name__)
 
@@ -505,14 +507,14 @@ class Engine(threading.Thread):
         #         si[ply+1].skip_early_pruning = False
         #         found, tt_ind, tt_entry = tt.get_tt_index(node.zobrist_hash)
         
-        singular_extension_eligible = False
-        if not is_root and allowance_to_depth(allowance) >= 2.5 \
-           and not si[ply].singular_search \
-           and found \
-           and tt_entry.move != 0 \
-           and tt_entry.bound_type != tt.BoundType.HI_BOUND \
-           and tt_entry.depth >= allowance * .7:
-            singular_extension_eligible = True
+        # singular_extension_eligible = False
+        # if not is_root and allowance_to_depth(allowance) >= 2.5 \
+        #    and not si[ply].singular_search \
+        #    and found \
+        #    and tt_entry.move != 0 \
+        #    and tt_entry.bound_type != tt.BoundType.HI_BOUND \
+        #    and tt_entry.depth >= allowance * .7:
+        #     singular_extension_eligible = True
 
         # improving = (ply < 2) or (si[ply-2].static_eval is None) or (si[ply].static_eval >= si[ply-2].static_eval)
 
@@ -564,10 +566,10 @@ class Engine(threading.Thread):
             if gives_check:
                 move.move_type |= MoveType.check
 
-            is_capture = move.to_sq & node.occupied[child.side_to_move()]
+            # is_capture = move.to_sq & node.occupied[child.side_to_move()]
             # see_score = move.see_score or eval_see(node, move)
 
-            extending = False
+            # extending = False
 
             # if gives_check and move.prob > .01 and see_score > 0:
             #     extending = True
@@ -580,22 +582,22 @@ class Engine(threading.Thread):
             #        move.prob = min(move.prob * 1.5, 1)
 
             # singular extension logic pretty much as in stockfish
-            if not extending and singular_extension_eligible and move == Move.move_uncompacted(tt_entry.move):
-                # print("Trying Singular:", ' '.join(map(str,node.moves)), move)
-                rbeta = int(tt_entry.value - (2 * allowance_to_depth(allowance)))
-                si[ply].excluded_move = move
-                si[ply].singular_search = True
-                si[ply].skip_early_pruning = True
-                val = self.search(node, ply, rbeta-1, rbeta, int(allowance * move.prob * .75), False, cut_node)
-                si[ply].skip_early_pruning = False
-                si[ply].singular_search = False
-                si[ply].excluded_move = Move(PieceType.NULL)
+            # if not extending and singular_extension_eligible and move == Move.move_uncompacted(tt_entry.move):
+            #     # print("Trying Singular:", ' '.join(map(str,node.moves)), move)
+            #     rbeta = int(tt_entry.value - (2 * allowance_to_depth(allowance)))
+            #     si[ply].excluded_move = move
+            #     si[ply].singular_search = True
+            #     si[ply].skip_early_pruning = True
+            #     val = self.search(node, ply, rbeta-1, rbeta, int(allowance * move.prob * .75), False, cut_node)
+            #     si[ply].skip_early_pruning = False
+            #     si[ply].singular_search = False
+            #     si[ply].excluded_move = Move(PieceType.NULL)
                 # print("val", val, "rbeta", rbeta)
 
-                if val < rbeta:
-                    # print("extending", node.moves, move)
-                    extending = True
-                    move.prob = 1
+                # if val < rbeta:
+                #     # print("extending", node.moves, move)
+                #     extending = True
+                #     move.prob = 1
             
             # if not is_root and not is_capture and not gives_check:
             #     next_depth = allowance_to_depth(allowance * move.prob)
@@ -678,8 +680,8 @@ class Engine(threading.Thread):
 
             if a >= b:
                 # captures already get searched before killers
-                if move == best_move and not is_capture: 
-                    self.add_killer(ply, best_move)
+                # if move == best_move and not is_capture: 
+                #     self.add_killer(ply, best_move)
                 break
         
         self.search_stats.move_count_pv[best_val_move_count] += 1
@@ -693,22 +695,22 @@ class Engine(threading.Thread):
                 best_val = MATE_VALUE + ply
             else:
                 best_val = DRAW_VALUE
-        elif best_move != Move(PieceType.NULL):
-            if best_val > a_orig and not best_move_is_capture:
-                bonus = int(allowance_to_depth(allowance))
-                self.update_history(node.side_to_move(), best_move, bonus)
-                if prior_move and not prior_move.is_null_move():
-                    self.update_counter(node.side_to_move() ^ 1, prior_move, best_move)
-                    # penalize prior quiet move that allowed this good move
-                    if len(node.moves) > 1 and not prior_move.is_null_move and not prior_move.move_type & MoveType.capture:
-                        # print("penalizing", node.side_to_move() ^ 1, "for move", prior_move, "with", -(bonus + 4))
-                        self.update_history(node.side_to_move() ^ 1, prior_move, -(bonus + 4))
-        elif best_val <= a_orig and allowance_to_depth(allowance) >= 2.5 and not best_move_is_capture:
-            # reward the quiet move that caused this node to fail low
-            bonus = int(allowance_to_depth(allowance))
-            if len(node.moves) > 1 and not prior_move.is_null_move() and not prior_move.move_type & MoveType.capture:
-                # print("rewarding", node.side_to_move() ^ 1, "for move", prior_move, "with", bonus)
-                self.update_history(node.side_to_move() ^ 1, prior_move, bonus)
+        # elif best_move != Move(PieceType.NULL):
+            # if best_val > a_orig and not best_move_is_capture:
+            #     bonus = int(allowance_to_depth(allowance))
+            #     self.update_history(node.side_to_move(), best_move, bonus)
+            #     if prior_move and not prior_move.is_null_move():
+            #         self.update_counter(node.side_to_move() ^ 1, prior_move, best_move)
+            #         # penalize prior quiet move that allowed this good move
+            #         if len(node.moves) > 1 and not prior_move.is_null_move and not prior_move.move_type & MoveType.capture:
+            #             # print("penalizing", node.side_to_move() ^ 1, "for move", prior_move, "with", -(bonus + 4))
+            #             self.update_history(node.side_to_move() ^ 1, prior_move, -(bonus + 4))
+        # elif best_val <= a_orig and allowance_to_depth(allowance) >= 2.5 and not best_move_is_capture:
+        #     # reward the quiet move that caused this node to fail low
+        #     bonus = int(allowance_to_depth(allowance))
+        #     if len(node.moves) > 1 and not prior_move.is_null_move() and not prior_move.move_type & MoveType.capture:
+        #         # print("rewarding", node.side_to_move() ^ 1, "for move", prior_move, "with", bonus)
+        #         self.update_history(node.side_to_move() ^ 1, prior_move, bonus)
         
         if best_val <= a_orig: bound_type = tt.BoundType.HI_BOUND
         elif best_val >= b: bound_type = tt.BoundType.LO_BOUND
@@ -904,17 +906,23 @@ class Engine(threading.Thread):
     
     def sort_moves(self, moves, position, si, ply, is_root=False):
         """Sort the moves to optimize the alpha-beta search"""
-        toFeature = ToFeature()
-        feats = []
+        # toFeature = ToFeature()
         moves = list(moves)
         if len(moves) == 0:
             return moves
+        feats = []
         for move in moves:
             pos_ = Position(position)
             pos_.make_move(move)
-            toFeature.set_position(pos_)
-            feats.append(toFeature.ann_features())
-        predictions = model.actor.predict(feats)
+            # toFeature.set_position(pos_)
+            # feats.append(toFeature.ann_features())
+            feats.append(get_feats(pos_))
+        feats = np.stack(feats)
+        # if len(moves) >= 20:
+        #     predictions = model.target.predict(feats)
+        # else:
+        #     predictions = model.actor.predict(feats)
+        predictions = model.predict(feats, batch_size=len(feats))
         predictions = predictions * -1 if position.side_to_move() == Side.BLACK else predictions
         moves_preds_sorted = list(sorted(zip(moves, predictions.tolist()), key=lambda x: x[1], reverse=True))
         preds_sorted = np.array([pred for (move, pred) in moves_preds_sorted])
@@ -928,100 +936,100 @@ class Engine(threading.Thread):
             move.prob = probs[i]
         return sorted_moves
         
-        from_pv = [] 
-        captures = []
-        killers = []
-        counters = []
-        other_moves = []
-        checks = []
+        # from_pv = [] 
+        # captures = []
+        # killers = []
+        # counters = []
+        # other_moves = []
+        # checks = []
 
-        side = position.side_to_move()
-        us, them = side, side ^ 1
+        # side = position.side_to_move()
+        # us, them = side, side ^ 1
 
-        other = position.occupied[them]
-        counter = self.lookup_counter(them, position.last_move())
+        # other = position.occupied[them]
+        # counter = self.lookup_counter(them, position.last_move())
 
-        # ep_us_before = next_en_prise(position, us)
-        # ep_them_before = next_en_prise(position, them)
+        # # ep_us_before = next_en_prise(position, us)
+        # # ep_them_before = next_en_prise(position, them)
 
-        def sort_crit(move):
-            entry = self.lookup_history(us, move)
-            # see_val = eval_see(position, move)
-            hist_val = entry.value if entry else 0
-            # return (see_val, hist_val)
-            return (0, hist_val)
+        # def sort_crit(move):
+        #     entry = self.lookup_history(us, move)
+        #     # see_val = eval_see(position, move)
+        #     hist_val = entry.value if entry else 0
+        #     # return (see_val, hist_val)
+        #     return (0, hist_val)
 
-        pv_moves = self.find_pv(position)
-        found, tt_ind, tt_entry = tt.get_tt_index(position.zobrist_hash)
-        from_tt = []
-        for move in moves:
-            if move in pv_moves:
-                from_pv.append(move)
-            elif found and tt_entry.move != 0:
-                from_tt.append(move)
-            elif is_capture(move.to_sq, other):
-                captures.append(move)
-            elif move.move_type == MoveType.check:
-                checks.append(move)
-            elif counter and counter.move == move:
-                counters.append(move)
-            elif move in self.killer_moves[ply]:
-                killers.append(move)
-            else:
-                other_moves.append(move)
-
-        # keep same order as pv
-        from_pv_final = []
-        for move in pv_moves:
-            if move in from_pv:
-                from_pv_final.append(move)
-        from_pv = from_pv_final
-        
-        # checks = sorted(checks, key=sort_crit, reverse=True)
-
-        other_moves.sort(key=lambda m: sort_crit(m), reverse=True)
-        
-        # captures_see = map(lambda c: (sort_crit(c), c), captures)
-        # sorted_cap_see = sorted(captures_see, key=itemgetter(0), reverse=True)
-        # cap_see_gt0 = []
-        # cap_see_lt0 = []
-        # cap_see_eq0 = []
-        # for cs in sorted_cap_see:
-        #     see, hist = cs[0]
-        #     move = cs[1]
-        #     if see > 0:
-        #         move.prob = 2.5
-        #         cap_see_gt0.append(move)
-        #     elif see == 0:
-        #         move.prob = 1.5
-        #         cap_see_eq0.append(move)
+        # pv_moves = self.find_pv(position)
+        # found, tt_ind, tt_entry = tt.get_tt_index(position.zobrist_hash)
+        # from_tt = []
+        # for move in moves:
+        #     if move in pv_moves:
+        #         from_pv.append(move)
+        #     elif found and tt_entry.move != 0:
+        #         from_tt.append(move)
+        #     elif is_capture(move.to_sq, other):
+        #         captures.append(move)
+        #     elif move.move_type == MoveType.check:
+        #         checks.append(move)
+        #     elif counter and counter.move == move:
+        #         counters.append(move)
+        #     elif move in self.killer_moves[ply]:
+        #         killers.append(move)
         #     else:
-        #         move.prob = .75
-        #         cap_see_lt0.append(move)
-        
-        for move in from_pv: move.prob = 3
-        for move in from_tt: move.prob = 2.8
-        for move in captures: move.prob = 2.5
-        for move in checks: move.prob = 2
-        for move in counters: move.prob = 2
-        for (ind, move) in enumerate(killers):
-            move.prob = 1.5 + (ind * .1)
-        for move in other_moves: move.prob = 1
-        
-        # result = list(itertools.chain(from_pv, from_tt, cap_see_gt0, checks, counters, killers, cap_see_eq0, other_moves, cap_see_lt0))
-        result = list(itertools.chain(from_pv, from_tt, captures, checks, counters, killers, other_moves))
+        #         other_moves.append(move)
 
-        prob_sum = 0
-        for move in result:
-            prob_sum += move.prob
-        for move in result:
-            move.prob /= prob_sum
+        # # keep same order as pv
+        # from_pv_final = []
+        # for move in pv_moves:
+        #     if move in from_pv:
+        #         from_pv_final.append(move)
+        # from_pv = from_pv_final
         
-        # result = sorted(result, key=lambda m: m.prob, reverse=True)
+        # # checks = sorted(checks, key=sort_crit, reverse=True)
+
+        # other_moves.sort(key=lambda m: sort_crit(m), reverse=True)
         
-        # log.info([move.prob for move in result])
+        # # captures_see = map(lambda c: (sort_crit(c), c), captures)
+        # # sorted_cap_see = sorted(captures_see, key=itemgetter(0), reverse=True)
+        # # cap_see_gt0 = []
+        # # cap_see_lt0 = []
+        # # cap_see_eq0 = []
+        # # for cs in sorted_cap_see:
+        # #     see, hist = cs[0]
+        # #     move = cs[1]
+        # #     if see > 0:
+        # #         move.prob = 2.5
+        # #         cap_see_gt0.append(move)
+        # #     elif see == 0:
+        # #         move.prob = 1.5
+        # #         cap_see_eq0.append(move)
+        # #     else:
+        # #         move.prob = .75
+        # #         cap_see_lt0.append(move)
+        
+        # for move in from_pv: move.prob = 3
+        # for move in from_tt: move.prob = 2.8
+        # for move in captures: move.prob = 2.5
+        # for move in checks: move.prob = 2
+        # for move in counters: move.prob = 2
+        # for (ind, move) in enumerate(killers):
+        #     move.prob = 1.5 + (ind * .1)
+        # for move in other_moves: move.prob = 1
+        
+        # # result = list(itertools.chain(from_pv, from_tt, cap_see_gt0, checks, counters, killers, cap_see_eq0, other_moves, cap_see_lt0))
+        # result = list(itertools.chain(from_pv, from_tt, captures, checks, counters, killers, other_moves))
+
+        # prob_sum = 0
+        # for move in result:
+        #     prob_sum += move.prob
+        # for move in result:
+        #     move.prob /= prob_sum
+        
+        # # result = sorted(result, key=lambda m: m.prob, reverse=True)
+        
+        # # log.info([move.prob for move in result])
             
-        return result
+        # return result
     
 def perft(pos, depth, is_root):
     cnt = nodes = 0

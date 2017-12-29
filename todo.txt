@@ -38,3 +38,21 @@ Final best counts 290
 Final score: 4350
 Estimated ELO rating: 1573.035645
 325.7101502418518 s
+
+#mlp move order by mlp with orig checkpoint on new cpu with gpu device
+Final best counts 293
+Final score: 4356
+Estimated ELO rating: 1575.191001
+642.731828212738 s
+
+#mlp move order by mlp with orig checkpoint on new cpu with cpu device (tf.device('/cpu:0'))
+Final best counts 293
+Final score: 4356
+Estimated ELO rating: 1575.191001
+494.5805275440216 s, 486s with cuda environ set to use cpu, 560s with split, 494.77 with >10split 
+
+# cnn w/ gpu
+Final best counts 327
+Final score: 5013
+Estimated ELO rating: 1811.2024829999998
+1199.5513586997986 s

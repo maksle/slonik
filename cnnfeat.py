@@ -63,15 +63,6 @@ def res_block(input_tensor, filters):
 
 # huber = tf.losses.huber
 
-def batch_generator(data, batch_size, shuffle=True):
-    while True:
-        data_ = data.sample(frac=1) if shuffle else data
-        for iteration, batch in data_.groupby(np.arange(len(data)) // batch_size):
-            fens = [f.strip() for f in batch.fen.tolist()]
-            feats = np.stack([get_feats(Position.from_fen(fen)) for fen in fens])
-            scores = np.array(batch.stockfish_score, dtype='float32')
-            yield feats, scores
-
 def cnn_model():
     k = 192
     net_input = Input((8,8,14))
@@ -86,6 +77,7 @@ def cnn_model():
     x = Activation('relu')(x)
     x = Dense(1)(x)
     net_output = Activation('tanh')(x)
+    # 5,359,494 params
     return net_input, net_output
 
 def dense_model():
@@ -106,25 +98,26 @@ def dense_model():
     shared = Activation('relu')(shared)
     output = Dense(1)(shared)
     output = Activation('tanh')(output)
+    # 13997 params
     return [input_global, input_pawn, input_piece, input_square], output
 
-inputs, output = dense_model()
-model = Model(inputs, output)
-model.summary()
-
-# net_input, net_output = cnn_model()
-# model = Model(net_input, net_output)
-# # model.summary()
-# model.compile(optimizer=Adam(1e-3), loss='mse')
-# model.load_weights('../slonik_data/cnn_weights_epoch3.h5')
+def batch_generator(data, batch_size, shuffle=True):
+    while True:
+        data_ = data.sample(frac=1) if shuffle else data
+        for iteration, batch in data_.groupby(np.arange(len(data)) // batch_size):
+            fens = [f.strip() for f in batch.fen.tolist()]
+            feats = np.stack([get_feats(Position.from_fen(fen)) for fen in fens])
+            scores = np.array(batch.result, dtype='float32')
+            yield feats, scores
 
 def train_data_supervised():
-    file_name = '../slonik_data/sf_scores.pkl'
-    sf_scores = pd.read_pickle(file_name)
+    # file_name = '../slonik_data/sf_scores.pkl'
+    file_name = '../slonik_data/positions.pkl'
+    positions = pd.read_pickle(file_name)
     valid_n = 6e4
-    train_n = int(len(sf_scores) - valid_n)
-    train_data = sf_scores[:train_n]
-    valid_data = sf_scores[train_n:]
+    train_n = int(len(positions) - valid_n)
+    train_data = positions[:train_n]
+    valid_data = positions[train_n:]
     return train_data, valid_data
 
 def train_supervised(batch_size=32, epochs=1):
@@ -134,18 +127,38 @@ def train_supervised(batch_size=32, epochs=1):
     valid_gen = batch_generator(valid_data, batch_size, shuffle=False)
     
     train_steps = ceil(len(train_data) / batch_size)
-    valid_steps = ceil(valid_n / batch_size)
+    valid_steps = ceil(len(valid_data) / batch_size)
     
     # keras.callbacks.ModelCheckpoint('weights.{epoch:02d}-{val_loss:.2f}.hdf5', monitor='val_loss', verbose=0, save_best_only=False, save_weights_only=True, mode='auto', period=1)
     model.fit_generator(train_gen, train_steps, epochs=epochs, validation_data=valid_gen, validation_steps=valid_steps)
-    # model.save_weights('../slonik_data/cnn_weights.h5')
+    model.save_weights('../slonik_data/cnn_weights_results_epoch_.h5')
     
-def evaluate():
+def evaluate(batch_size=32):
+    # from sf score:
     # .1256964 untrained
     # .0028118 after 1 epoch (1e-3 lr)
     # .0015 after 2 epoch (1e-3 lr)
-    # 7.5081e-04 after 3 epoch (1e-4 lr)
+    # 7.5081e-04 after 3 epoch (1e-4 lr), sts 5013
+    # 6.7071e-04 after 4 epoch (1e-5 lr), sts 4925
+
+    # from game results:
+    # .6652 after epoch 1 (1e-3 lr)
+    # .6313 after epoch 2 (1e-3 lr) 
+    # ? after epochs 3-5 (1e-3 lr) 4684
     train_data, valid_data = train_data_supervised()
-    valid_steps = ceil(valid_n / batch_size)
+    valid_steps = ceil(len(valid_data) / batch_size)
     valid_gen = batch_generator(valid_data, batch_size, shuffle=False)
-    return model.evaluate_generator(valid_gen, valid_n//batch_size)
+    return model.evaluate_generator(valid_gen, len(valid_data)//batch_size)
+
+# inputs, output = dense_model()
+# model = Model(inputs, output)
+# model.summary()
+
+# net_input, net_output = cnn_model()
+# model = Model(net_input, net_output)
+# # model.summary()
+# model.compile(optimizer=Adam(1e-3), loss='mse')
+# model.load_weights('../slonik_data/cnn_weights_results_epoch2.h5')
+
+# print(evaluate())
+# train_supervised(epochs=2)
