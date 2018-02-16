@@ -1,4 +1,9 @@
 # Slonik - Chess engine
+
+This project is currently mainly a prototyping and testing ground for changes that are eventually to end up in my slonikai c++ project. Current work is mainly in the MCTS routine and the neural network architecture experiments in the notebooks folder. I'm currently working on bring in ideas from AlphaGo paper and from the "Thinking Fast and Slow with Deep Learning and Tree Search" ExIt RL paper.
+
+-- 
+
 Slonik is a UCI chess engine, which means that it plays chess. To play against it or analyze positions with it, plug it into a graphical chess interface, such as Scid vs PC or Chessbase. Slonik means "little elephant" in Russian.
 
 There are two versions of the engine. The search can use the original static evaluation function (linear combination of hand-coded features), or it can use the new evaluator which uses a neural network and was trained with supervised learning and temporal difference learning. The SL/TD version slightly surpasses the original version now.
