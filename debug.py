@@ -8,26 +8,28 @@ import nn_evaluate
 
 
 pos = Position.from_fen("k7/8/8/8/P5r1/1P5p/4rr1P/7K b - - 0 1")
-def goprofile():
-    now = time.time()
-    engine = Engine()
-    engine.debug = True
-    engine.infinite = False
-    engine.max_depth = 4
-    engine.root_position = pos
-    engine.evaluate = nn_evaluate.evaluate
-    engine.init_move_history()
-    engine.search_stats.time_start = time.time()
-    val, si = engine.iterative_deepening()
-    print("search res", val)
-    print("pv", si[0].pv)
+# def goprofile():
+#     now = time.time()
+#     engine = Engine()
+#     engine.debug = True
+#     engine.infinite = False
+#     engine.max_depth = 4
+#     engine.root_position = pos
+#     engine.evaluate = nn_evaluate.evaluate
+#     engine.init_move_history()
+#     engine.search_stats.time_start = time.time()
+#     val, si = engine.iterative_deepening()
+#     print("search res", val)
+#     print("pv", si[0].pv)
     
-    leaf = Position(pos)
-    for move in si[0].pv:
-        leaf.make_move(move)
-    print("eval val", nn_evaluate.evaluate(leaf))
+#     leaf = Position(pos)
+#     for move in si[0].pv:
+#         leaf.make_move(move)
+#     print("eval val", nn_evaluate.evaluate(leaf))
     
-goprofile()
+# goprofile()
+
+print(pos)
 
 # pos = Position.from_fen("r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10")
 # pos = Position.from_fen("8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 0")
