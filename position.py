@@ -401,7 +401,7 @@ class Position():
         us = side
         them = side ^ 1
         if in_check is None:
-            in_check = self.in_check()
+            in_check = self.in_check_simple()
 
         # king moves
         if Pt.base_type(move.piece_type) == Pt.K:
@@ -448,7 +448,7 @@ class Position():
     def is_legal_king_move(self, move, in_check):
         assert Pt.base_type(move.piece_type) == Pt.K
         if in_check is None:
-            in_check = self.in_check()
+            in_check = self.in_check_simple()
         castle_params = [[E1, G1, 0x6], [E1, C1, 0x30], [E8, G8, 0x6 << 56], [E8, C8, 0x30 << 56]]
         for params in castle_params:
             from_sq, to_sq, check_sqs = params
@@ -477,6 +477,40 @@ class Position():
     def gives_check(self, move):
         them = self.side_to_move() ^ 1
         return self.in_check(move=move, for_side=them)
+    
+    def in_check_simple(self):
+        side = self.side_to_move()
+        us, them = side, side ^ 1
+
+        occupied = self.occupied[us] | self.occupied[them]
+        
+        sq = self.pieces[Pt.piece(Pt.K, us)]
+        
+        b = knight_attack(sq)
+        pcs = self.pieces[Pt.piece(Pt.N, them)]
+        if b & pcs & occupied:
+            return True
+
+        b = pawn_attack(sq, us) 
+        pcs = self.pieces[Pt.piece(Pt.P, them)]
+        if b & pcs & occupied:
+            return True
+
+        b = bishop_attack(sq, occupied) 
+        pcs = (self.pieces[Pt.piece(Pt.B, them)] | self.pieces[Pt.piece(Pt.Q, them)])
+        if b & pcs & occupied:
+            return True
+
+        b = rook_attack(sq, occupied) 
+        pcs = (self.pieces[Pt.piece(Pt.R, them)] | self.pieces[Pt.piece(Pt.Q, them)])
+        if b & pcs & occupied:
+            return True
+
+        b = king_attack(sq) 
+        if b & self.pieces[Pt.piece(Pt.K, them)] & occupied:
+            return True
+
+        return False
     
     def in_check(self, move=None, for_side=None):
         side = self.side_to_move()
